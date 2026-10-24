@@ -1,7 +1,6 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { recommend } from "@/lib/graph";
-import { clientIp, rateLimit } from "@/lib/limits";
+import { clientIp, meetLimitKey, rateLimit } from "@/lib/limits";
 import type { DayFilter } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -9,9 +8,7 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 export async function GET(req: Request) {
-  const jar = await cookies();
-  const sid = jar.get("sid")?.value ?? "anon";
-  const limit = rateLimit(`meet:${sid}:${clientIp(req)}`, 60, 60_000);
+  const limit = rateLimit(meetLimitKey(clientIp(req)), 60, 60_000);
   if (!limit.ok) {
     return NextResponse.json(
       { error: "Slow down a little and try again." },

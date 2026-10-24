@@ -71,6 +71,9 @@ export function GraphPath({
 }
 
 function Chip({ chip }: { chip: PathChip }) {
+  if (chip.kind === "note") {
+    return <span className="text-xs text-mute">{chip.text}</span>;
+  }
   if (chip.kind === "edge") {
     return (
       <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-mute">{chip.text}</span>

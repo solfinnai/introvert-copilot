@@ -46,6 +46,25 @@ test("who to meet ranks a multi-hop path and keeps Maeda near the top", () => {
   }
 });
 
+test("a selected day requires a session that day, even for a keyword hit", () => {
+  const catalog = getCatalog();
+  const maeda = catalog.peopleById.get("john-maeda");
+  assert.ok(maeda);
+  const days = new Set(
+    maeda.sessionIds.map((id) => catalog.sessionsById.get(id)?.dayKey).filter((day) => day && day !== "other"),
+  );
+  assert.deepEqual([...days], ["thu"]);
+  const wednesday = rankPeople(catalog, null, { day: "wed", metIds: [], limit: 183 });
+  assert.equal(
+    wednesday.some((person) => person.id === "john-maeda"),
+    false,
+  );
+  for (const person of wednesday) assert.equal(person.dayKey, "wed");
+  const thursday = rankPeople(catalog, null, { day: "thu", metIds: [], limit: 183 });
+  assert.ok(thursday.some((person) => person.id === "john-maeda"));
+  for (const person of thursday) assert.equal(person.dayKey, "thu");
+});
+
 test("met people drop out and Thursday keeps Maeda", () => {
   const catalog = getCatalog();
   const without = rankPeople(catalog, null, { day: "both", metIds: ["john-maeda"], limit: 10 });
@@ -54,6 +73,36 @@ test("met people drop out and Thursday keeps Maeda", () => {
   assert.ok(thursday.some((person) => person.id === "john-maeda"));
   const wednesday = rankPeople(catalog, null, { day: "wed", metIds: [], limit: 10 });
   assert.equal(wednesday.some((person) => person.id === "john-maeda"), false);
+});
+
+test("keyword-only matches are not drawn as graph edges", () => {
+  const catalog = getCatalog();
+  const people = rankPeople(catalog, null, {
+    day: "both",
+    metIds: [],
+    interests: ["__no_such_topic__"],
+    limit: 183,
+  });
+  const keywordOnly = people.filter(
+    (person) => person.sharedTopics.length === 0 && person.keywordHits.length > 0,
+  );
+  assert.ok(keywordOnly.length > 0);
+  for (const person of keywordOnly) {
+    assert.equal(
+      person.path.some((chip) => chip.text === "BIO" || chip.text === "DESCRIBES"),
+      false,
+    );
+    assert.ok(person.path.some((chip) => chip.kind === "note" && chip.text.startsWith("Keyword match")));
+    assert.equal(
+      person.hops,
+      person.path.filter((chip) => chip.kind === "edge").length,
+    );
+  }
+  const maeda = rankPeople(catalog, null, { day: "both", metIds: [], limit: 10 }).find(
+    (person) => person.id === "john-maeda",
+  );
+  assert.equal(maeda?.hops, 3);
+  assert.equal(maeda?.path.some((chip) => chip.kind === "note"), false);
 });
 
 test("sanitize turns dashes into punctuation we can show", () => {
