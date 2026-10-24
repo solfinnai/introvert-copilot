@@ -207,6 +207,7 @@ function toCard(catalog: Catalog, draft: Draft, interests: string[]): RankedPers
     opener: openerLine(person.name, session?.title ?? null, draft.sharedTopics, draft.keywordHits),
     catchLine,
     sessionTitle: session?.title ?? null,
+    sessionType: session?.type ?? null,
     roomShort: session?.roomShort ?? "",
     dayKey: session?.dayKey ?? "other",
     dayLabel,

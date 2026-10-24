@@ -107,10 +107,9 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
         </div>
       </div>
 
-      <p className="mt-4 text-xs text-mute">
-        {backendLabel(data.backend)} walked you to a topic, then a session, then a speaker
-        {data.ms ? ` in ${data.ms} ms` : ""}. People you mark as met stay out of this list until you
-        reset the demo.
+      <p className="mt-4 max-w-3xl text-xs leading-5 text-mute">
+        {backendLabel(data.backend)} walked you to a topic, then a session, then a speaker. People you
+        mark as met stay out of this list until you reset the demo.
         {metNote > 0 ? ` You have marked ${metNote} so far.` : ""}
       </p>
       {error && <p className="mt-3 text-sm text-[#9a3412]">{error}</p>}
@@ -162,7 +161,7 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
 
 function HeroCard({ person, response, open, locked, onTogglePath, onMet }: CardProps) {
   return (
-    <article className="rounded-3xl border border-line bg-card p-5 shadow-card md:p-6">
+    <article className="min-w-0 rounded-3xl border border-line bg-card p-5 shadow-card md:p-6">
       <header className="flex items-start gap-4">
         <PersonPhoto src={person.photoUrl} name={person.name} size={56} />
         <div className="min-w-0 flex-1">
@@ -188,18 +187,15 @@ function HeroCard({ person, response, open, locked, onTogglePath, onMet }: CardP
         >
           Mark as met
         </button>
-        <button
-          type="button"
-          className="ml-auto inline-flex items-center gap-3 text-sm text-[#3f3a34]"
-          aria-expanded={open}
-          onClick={onTogglePath}
-        >
-          <span>{open ? "Hide the graph path" : "See the graph path"}</span>
-          <span className="font-mono text-[11px] text-mute">
-            {backendLabel(response.backend)}, {person.hops} hops, {response.ms} ms
-          </span>
-        </button>
       </div>
+      <button
+        type="button"
+        className="mt-3 block max-w-full text-left text-sm text-[#3f3a34]"
+        aria-expanded={open}
+        onClick={onTogglePath}
+      >
+        {open ? "Hide how we found this" : "How we found this"}
+      </button>
       {open && <PathBlock person={person} response={response} />}
     </article>
   );
@@ -207,7 +203,7 @@ function HeroCard({ person, response, open, locked, onTogglePath, onMet }: CardP
 
 function SmallCard({ person, response, open, locked, onTogglePath, onMet }: CardProps) {
   return (
-    <article className="rounded-3xl border border-line bg-card p-5 shadow-card">
+    <article className="min-w-0 rounded-3xl border border-line bg-card p-5 shadow-card">
       <header className="flex items-start gap-3">
         <PersonPhoto src={person.photoUrl} name={person.name} size={44} />
         <div className="min-w-0 flex-1">
@@ -234,11 +230,13 @@ function SmallCard({ person, response, open, locked, onTogglePath, onMet }: Card
           Mark as met
         </button>
       </div>
-      <button type="button" className="mt-3 text-sm text-[#3f3a34]" aria-expanded={open} onClick={onTogglePath}>
-        {open ? "Hide the graph path" : "See the graph path"}
-        <span className="ml-2 font-mono text-[11px] text-mute">
-          {backendLabel(response.backend)}, {person.hops} hops, {response.ms} ms
-        </span>
+      <button
+        type="button"
+        className="mt-3 block max-w-full text-left text-sm text-[#3f3a34]"
+        aria-expanded={open}
+        onClick={onTogglePath}
+      >
+        {open ? "Hide how we found this" : "How we found this"}
       </button>
       {open && <PathBlock person={person} response={response} />}
     </article>
@@ -248,6 +246,9 @@ function SmallCard({ person, response, open, locked, onTogglePath, onMet }: Card
 function PathBlock({ person, response }: { person: RankedPerson; response: MeetResponse }) {
   return (
     <GraphPath
+      name={person.name}
+      sessionTitle={person.sessionTitle}
+      sessionType={person.sessionType}
       path={person.path}
       introPath={person.introPath}
       introName={person.introVia?.name ?? null}
