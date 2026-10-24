@@ -1,4 +1,5 @@
 import { HERO_CYPHER, getCatalog, DEFAULT_INTERESTS } from "./catalog";
+import { parseTalkTopics } from "./talk-topics";
 import { getDb, graphName, noteQueryFailure } from "./falkor";
 import type { HopInfo } from "./rank";
 import { personCard, rankPeople } from "./rank";
@@ -97,6 +98,7 @@ function normalize(query: RecommendQuery): RecommendQuery {
     day: query.day,
     metIds: query.metIds,
     interests: query.interests?.length ? query.interests : [...DEFAULT_INTERESTS],
+    talkTopics: parseTalkTopics(query.talkTopics ?? []),
     limit: query.limit ?? 10,
   };
 }

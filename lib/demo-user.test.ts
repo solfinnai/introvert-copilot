@@ -3,7 +3,8 @@ import fs from "fs";
 import os from "os";
 import path from "path";
 import { test } from "node:test";
-import { DEMO_USER_REL, blurbFromProfile, loadDemoCard, oneLineStory } from "./demo-user";
+import { DEMO_USER_REL, blurbFromProfile, loadDemoCard, oneLineStory } from "./demo-card";
+import { confirmedBrief, demoProfile, demoUser, displayHonestLine, experienceByCompany, publicProfileLinks } from "./demo-user";
 
 const DASH = /[\u2013\u2014]/;
 const ABOUT =
@@ -91,4 +92,55 @@ test("checkout photo is used when public/henry.jpg exists", () => {
   else assert.equal(card.photo, null);
   assert.equal(card.name, "Henry Finn");
   assert.equal(DASH.test(card.story), false);
+});
+
+test("Henry's corrections are in the demo profile and the degree stays blank", () => {
+  const edu = demoProfile.education[0];
+  assert.equal(edu.school.includes("San Francisco State"), true);
+  assert.equal(edu.field, "Cinema");
+  assert.equal(edu.start, "2007");
+  assert.equal(edu.end, "2010");
+  assert.equal(edu.degree, null);
+
+  const exec = experienceByCompany("Executive Intelligence");
+  assert.equal(exec?.start, "2026");
+  assert.equal(exec?.title, "Co-founder");
+  assert.equal(exec?.description, null);
+
+  const force = experienceByCompany("0N1 Force");
+  assert.equal(force?.start, "2022");
+  assert.equal(force?.ceo_since, "2023");
+  assert.equal(force?.display, "CEO since 2023, with the team since 2022");
+
+  const luminous = experienceByCompany("Luminous US Productions");
+  assert.equal(luminous?.title, "CEO");
+  assert.equal(luminous?.start, "2022");
+
+  const sales = demoProfile.salesforce_case_study;
+  assert.equal(sales?.confirmed_by, "Henry");
+  assert.match(sales?.result ?? "", /\$20M\+/);
+  assert.match(sales?.budget ?? "", /\$300K/);
+  assert.match(demoProfile.proof_points[0], /\$20M\+/);
+  assert.match(demoProfile.proof_points[0], /\$300K/);
+
+  const brief = confirmedBrief().join(" ");
+  assert.match(brief, /Degree: GAP/);
+  assert.match(brief, /CEO since 2023, with the team since 2022/);
+  assert.equal(brief.includes("Google"), false);
+});
+
+test("the agent view reads the profile and does not revive the thin bio", () => {
+  const me = demoUser();
+  assert.equal(me.name, "Henry Finn");
+  assert.equal(me.company, "Unicorn Studios");
+  assert.equal(me.title, "Founder");
+  assert.match(me.oneLiners.developers, /anime and comics IP/i);
+  assert.match(me.oneLiners.investors, /\$20M\+/);
+  assert.equal(me.chips.includes("Anime and comics IP"), true);
+  assert.equal(me.about.includes("Google"), false);
+  assert.match(displayHonestLine(), /Introvert/);
+  assert.equal(displayHonestLine().includes("Coach him"), false);
+  assert.equal(me.about.includes("Samsung"), false);
+  assert.equal(publicProfileLinks().some((link) => link.label === "LinkedIn"), true);
+  assert.equal(publicProfileLinks().some((link) => link.href.includes("theblock.co")), false);
 });

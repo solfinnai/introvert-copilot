@@ -37,6 +37,7 @@ export interface RankedPerson {
   dayLabel: string;
   startLabel: string;
   sharedTopics: string[];
+  sessionTopics: string[];
   keywordHits: string[];
   introVia: IntroVia | null;
   path: PathChip[];
@@ -67,5 +68,7 @@ export interface RecommendQuery {
   day: DayFilter;
   metIds: string[];
   interests?: string[];
+  /** Chips Henry marked on Your story. They annotate why, they do not change the score. */
+  talkTopics?: string[];
   limit?: number;
 }

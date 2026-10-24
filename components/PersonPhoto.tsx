@@ -7,14 +7,16 @@ export function PersonPhoto({
   fallbackSrc,
   name,
   size = 48,
+  fallbacks = [],
 }: {
   src?: string | null;
   fallbackSrc?: string | null;
   name: string;
   size?: number;
+  fallbacks?: string[];
 }) {
-  const sources = [src, fallbackSrc].filter((item): item is string => Boolean(item));
   const [index, setIndex] = useState(0);
+  const sources = [src, fallbackSrc, ...fallbacks].filter((item): item is string => Boolean(item));
   const current = sources[index];
   const initials = name
     .split(/\s+/)

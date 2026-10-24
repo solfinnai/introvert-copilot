@@ -7,6 +7,7 @@ import { PersonPhoto } from "./PersonPhoto";
 import { SaveButton } from "./SaveButton";
 import { useSession, type SavedPerson } from "./session";
 import { accumulateMet, isLatestRequest, nextRequestId } from "@/lib/latest-request";
+import { leadWith, readStoredTopics, TALK_TOPICS_KEY } from "@/lib/talk-topics";
 import type { DayFilter, MeetResponse, RankedPerson } from "@/lib/types";
 
 const DAYS: { id: DayFilter; label: string }[] = [
@@ -24,22 +25,33 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [metNote, setMetNote] = useState(0);
+  const [topics, setTopics] = useState<string[] | null>(null);
   const latestRequest = useRef(0);
   const metRef = useRef<string[]>([]);
+  const topicsRef = useRef<string[]>([]);
 
   useEffect(() => {
     metRef.current = state.met;
   }, [state.met]);
 
   useEffect(() => {
-    if (!ready || state.met.length === 0) return;
+    if (!ready) return;
+    let nextTopics: string[] = [];
+    try {
+      nextTopics = readStoredTopics(window.localStorage.getItem(TALK_TOPICS_KEY));
+    } catch {
+      nextTopics = readStoredTopics(null);
+    }
+    topicsRef.current = nextTopics;
+    setTopics(nextTopics);
     setMetNote(state.met.length);
-    void reload(day, state.met);
-    // Reload once when this browser's met list is available.
+    if (state.met.length === 0) return;
+    void reload(day, metRef.current, nextTopics);
+    // The cards already draw a lead from saved topics. Reload only to drop people already met.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready]);
 
-  async function reload(nextDay: DayFilter, met: string[]) {
+  async function reload(nextDay: DayFilter, met: string[], talkTopics = topicsRef.current) {
     const requestId = nextRequestId(latestRequest.current);
     latestRequest.current = requestId;
     setLoading(true);
@@ -47,6 +59,7 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
     try {
       const params = new URLSearchParams({ day: nextDay });
       if (met.length) params.set("met", met.join(","));
+      if (talkTopics.length) params.set("topics", talkTopics.join("|"));
       const res = await fetch(`/api/meet?${params.toString()}`, { cache: "no-store" });
       if (!isLatestRequest(latestRequest.current, requestId)) return;
       if (!res.ok) throw new Error("refresh failed");
@@ -119,6 +132,7 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
           <HeroCard
             person={hero}
             response={data}
+            topics={topics}
             open={openId === hero.id}
             locked={!ready}
             onTogglePath={() => setOpenId(openId === hero.id ? null : hero.id)}
@@ -136,6 +150,7 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
                 key={person.id}
                 person={person}
                 response={data}
+                topics={topics}
                 open={openId === person.id}
                 locked={!ready}
                 onTogglePath={() => setOpenId(openId === person.id ? null : person.id)}
@@ -159,7 +174,7 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
   );
 }
 
-function HeroCard({ person, response, open, locked, onTogglePath, onMet }: CardProps) {
+function HeroCard({ person, response, topics, open, locked, onTogglePath, onMet }: CardProps) {
   return (
     <article className="min-w-0 rounded-3xl border border-line bg-card p-5 shadow-card md:p-6">
       <header className="flex items-start gap-4">
@@ -170,7 +185,7 @@ function HeroCard({ person, response, open, locked, onTogglePath, onMet }: CardP
         </div>
         <SaveButton person={toSaved(person)} />
       </header>
-      <p className="mt-4 max-w-3xl text-[15px] leading-7 text-[#2c2824]">{person.why}</p>
+      <WhyCopy person={person} topics={topics} bodyClass="mt-4 max-w-3xl text-[15px] leading-7 text-[#2c2824]" />
       <p className="mt-3 text-sm text-mute">Catch them: {person.catchLine}</p>
       <div className="mt-4 flex flex-wrap items-center gap-2">
         <Link href={`/agent?person=${person.id}`} className="rounded-full border border-line bg-white px-4 py-2 text-sm">
@@ -201,7 +216,7 @@ function HeroCard({ person, response, open, locked, onTogglePath, onMet }: CardP
   );
 }
 
-function SmallCard({ person, response, open, locked, onTogglePath, onMet }: CardProps) {
+function SmallCard({ person, response, topics, open, locked, onTogglePath, onMet }: CardProps) {
   return (
     <article className="min-w-0 rounded-3xl border border-line bg-card p-5 shadow-card">
       <header className="flex items-start gap-3">
@@ -212,7 +227,7 @@ function SmallCard({ person, response, open, locked, onTogglePath, onMet }: Card
         </div>
         <SaveButton person={toSaved(person)} />
       </header>
-      <p className="mt-3 line-clamp-4 text-sm leading-6 text-[#2c2824]">{person.why}</p>
+      <WhyCopy person={person} topics={topics} bodyClass="mt-3 line-clamp-4 text-sm leading-6 text-[#2c2824]" />
       <p className="mt-3 text-sm text-mute">Catch them: {person.catchLine}</p>
       <div className="mt-4 flex flex-wrap items-center gap-2">
         <Link href={`/agent?person=${person.id}`} className="rounded-full border border-line bg-white px-3 py-1.5 text-sm">
@@ -275,9 +290,44 @@ function toSaved(person: RankedPerson): SavedPerson {
   };
 }
 
+function WhyCopy({
+  person,
+  topics,
+  bodyClass,
+}: {
+  person: RankedPerson;
+  topics: string[] | null;
+  bodyClass: string;
+}) {
+  const parts = whyParts(person.why);
+  const preview =
+    parts.lead ||
+    (topics
+      ? leadWith({
+          chips: topics,
+          bio: person.bio,
+          keywordHits: person.keywordHits,
+          sessions: person.sessionTitle ? [{ title: person.sessionTitle, topics: person.sessionTopics }] : [],
+        })
+      : null);
+  return (
+    <>
+      <p className={bodyClass}>{parts.body}</p>
+      {preview && <p className="mt-3 break-words text-sm leading-6 text-[#3f3a34]">{preview}</p>}
+    </>
+  );
+}
+
+function whyParts(why: string): { body: string; lead: string | null } {
+  const at = why.indexOf("Lead with:");
+  if (at < 0) return { body: why, lead: null };
+  return { body: why.slice(0, at).trim(), lead: why.slice(at).trim() };
+}
+
 interface CardProps {
   person: RankedPerson;
   response: MeetResponse;
+  topics: string[] | null;
   open: boolean;
   locked: boolean;
   onTogglePath: () => void;

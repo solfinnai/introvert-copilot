@@ -105,6 +105,29 @@ test("keyword-only matches are not drawn as graph edges", () => {
   assert.equal(maeda?.path.some((chip) => chip.kind === "note"), false);
 });
 
+test("chosen topics annotate why and leave the ranking order alone", () => {
+  const catalog = getCatalog();
+  const plain = rankPeople(catalog, null, { day: "both", metIds: [], limit: 10 });
+  const marked = rankPeople(catalog, null, {
+    day: "both",
+    metIds: [],
+    limit: 10,
+    talkTopics: ["Building with AI", "not a real chip"],
+  });
+  assert.deepEqual(
+    plain.map((person) => person.id),
+    marked.map((person) => person.id),
+  );
+  assert.deepEqual(
+    plain.map((person) => person.score),
+    marked.map((person) => person.score),
+  );
+  const maeda = marked.find((person) => person.id === "john-maeda");
+  assert.match(maeda?.why ?? "", /Lead with: Building with AI, they spoke on /);
+  assert.equal(plain.find((person) => person.id === "john-maeda")?.why.includes("Lead with:"), false);
+  assert.equal(maeda?.why.includes("not a real chip"), false);
+});
+
 test("sanitize turns dashes into punctuation we can show", () => {
   assert.equal(sanitizeCopy("games \u2014 a background"), "games, a background");
   assert.equal(sanitizeCopy("from 2021 \u2013 2025"), "from 2021 to 2025");

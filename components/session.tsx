@@ -11,6 +11,7 @@ import {
   type SavedDraft,
   type SavedPerson,
 } from "@/lib/saved";
+import { OWN_WORDS_KEY, TALK_TOPICS_KEY } from "@/lib/talk-topics";
 
 export type { SavedPerson, SavedDraft };
 
@@ -72,6 +73,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       setState(emptyDemoState);
       try {
         window.localStorage.removeItem(SAVED_STORAGE_KEY);
+        window.localStorage.removeItem(TALK_TOPICS_KEY);
+        window.localStorage.removeItem(OWN_WORDS_KEY);
       } catch {
         // The in-memory list is already empty.
       }

@@ -53,7 +53,12 @@ async function streamReply(
   key: string,
   req: Request,
 ): Promise<Response> {
-  const payload = buildOpenAiPayload({ person: decision.person, messages: decision.messages });
+  const payload = buildOpenAiPayload({
+    person: decision.person,
+    messages: decision.messages,
+    topics: decision.topics,
+    ownWords: decision.ownWords,
+  });
   let upstream: Response;
   try {
     upstream = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -194,5 +199,8 @@ function upstreamSignal(req: Request): AbortSignal {
 
 function fallback(decision: Extract<AgentDecision, { action: "openai" }>) {
   const ask = decision.messages.filter((turn) => turn.role === "user").at(-1)?.content ?? "";
-  return localCoaching("fallback", decision.person, ask || "Help me prepare");
+  return localCoaching("fallback", decision.person, ask || "Help me prepare", {
+    topics: decision.topics,
+    ownWords: decision.ownWords,
+  });
 }
