@@ -1,4 +1,5 @@
 import { cache } from "react";
+import { shareInflight } from "./inflight";
 import { searchGoogle, scrapeLinkedIn, unlockPage, type LiveResult } from "./brightdata";
 import { getCatalog } from "./catalog";
 import { curatedById } from "./curated";
@@ -41,7 +42,9 @@ export interface PersonBrief {
   links: PublicLink[];
 }
 
-export const loadPersonBrief = cache(loadPersonBriefInner);
+export const loadPersonBrief = cache((card: RankedPerson) =>
+  shareInflight(`brief:${card.id}`, () => loadPersonBriefInner(card)),
+);
 
 async function loadPersonBriefInner(card: RankedPerson): Promise<PersonBrief> {
   const input = snapshotInput(card);

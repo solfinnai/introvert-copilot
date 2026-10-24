@@ -85,6 +85,9 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
             Picked from {data.speakerCount} speakers for who you are, not just shared tags. Star the
             ones you want to talk to.
           </p>
+          <Link href="/speakers" className="mt-3 inline-flex text-sm font-semibold text-[#b33b12]">
+            Browse all speakers
+          </Link>
         </div>
         <div className="inline-flex rounded-full border border-line bg-white p-1">
           {DAYS.map((item) => (

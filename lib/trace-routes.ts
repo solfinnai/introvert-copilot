@@ -16,6 +16,7 @@ export const SEED_FILE_GLOBS = [
 export const SEEDED_ROUTES = [
   "/",
   "/meet",
+  "/speakers",
   "/saved",
   "/story",
   "/chat",
@@ -27,6 +28,7 @@ export const SEEDED_ROUTES = [
   "/api/seed",
   "/api/session",
   "/api/agent",
+  "/api/people/[id]/report",
 ];
 
 /** Home checks this file with fs, so the server trace has to carry it. */

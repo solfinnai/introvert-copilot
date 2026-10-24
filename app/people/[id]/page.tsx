@@ -5,6 +5,8 @@ import { BriefSkeleton } from "@/components/BriefSkeleton";
 import { PersonActions } from "@/components/PersonActions";
 import { PersonDossier } from "@/components/PersonDossier";
 import { PersonPhoto } from "@/components/PersonPhoto";
+import { ReportLinks } from "@/components/ReportLinks";
+import { ReportSkeletons } from "@/components/ReportSkeletons";
 import { SocialIcons } from "@/components/SocialIcons";
 import { getCatalog } from "@/lib/catalog";
 import { describePerson } from "@/lib/graph";
@@ -17,17 +19,29 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-export default async function PersonPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function PersonPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ report?: string }>;
+}) {
   const { id } = await params;
+  const report = (await searchParams).report === "1";
   const described = await describePerson(id);
   const person = getCatalog().peopleById.get(id);
   if (!described || !person) notFound();
   const card = described.card;
   return (
     <div className="mx-auto max-w-4xl">
-      <Link href="/meet" className="text-sm text-mute">
-        Back to who to meet
-      </Link>
+      <div className="no-print flex flex-wrap gap-x-4 gap-y-1">
+        <Link href="/meet" className="text-sm text-mute">
+          Back to who to meet
+        </Link>
+        <Link href="/speakers" className="text-sm text-mute">
+          All speakers
+        </Link>
+      </div>
       <header className="mt-3">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
           <PersonPhoto src={card.photoUrl} name={card.name} size={72} />
@@ -43,12 +57,15 @@ export default async function PersonPage({ params }: { params: Promise<{ id: str
           </Suspense>
         </div>
       </header>
-      <div className="mt-4">
+      <div className="no-print mt-4">
         <PersonActions person={toSaved(card)} />
+        <ReportLinks id={card.id} report={report} />
       </div>
-      <Suspense fallback={<BriefSkeleton />}>
-        <BriefBlock card={card} backend={described.backend} ms={described.ms} />
-      </Suspense>
+      <div id="report">
+        <Suspense fallback={report ? <ReportSkeletons /> : <BriefSkeleton />}>
+          <BriefBlock card={card} backend={described.backend} ms={described.ms} />
+        </Suspense>
+      </div>
     </div>
   );
 }
