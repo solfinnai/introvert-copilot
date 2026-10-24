@@ -6,6 +6,7 @@ import {
   type SessionNode,
 } from "./catalog";
 import { sanitizeCopy } from "./sanitize";
+import { leadWith } from "./talk-topics";
 import { isDistinctive, wholeWordHits } from "./terms";
 import { humanList, leadSentences, shortTitle, startMinutes } from "./text";
 import type { DayFilter, IntroVia, PathChip, RankedPerson, RecommendQuery, SourceRef } from "./types";
@@ -63,11 +64,12 @@ export function rankPeople(
   query: RecommendQuery,
 ): RankedPerson[] {
   const interests = query.interests?.length ? query.interests : [...DEFAULT_INTERESTS];
+  const talkTopics = query.talkTopics ?? [];
   const hopMap = hops ?? memoryHops(catalog, interests);
   const met = new Set(query.metIds);
   const drafts = buildDrafts(catalog, hopMap, interests, query.day, met);
   const limit = query.limit ?? 10;
-  return drafts.slice(0, limit).map((draft) => toCard(catalog, draft, interests));
+  return drafts.slice(0, limit).map((draft) => toCard(catalog, draft, interests, talkTopics));
 }
 
 export function personCard(
@@ -79,11 +81,12 @@ export function personCard(
   const person = catalog.peopleById.get(id);
   if (!person) return null;
   const interests = query.interests?.length ? query.interests : [...DEFAULT_INTERESTS];
+  const talkTopics = query.talkTopics ?? [];
   const hopMap = hops ?? memoryHops(catalog, interests);
   const drafts = buildDrafts(catalog, hopMap, interests, query.day, new Set(), true);
   const draft = drafts.find((item) => item.person.id === id);
   if (!draft) return null;
-  return toCard(catalog, draft, interests);
+  return toCard(catalog, draft, interests, talkTopics);
 }
 
 function buildDrafts(
@@ -171,7 +174,7 @@ function pickSession(sessions: SessionNode[], wanted: Set<string>): SessionNode 
   return ranked[0];
 }
 
-function toCard(catalog: Catalog, draft: Draft, interests: string[]): RankedPerson {
+function toCard(catalog: Catalog, draft: Draft, interests: string[], talkTopics: string[]): RankedPerson {
   const { person, session } = draft;
   const topic =
     draft.sharedTopics.find((name) => interests.includes(name)) ?? draft.sharedTopics[0] ?? null;
@@ -193,6 +196,15 @@ function toCard(catalog: Catalog, draft: Draft, interests: string[]): RankedPers
     ...person.articles.slice(0, 2),
   ];
   if (person.linkedinUrl) sources.push({ label: "LinkedIn", url: person.linkedinUrl });
+  const baseWhy = whyParagraph(person, draft, session);
+  const lead = talkTopics.length
+    ? leadWith({
+        chips: talkTopics,
+        bio: person.bio,
+        keywordHits: draft.keywordHits,
+        sessions: session ? [{ title: session.title, topics: session.topics }] : [],
+      })
+    : null;
 
   return {
     id: person.id,
@@ -203,15 +215,17 @@ function toCard(catalog: Catalog, draft: Draft, interests: string[]): RankedPers
     photoUrl: person.photoUrl,
     linkedinUrl: person.linkedinUrl,
     score: draft.score,
-    why: whyParagraph(person, draft, session),
+    why: sanitizeCopy([baseWhy, lead].filter(Boolean).join(" ")),
     opener: openerLine(person.name, session?.title ?? null, draft.sharedTopics, draft.keywordHits),
     catchLine,
     sessionTitle: session?.title ?? null,
+    sessionType: session?.type ?? null,
     roomShort: session?.roomShort ?? "",
     dayKey: session?.dayKey ?? "other",
     dayLabel,
     startLabel: session?.startLabel ?? "",
     sharedTopics: draft.sharedTopics,
+    sessionTopics: session?.topics ?? [],
     keywordHits: draft.keywordHits,
     introVia: draft.intro,
     path,

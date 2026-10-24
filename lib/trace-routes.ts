@@ -4,7 +4,7 @@ export const SEED_FILE_GLOBS = [
   "./seed/github-universe-demo/raw/raw_sessions.json",
   "./seed/github-universe-demo/event.json",
   "./seed/github-universe-demo/people.json",
-  "./data/demo/henry.json",
+  "./data/demo-user.json",
   "./src/data/demo-user.json",
   "./seed/github-universe-demo/seed.cypher",
 ];
@@ -19,6 +19,7 @@ export const SEEDED_ROUTES = [
   "/speakers",
   "/saved",
   "/story",
+  "/me",
   "/chat",
   "/agent",
   "/people/[id]",

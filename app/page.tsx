@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { PersonPhoto } from "@/components/PersonPhoto";
-import { loadDemoCard } from "@/lib/demo-user";
+import { loadDemoCard } from "@/lib/demo-card";
 import { recommend } from "@/lib/graph";
 import { HOME_ENTRIES, HOME_LINE, sampleWhyLines } from "@/lib/home";
 import { logBackend, safeError } from "@/lib/redact";

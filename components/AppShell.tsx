@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import type { ReactNode } from "react";
+import { DEMO_PHOTO_SRC, demoPhotoFallbacks } from "@/lib/demo-user";
 import { PersonPhoto } from "./PersonPhoto";
 import { PoweredBy } from "./PoweredBy";
 import { SessionProvider, useSession } from "./session";
 
 const NAV = [
   { href: "/", label: "Home", n: "01" },
-  { href: "/story", label: "Your story", n: "02" },
+  { href: "/me", label: "Your story", n: "02" },
   { href: "/meet", label: "Who to meet", n: "03" },
   { href: "/speakers", label: "Speakers", n: "04" },
   { href: "/saved", label: "Saved", n: "05" },
@@ -130,9 +131,15 @@ function TopBar({
         <span className="h-1.5 w-1.5 rounded-full bg-[#b5812a]" />
         Cached snapshot, {fetchedLabel}
       </span>
-      <Link href="/story" className="inline-flex items-center gap-2 rounded-full border border-line bg-white py-1 pl-1 pr-3 text-xs font-medium">
-        <PersonPhoto src={henryAvatar} fallbackSrc="/henry.jpg" name={henryName} size={24} />
-        Demo as Henry Finn
+      <Link href="/me" className="inline-flex max-w-full items-center gap-2 rounded-full border border-line bg-white py-1 pl-1 pr-3 text-xs font-medium">
+        <PersonPhoto
+          src={DEMO_PHOTO_SRC}
+          fallbackSrc={henryAvatar}
+          fallbacks={demoPhotoFallbacks()}
+          name={henryName}
+          size={24}
+        />
+        <span className="truncate">Signed in as {henryName}</span>
       </Link>
       <ResetButton />
     </header>

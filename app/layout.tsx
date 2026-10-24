@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Fraunces, IBM_Plex_Mono, Source_Sans_3 } from "next/font/google";
 import { AppShell } from "@/components/AppShell";
 import { getCatalog } from "@/lib/catalog";
-import { henryPublic } from "@/lib/henry-profile";
+import { demoProfile } from "@/lib/demo-user";
 import "./globals.css";
 
 const sans = Source_Sans_3({
@@ -33,11 +33,14 @@ export const dynamic = "force-dynamic";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const fetchedLabel = getCatalog().fetchedLabel;
-  const henry = henryPublic();
   return (
     <html lang="en">
       <body className={`${sans.variable} ${serif.variable} ${mono.variable} font-sans antialiased`}>
-        <AppShell fetchedLabel={fetchedLabel} henryAvatar={henry.avatar} henryName={henry.name}>
+        <AppShell
+          fetchedLabel={fetchedLabel}
+          henryAvatar={demoProfile.photo.linkedin_avatar_url}
+          henryName={demoProfile.name}
+        >
           {children}
         </AppShell>
       </body>
