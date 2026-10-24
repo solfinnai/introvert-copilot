@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { DEMO_PHOTO_SRC, demoPhotoFallbacks } from "@/lib/demo-user";
+import { CueLogo, CueMark } from "./CueLogo";
 import { Icon } from "./Icons";
 import { PersonPhoto } from "./PersonPhoto";
 import { PoweredBy } from "./PoweredBy";
@@ -62,8 +63,8 @@ function Sidebar() {
 
 function Brand() {
   return (
-    <Link href="/" className="flex h-11 items-center px-3 text-[13px] font-medium tracking-tight">
-      Introvert Co-pilot
+    <Link href="/" aria-label="CUE home" className="flex h-11 items-center px-3 text-ink">
+      <CueLogo height={18} />
     </Link>
   );
 }
@@ -122,6 +123,9 @@ function TopBar({ henryAvatar, henryName }: { henryAvatar: string; henryName: st
   const pathname = usePathname();
   return (
     <header className="flex h-11 items-center gap-3 border-b border-line bg-bg px-4 md:px-5">
+      <Link href="/" aria-label="CUE home" className="text-ink md:hidden">
+        <CueMark height={20} />
+      </Link>
       <div className="flex min-w-0 flex-1 items-baseline gap-3">
         <p className="truncate text-[13px] font-medium">{titleFor(pathname)}</p>
         <p className="hidden truncate text-meta text-faint lg:block">GitHub Universe 2026</p>
@@ -159,7 +163,7 @@ function titleFor(pathname: string) {
   if (matches(pathname, "/saved")) return "Saved";
   if (matches(pathname, "/agent") || matches(pathname, "/chat")) return "Agent chat";
   if (matches(pathname, "/people")) return "Person";
-  return "Introvert Co-pilot";
+  return "CUE";
 }
 
 function ResetDemo() {

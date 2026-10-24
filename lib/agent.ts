@@ -1,5 +1,6 @@
+import { speakerStarterChips } from "./agent-starters";
 import { getCatalog, type SessionNode } from "./catalog";
-import type { AgentReply, ChatTurn, NearbyPerson, PersonFacts } from "./coach-types";
+import type { AgentReply, AgentSource, ChatTurn, NearbyPerson, PersonFacts } from "./coach-types";
 import {
   BUDGET_NOTE,
   localCoaching,
@@ -7,9 +8,12 @@ import {
   REVISION_NOTE,
   type CoachContext,
 } from "./coach-copy";
+import { conferenceFacts } from "./home-conference";
+import { firstSentence } from "./home-matches";
 import { confirmedBrief, demoUser } from "./demo-user";
 import { attachChannels, isLinkedInUrl, stripDashes, type FollowupDraft } from "./draft";
 import { personCard, rankPeople } from "./rank";
+import { storyPromptBlock, storyReport } from "./story-context";
 import { cleanOwnWords, leadWith, parseTalkTopics } from "./talk-topics";
 
 export { BUDGET_NOTE, localCoaching, OFFLINE_NOTE, REVISION_NOTE };
@@ -90,13 +94,7 @@ export function suggestionsFor(person: PersonFacts | null): string[] {
       "Draft a follow-up I can copy",
     ];
   }
-  const first = person.name.split(" ")[0];
-  return [
-    `Give me an opener for ${first}`,
-    "What should I say about myself?",
-    "Give me 2 questions",
-    "Draft a follow-up I can copy",
-  ];
+  return speakerStarterChips(person.name.split(" ")[0] || person.name);
 }
 
 export function pageBundle(personId: string | null): {
@@ -120,7 +118,7 @@ export function systemPrompt(person: PersonFacts | null, context: CoachContext =
   const topics = context.topics == null ? me.chips : parseTalkTopics(context.topics);
   const ownWords = cleanOwnWords(context.ownWords ?? "");
   const lines = [
-    "You are the conference coach inside Introvert Co-pilot.",
+    "You are the conference coach inside CUE.",
     `You help ${me.name}, an introvert, decide how to talk about himself to one person at GitHub Universe 2026.`,
     "Rules:",
     "- Use only the facts in this prompt. If a fact is missing, say you do not have it. Never invent jobs, quotes, schools, email addresses, or private details.",
@@ -128,6 +126,8 @@ export function systemPrompt(person: PersonFacts | null, context: CoachContext =
     "- This is coaching for a conversation, not a psychological diagnosis.",
     "- Never mention or infer health, religion, politics, sexuality, ethnicity, race, family, age, disability, or other protected traits.",
     "- Plain language. No flattery. No hype. No emoji. No em dashes.",
+    "- He is an introvert. Be honest. He hates selling himself and hates being put in a box.",
+    "- Do not mention NDA material or intellectual property that is not written in the verified story.",
     "- Short enough to read on a phone before walking over.",
     "- When he asks for a prep, an opener, questions, or what to say about himself, cover: one opener under 25 words, what to say about him that this person is likely to find interesting, and exactly 2 smart questions.",
     "- Lead with one marked topic when the graph facts below support it. Do not claim he is happy to talk about a topic he did not mark.",
@@ -157,6 +157,10 @@ export function systemPrompt(person: PersonFacts | null, context: CoachContext =
     ...confirmedBrief().map((line) => `- ${line}`),
     `happy to talk about: ${topics.length ? topics.join(", ") : "none marked"}`,
     ownWords ? `in his own words: ${ownWords}` : "in his own words: none written",
+    "",
+    storyPromptBlock(),
+    "",
+    ...conferencePromptLines(),
     "",
   ];
   if (!person) {
@@ -250,11 +254,11 @@ export function classifyAgent(input: {
   const parsed = parseAgentBody(input.body);
   if (!parsed.ok) return { action: "json", reply: { source: "invalid", message: parsed.message, draft: null } };
   if (!input.rateOk) return { action: "json", reply: { source: "limit", message: LIMIT_MESSAGE, draft: null } };
-  const person = personFacts(parsed.personId);
   const ask = parsed.messages.filter((turn) => turn.role === "user").at(-1)?.content ?? "";
+  const person = personFacts(parsed.personId) ?? personFacts(personIdFromAsk(ask));
   const context = coachContext(input.body);
-  if (!input.hasKey) return { action: "json", reply: localCoaching("fallback", person, ask, context) };
-  if (!input.budgetOk) return { action: "json", reply: localCoaching("budget", person, ask, context) };
+  if (!input.hasKey) return offlineDecision("fallback", person, ask, context);
+  if (!input.budgetOk) return offlineDecision("budget", person, ask, context);
   return {
     action: "openai",
     person,
@@ -334,6 +338,125 @@ function pathLine(path: { kind: string; text: string }[]): string {
     .join("")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+export function personIdFromAsk(ask: string): string | null {
+  const raw = ask
+    .trim()
+    .toLowerCase()
+    .replace(/^tell me about\s+/, "")
+    .replace(/[?.!]+$/, "")
+    .trim();
+  if (!raw || raw.length > 120) return null;
+  return getCatalog().people.find((person) => person.name.toLowerCase() === raw)?.id ?? null;
+}
+
+export function starterFallback(
+  source: Extract<AgentSource, "fallback" | "budget">,
+  person: PersonFacts | null,
+  ask: string,
+  context: CoachContext = {},
+): AgentReply | null {
+  const question = ask.trim();
+  if (question === "Talk about a speaker" && person) return null;
+  if (question === "Draft a follow-up I can copy" && person) return null;
+  if (question === "Talk about my story") return noted(source, storyOffline(), null);
+  if (question === "Talk about a speaker") {
+    return noted(source, "Which speaker? Type a full name, or pick one from the list.", null);
+  }
+  if (question === "Help me understand the conference") return noted(source, conferenceOffline(), null);
+  if (question === "Who should I meet first?") return noted(source, meetFirstOffline(), null);
+  if (question === "Draft a follow-up I can copy") {
+    const base = localCoaching(source, null, question, context);
+    return {
+      source,
+      message: stripDashes(
+        [
+          source === "budget" ? BUDGET_NOTE : OFFLINE_NOTE,
+          "Here is a follow-up you can copy. It uses your profile. Pick a speaker if you want the note scoped to their session.",
+          "The draft is on the card below. You review and send it yourself.",
+        ].join("\n\n"),
+      ),
+      draft: base.draft,
+    };
+  }
+  return null;
+}
+
+function offlineDecision(
+  source: Extract<AgentSource, "fallback" | "budget">,
+  person: PersonFacts | null,
+  ask: string,
+  context: CoachContext,
+): AgentDecision {
+  const starter = starterFallback(source, person, ask, context);
+  if (starter) return { action: "json", reply: starter };
+  return { action: "json", reply: localCoaching(source, person, ask, context) };
+}
+
+function noted(
+  source: Extract<AgentSource, "fallback" | "budget">,
+  message: string,
+  draft: FollowupDraft | null,
+): AgentReply {
+  const prefix = source === "budget" ? BUDGET_NOTE : OFFLINE_NOTE;
+  return { source, message: stripDashes(`${prefix}\n\n${message}`), draft };
+}
+
+function storyOffline(): string {
+  const report = storyReport();
+  const section = (heading: string) => report.sections.find((item) => item.heading === heading);
+  const who = section("Who you are")?.paragraphs[0] ?? report.headline;
+  const intros = section("Three ways to introduce yourself")?.items.map((item) => `${item.label}. ${item.text}`) ?? [];
+  const gaps = section("Gaps")?.items.map((item) => item.text) ?? [];
+  const avoid = section("What to avoid saying")?.items[0]?.text ?? "";
+  return [
+    who,
+    "What you can say, one line at a time:",
+    ...intros,
+    "Leave these as gaps:",
+    ...gaps,
+    avoid,
+    "Pick one thread. Do not sell the whole list.",
+  ]
+    .filter(Boolean)
+    .join("\n\n");
+}
+
+function conferenceOffline(): string {
+  const facts = conferenceFacts(getCatalog());
+  return [
+    `${facts.name} is ${facts.dates} at ${facts.venue}.`,
+    `The saved catalog has ${facts.speakers} speakers, ${facts.sessions} sessions, ${facts.topics} topics, and ${facts.companies} companies.`,
+    facts.scrapeNote,
+    "Ask who to meet, or name a speaker, and this uses the saved catalog against your profile.",
+  ].join("\n\n");
+}
+
+function meetFirstOffline(): string {
+  const ranked = rankPeople(getCatalog(), null, { day: "both", metIds: [], limit: 3 });
+  return [
+    "Start with these three. They are the top of the saved ranking for your profile.",
+    ...ranked.map((person, index) => `${index + 1}. ${person.name}, ${person.titleLine}. ${firstSentence(person.why)}`),
+    "Open Who to meet for the rest of the list.",
+  ].join("\n\n");
+}
+
+function conferencePromptLines(): string[] {
+  const catalog = getCatalog();
+  const facts = conferenceFacts(catalog);
+  return [
+    "CONFERENCE",
+    `name: ${facts.name}`,
+    `dates: ${facts.dates}`,
+    `venue: ${facts.venue}`,
+    `speakers: ${facts.speakers}`,
+    `sessions: ${facts.sessions}`,
+    `topics: ${facts.topics}`,
+    `companies: ${facts.companies}`,
+    `topic names: ${catalog.topicNames.join(", ")}`,
+    "This is the saved catalog. Do not claim a fresh scrape during this chat.",
+  ];
 }
 
 function coachContext(body: unknown): CoachContext {

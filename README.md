@@ -1,6 +1,6 @@
-# Introvert Co-pilot
+# CUE
 
-A public demo for introverts walking into GitHub Universe 2026. It ranks who is worth your energy, shows the graph path behind each pick, and drafts what to say. No login. The demo user is Henry Finn.
+Your conference co-pilot. A public demo for introverts walking into GitHub Universe 2026. It ranks who is worth your energy, shows the graph path behind each pick, and drafts what to say. No login. The demo user is Henry Finn.
 
 Built for the WeMakeDevs Patch the Conference hackathon (Oct 24 2026). FalkorDB ranks who to meet. Bright Data and OpenAI fill the person page when their keys are set, and fall back to the seed snapshot when they are not. Qodo reviews each PR.
 
