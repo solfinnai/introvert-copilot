@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { DEMO_PHOTO_SRC, demoPhotoFallbacks } from "@/lib/demo-user";
 import { Icon } from "./Icons";
@@ -38,6 +38,9 @@ export function AppShell({
             <MobileNav />
           </div>
           <main className="flex-1 px-4 py-4 md:px-6 md:py-5">{children}</main>
+          <div className="no-print px-4 pb-2 md:hidden">
+            <ResetDemo />
+          </div>
           <PoweredBy />
         </div>
       </div>
@@ -50,6 +53,9 @@ function Sidebar() {
     <aside className="sticky top-0 hidden h-screen w-[220px] flex-col border-r border-line bg-bg md:flex">
       <Brand />
       <NavList />
+      <div className="mt-auto px-2 pb-3">
+        <ResetDemo />
+      </div>
     </aside>
   );
 }
@@ -137,17 +143,41 @@ function TopBar({ henryAvatar, henryName }: { henryAvatar: string; henryName: st
   );
 }
 
+function matches(pathname: string, base: string) {
+  return pathname === base || pathname.startsWith(`${base}/`);
+}
+
 function isActive(pathname: string, href: string) {
-  return href === "/" ? pathname === "/" : pathname.startsWith(href);
+  return href === "/" ? pathname === "/" : matches(pathname, href);
 }
 
 function titleFor(pathname: string) {
   if (pathname === "/") return "Home";
-  if (pathname.startsWith("/me") || pathname.startsWith("/story")) return "Your story";
-  if (pathname.startsWith("/meet")) return "Who to meet";
-  if (pathname.startsWith("/speakers")) return "Speakers";
-  if (pathname.startsWith("/saved")) return "Saved";
-  if (pathname.startsWith("/agent") || pathname.startsWith("/chat")) return "Agent chat";
-  if (pathname.startsWith("/people")) return "Person";
+  if (matches(pathname, "/me") || matches(pathname, "/story")) return "Your story";
+  if (matches(pathname, "/meet")) return "Who to meet";
+  if (matches(pathname, "/speakers")) return "Speakers";
+  if (matches(pathname, "/saved")) return "Saved";
+  if (matches(pathname, "/agent") || matches(pathname, "/chat")) return "Agent chat";
+  if (matches(pathname, "/people")) return "Person";
   return "Introvert Co-pilot";
+}
+
+function ResetDemo() {
+  const { resetLocal } = useSession();
+  const router = useRouter();
+  return (
+    <button
+      type="button"
+      className="btn btn-quiet"
+      onClick={() => {
+        resetLocal();
+        void fetch("/api/reset", { method: "POST" }).finally(() => {
+          router.refresh();
+          window.location.href = "/";
+        });
+      }}
+    >
+      Reset demo
+    </button>
+  );
 }

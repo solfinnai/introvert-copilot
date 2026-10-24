@@ -24,17 +24,29 @@
   --faint: #7e8288;
   --accent-ink: #08090a;
   --accent-hover: #6ac4b4;
+}
 
-  --bg: lch(from var(--base) l c h);
-  --surface: color-mix(in lch, white calc(3.5% * var(--contrast)), var(--base));
-  --raised: color-mix(in lch, white calc(7% * var(--contrast)), var(--base));
-  --fill: color-mix(in lch, white calc(5% * var(--contrast)), var(--base));
-  --line: color-mix(in lch, white calc(8% * var(--contrast)), transparent);
-  --ink: color-mix(in lch, #f4f5f5 calc(var(--contrast) * 100%), var(--base));
-  --mute: color-mix(in lch, #9ca0a8 calc(var(--contrast) * 100%), var(--base));
-  --faint: color-mix(in lch, #7e8288 calc(var(--contrast) * 100%), var(--base));
-  --accent-ink: color-mix(in lch, var(--base) 92%, black);
-  --accent-hover: color-mix(in lch, white 14%, var(--accent));
+/* Later declarations always replace a custom property, even when the
+   browser cannot compute them. Keep the hex values above as the real
+   fallback, and only override inside @supports. */
+@supports (color: lch(from white l c h)) {
+  :root {
+    --bg: lch(from var(--base) l c h);
+  }
+}
+
+@supports (color: color-mix(in lch, white, black)) {
+  :root {
+    --surface: color-mix(in lch, white calc(3.5% * var(--contrast)), var(--base));
+    --raised: color-mix(in lch, white calc(7% * var(--contrast)), var(--base));
+    --fill: color-mix(in lch, white calc(5% * var(--contrast)), var(--base));
+    --line: color-mix(in lch, white calc(8% * var(--contrast)), transparent);
+    --ink: color-mix(in lch, #f4f5f5 calc(var(--contrast) * 100%), var(--base));
+    --mute: color-mix(in lch, #9ca0a8 calc(var(--contrast) * 100%), var(--base));
+    --faint: color-mix(in lch, #7e8288 calc(var(--contrast) * 100%), var(--base));
+    --accent-ink: color-mix(in lch, var(--base) 92%, black);
+    --accent-hover: color-mix(in lch, white 14%, var(--accent));
+  }
 }
 
 body {
@@ -205,6 +217,10 @@ a {
     --mute: #333;
     --faint: #444;
     --line: #ccc;
+    /* #4fb8a5 on white is about 2.4:1. #0c6b58 is about 6.4:1, and white text on it clears AA. */
+    --accent: #0c6b58;
+    --accent-hover: #0c6b58;
+    --accent-ink: #fff;
   }
 
   body {
