@@ -3,18 +3,8 @@ import fs from "fs";
 import os from "os";
 import path from "path";
 import { test } from "node:test";
-import {
-  DEMO_USER_REL,
-  blurbFromProfile,
-  confirmedBrief,
-  demoProfile,
-  demoUser,
-  displayHonestLine,
-  experienceByCompany,
-  loadDemoCard,
-  oneLineStory,
-  publicProfileLinks,
-} from "./demo-user";
+import { DEMO_USER_REL, blurbFromProfile, loadDemoCard, oneLineStory } from "./demo-card";
+import { confirmedBrief, demoProfile, demoUser, displayHonestLine, experienceByCompany, publicProfileLinks } from "./demo-user";
 
 const DASH = /[\u2013\u2014]/;
 const ABOUT =
