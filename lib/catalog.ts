@@ -47,6 +47,7 @@ export interface PersonNode {
   company: string;
   photoUrl: string;
   linkedinUrl: string | null;
+  twitterHandle: string | null;
   bio: string;
   sessionIds: string[];
   articles: SourceRef[];
@@ -167,6 +168,7 @@ function buildCatalog(): Catalog {
       company,
       photoUrl: cleanUrl(raw.photoURL) ?? "",
       linkedinUrl: linkedin,
+      twitterHandle: cleanHandle(raw.twitter),
       bio: sanitizeCopy((raw.bio ?? "").replace(/\s+/g, " ")),
       sessionIds,
       articles: articles.get(id) ?? [],
@@ -239,6 +241,14 @@ function cleanUrl(value: string | undefined): string | null {
   return clean;
 }
 
+function cleanHandle(value: string | undefined): string | null {
+  const clean = (value ?? "").trim().replace(/^@/, "");
+  if (!clean || clean === "GAP") return null;
+  if (/^https?:\/\//i.test(clean)) return clean;
+  if (!/^[A-Za-z0-9_]{2,40}$/.test(clean)) return null;
+  return clean;
+}
+
 function formatFetched(iso: string): string {
   if (!iso) return "cached snapshot";
   const date = new Date(iso);
@@ -263,6 +273,7 @@ interface RawSpeaker {
   bio?: string;
   photoURL?: string;
   linkedIn?: string;
+  twitter?: string;
   session?: { sessionID?: string }[];
 }
 

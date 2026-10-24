@@ -1,5 +1,5 @@
-import henry from "../data/demo/henry.json";
 import { getCatalog, type SessionNode } from "./catalog";
+import { henryPublic } from "./henry-profile";
 import type { AgentReply, AgentSource, ChatTurn, NearbyPerson, PersonFacts } from "./coach-types";
 import { attachChannels, isLinkedInUrl, stripDashes, type FollowupDraft } from "./draft";
 import { personCard, rankPeople } from "./rank";
@@ -139,7 +139,7 @@ export function systemPrompt(person: PersonFacts | null): string {
     `goal: ${me.goal}`,
     `interests: ${me.interests.join(", ")}`,
     `about: ${me.about}`,
-    "story: Henry runs Unicorn Studios and makes launch and brand films for technology companies, including Google, Salesforce, and Spotify x BLACKPINK. He also hosts Silicon Valley Insider.",
+    "story: Henry runs Unicorn Studios and builds entertainment companies and intellectual property. He confirmed he worked on the BLACKPINK shoot, and that Animori (Chief Innovation Officer) and Metacomica (Founder) are anime and comics IP built with AI. Those confirmed lines are not LinkedIn jobs. LinkedIn experience and education are empty.",
     "",
   ];
   if (!person) {
@@ -307,15 +307,15 @@ function coachingText(person: PersonFacts | null, ask: string): string {
       lead,
       "Pick someone from Who to meet and the coach will scope this to that person.",
       "10 second intro",
-      "I'm Henry. I make films for tech companies, and I build stories with AI on the side.",
+      "I'm Henry. I run Unicorn Studios and build entertainment companies and intellectual property.",
       "What to say about you",
-      `${me.name} runs ${me.company}. The public story includes launch films for Google, Salesforce, and Spotify x BLACKPINK, plus hosting Silicon Valley Insider. Goal for this event: ${me.goal}.`,
+      `${me.name} runs ${me.company}. Confirmed talking points: the BLACKPINK shoot, Animori, and Metacomica (anime and comics IP built with AI). Goal for this event: ${me.goal}.`,
     ].join("\n\n");
   }
   const first = person.name.split(" ")[0];
   const session = person.sessions[0];
   const topic = person.sharedTopics[0] || person.topics[0] || "the work";
-  const opener = person.opener || `I make films for tech companies. Your session is why I wanted to say hello. How are you thinking about ${topic} for people who are not engineers?`;
+  const opener = person.opener || `I run Unicorn Studios. Your session is why I wanted to say hello. How are you thinking about ${topic} for people who are not engineers?`;
   const q1 = session
     ? `In "${session.title}", what should someone who is not an engineer actually take away?`
     : `${first}, what are you hoping people remember from this conversation?`;
@@ -327,7 +327,7 @@ function coachingText(person: PersonFacts | null, ask: string): string {
     "Opener",
     opener,
     "What to say about you",
-    `I run ${me.company}. We make launch and brand films for technology companies, including Google, Salesforce, and Spotify x BLACKPINK. I also host Silicon Valley Insider, so I spend a lot of time asking builders why they build. The part that may land with ${first} is ${topic}: I can talk about how that shows up for people outside the engineering team.`,
+    `I run ${me.company}. I build entertainment companies and intellectual property. I worked on the BLACKPINK shoot, and Animori and Metacomica are anime and comics IP built with AI. The part that may land with ${first} is ${topic}: I can talk about how that shows up for people outside the engineering team.`,
     "Two questions",
     `1. ${q1}`,
     `2. ${q2}`,
@@ -338,7 +338,7 @@ function coachingText(person: PersonFacts | null, ask: string): string {
 function makeDraft(person: PersonFacts | null): FollowupDraft {
   const me = demoUser();
   if (!person) {
-    const body = `Hi. I am ${me.name}. I run ${me.company} and make films for technology companies. I am at GitHub Universe to meet people working on AI agents, creator tools, and developer experience. If a short example of that work would be useful, I can send one. Henry Finn`;
+    const body = `Hi. I am ${me.name}. I run ${me.company} and build entertainment companies and intellectual property. I am at GitHub Universe to meet people working on AI agents, creator tools, and developer experience. If a short example of that work would be useful, I can send one. Henry Finn`;
     return { subject: "GitHub Universe", body, linkedinNote: "", linkedinUrl: null, email: null };
   }
   const first = person.name.split(" ")[0];
@@ -350,7 +350,7 @@ function makeDraft(person: PersonFacts | null): FollowupDraft {
     : `Hi ${first}. I saw that you are at GitHub Universe.`;
   const body = [
     open,
-    `I run ${me.company}. We make films for technology companies, and I am spending this week on ${topic}.`,
+    `I run ${me.company}. I build entertainment companies and intellectual property, and I am spending this week on ${topic}.`,
     "If you are open to it, I would like to send one short example of how we explain this kind of work to people who are not engineers.",
     "Would a two-line reply be useful, or should I leave it here?",
     "Henry Finn",
@@ -381,16 +381,16 @@ function pathLine(path: { kind: string; text: string }[]): string {
 }
 
 function demoUser() {
-  const about = henry.about.replace(/\s*\(truncated[^)]*\)/gi, "").replace(/\s+/g, " ").trim();
+  const profile = henryPublic();
   return {
-    name: henry.name,
-    headline: henry.headline,
-    company: henry.current_company.name,
-    title: henry.current_company.title,
-    city: henry.city,
-    goal: henry.event_goal,
-    interests: henry.interests_for_matching,
-    linkedin: henry.linkedin_url,
-    about,
+    name: profile.name,
+    headline: profile.company,
+    company: profile.company,
+    title: "none listed on LinkedIn",
+    city: profile.city,
+    goal: profile.demoGoal,
+    interests: ["AI agents", "creator tools", "dev storytelling"],
+    linkedin: profile.linkedinUrl,
+    about: profile.about,
   };
 }

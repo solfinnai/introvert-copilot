@@ -2,13 +2,17 @@
 
 A public demo for introverts walking into GitHub Universe 2026. It ranks who is worth your energy, shows the graph path behind each pick, and drafts what to say. No login. The demo user is Henry Finn.
 
-Built for the WeMakeDevs Patch the Conference hackathon (Oct 24 2026). FalkorDB is the lead track. Bright Data, OpenAI, and TrueForge are wired as later passes. Qodo reviews each PR.
+Built for the WeMakeDevs Patch the Conference hackathon (Oct 24 2026). FalkorDB ranks who to meet. Bright Data and OpenAI fill the person page when their keys are set, and fall back to the seed snapshot when they are not. Qodo reviews each PR.
 
 ## What works
 
 - App shell: left nav, top bar, cached snapshot pill, Reset demo.
 - Seed snapshot: 183 speakers and 157 sessions from `seed/github-universe-demo`.
 - Who to meet (`/meet`): day filter, scores, graph path expander, save, mark as met.
+- Person page (`/people/[id]`): conversation plan first, then public intel. Google results, a public page, and the LinkedIn dataset run when Bright Data is configured. If a fetch fails, that section stays on the seed snapshot and is labeled Cached snapshot. Every claim shows a source and a fetched time.
+- Your story uses Henry Finn's cached LinkedIn snapshot: avatar, about, Unicorn Studios, San Francisco, unicornstudios.ai. Experience and education are empty on that snapshot, so they stay gaps. He also confirmed the BLACKPINK shoot, Animori, and Metacomica as talking points. Those are not LinkedIn jobs.
+- Person page header shows social icons only when a real profile was found. Below that, All public links and data lists articles, talks, sites, and news, with a cached snapshot fallback. Ask the agent on that page opens `/agent?person=<id>`.
+- Saved list (`/saved`) and agent chat (`/agent`). The agent drafts what to say. The visitor sends it from their own email or share sheet.
 - Graph module: FalkorDB when `FALKORDB_URL` connects, otherwise the same ranking on an in-memory graph.
 - `falkors://` (TLS, non-standard port) is parsed into host, port, username, and password. TLS is turned on explicitly. The URL is never logged.
 - Idempotent seed: the catalog loads into FalkorDB Cloud when the graph is empty. `npm run seed` does the same from a shell. `POST /api/seed` is locked behind `SEED_TOKEN`.
@@ -18,9 +22,6 @@ Built for the WeMakeDevs Patch the Conference hackathon (Oct 24 2026). FalkorDB 
 ## What is stubbed
 
 - Your story editing and topic toggles.
-- The full person page (personality, news, plan). Bios and the graph path are real.
-- Agent chat. The composer stays disabled. Allow and Deny do not send anything.
-- Live Bright Data fetches and OpenAI generation.
 
 ## Run
 

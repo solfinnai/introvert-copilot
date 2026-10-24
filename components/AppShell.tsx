@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import type { ReactNode } from "react";
+import { PersonPhoto } from "./PersonPhoto";
 import { SessionProvider, useSession } from "./session";
 
 const NAV = [
@@ -16,16 +17,20 @@ const NAV = [
 export function AppShell({
   children,
   fetchedLabel,
+  henryAvatar,
+  henryName,
 }: {
   children: ReactNode;
   fetchedLabel: string;
+  henryAvatar: string;
+  henryName: string;
 }) {
   return (
     <SessionProvider>
       <div className="min-h-screen md:grid md:grid-cols-[220px_1fr]">
         <Sidebar />
         <div className="min-w-0">
-          <TopBar fetchedLabel={fetchedLabel} />
+          <TopBar fetchedLabel={fetchedLabel} henryAvatar={henryAvatar} henryName={henryName} />
           <MobileNav />
           <main className="px-5 py-6 md:px-10 md:py-8">{children}</main>
         </div>
@@ -115,7 +120,15 @@ function Footer() {
   );
 }
 
-function TopBar({ fetchedLabel }: { fetchedLabel: string }) {
+function TopBar({
+  fetchedLabel,
+  henryAvatar,
+  henryName,
+}: {
+  fetchedLabel: string;
+  henryAvatar: string;
+  henryName: string;
+}) {
   return (
     <header className="flex flex-wrap items-center gap-3 border-b border-line bg-[#f7f4ee] px-5 py-3 md:px-8">
       <div className="mr-auto flex items-baseline gap-3">
@@ -127,7 +140,7 @@ function TopBar({ fetchedLabel }: { fetchedLabel: string }) {
         Cached snapshot, {fetchedLabel}
       </span>
       <Link href="/story" className="inline-flex items-center gap-2 rounded-full border border-line bg-white py-1 pl-1 pr-3 text-xs font-medium">
-        <img src="/henry.jpg" alt="" className="h-6 w-6 rounded-full object-cover" />
+        <PersonPhoto src={henryAvatar} fallbackSrc="/henry.jpg" name={henryName} size={24} />
         Demo as Henry Finn
       </Link>
       <ResetButton />
