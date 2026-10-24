@@ -73,6 +73,8 @@ export function PersonDossier({
       </section>
 
       <GraphPath
+        name={card.name}
+        sessionTitle={card.sessionTitle}
         path={card.path}
         introPath={card.introPath}
         introName={card.introVia?.name ?? null}

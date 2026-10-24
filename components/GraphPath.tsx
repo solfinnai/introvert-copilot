@@ -1,6 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import {
+  discoveryLabel,
+  explainMatch,
+  visibleIntroPath,
+  visiblePath,
+} from "@/lib/path-explain";
 import type { GraphBackend, PathChip } from "@/lib/types";
 
 export function backendLabel(backend: GraphBackend): string {
@@ -8,6 +14,8 @@ export function backendLabel(backend: GraphBackend): string {
 }
 
 export function GraphPath({
+  name,
+  sessionTitle,
   path,
   introPath,
   introName,
@@ -18,6 +26,8 @@ export function GraphPath({
   keywordHits,
   fetchedLabel,
 }: {
+  name: string;
+  sessionTitle: string | null;
   path: PathChip[];
   introPath: PathChip[];
   introName: string | null;
@@ -29,62 +39,95 @@ export function GraphPath({
   fetchedLabel: string;
 }) {
   const [copied, setCopied] = useState(false);
+  const labels = discoveryLabel(backend);
+  const summary = explainMatch({ name, sessionTitle, path, introName, keywordHits });
+  const shownPath = visiblePath(path, sessionTitle);
+  const shownIntro = visibleIntroPath(introPath);
+  const hopWord = hops === 1 ? "hop" : "hops";
+
   return (
-    <div className="mt-4 rounded-2xl border border-line bg-[#faf7f2] px-4 py-3">
-      <div className="flex flex-wrap items-center gap-2">
-        {path.map((chip, index) => (
+    <section
+      aria-label="How we found this match"
+      className="mt-4 min-w-0 max-w-full overflow-hidden rounded-2xl border border-line bg-[#faf7f2] px-4 py-3"
+    >
+      <p className="max-w-full break-words text-[15px] leading-7 text-[#2c2824]">{summary}</p>
+      <div className="mt-3 flex min-w-0 max-w-full flex-wrap items-center gap-x-2 gap-y-1.5">
+        {shownPath.map((chip, index) => (
           <Chip key={`${chip.kind}-${chip.text}-${index}`} chip={chip} />
         ))}
       </div>
-      {introName && introPath.length > 0 && (
-        <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-dashed border-[#ddd4c6] pt-3">
-          <span className="text-xs uppercase tracking-[0.14em] text-mute">intro via</span>
-          {introPath.map((chip, index) => (
+      {introName && shownIntro.length > 0 && (
+        <div className="mt-3 flex min-w-0 max-w-full flex-wrap items-center gap-x-2 gap-y-1.5 border-t border-dashed border-[#ddd4c6] pt-3">
+          {shownIntro.map((chip, index) => (
             <Chip key={`intro-${chip.text}-${index}`} chip={chip} />
           ))}
         </div>
       )}
-      <p className="mt-3 font-mono text-[11px] leading-5 text-mute">
-        {backendLabel(backend)}, {hops} hops, {ms} ms
-        {keywordHits.length > 0 ? `. Bio hits: ${keywordHits.join(", ")}` : ""}
-      </p>
-      <p className="mt-1 text-xs text-mute">
-        Source: GitHub Universe speaker catalog, fetched {fetchedLabel}. Whole-word matches use the public bio and job title.
-      </p>
-      <pre className="mt-3 overflow-x-auto whitespace-pre-wrap font-mono text-[11px] leading-5 text-[#3f3a34]">
-        {cypher}
-      </pre>
-      <button
-        type="button"
-        className="mt-2 text-xs font-semibold text-[#b33b12] underline-offset-2 hover:underline"
-        onClick={() => {
-          void navigator.clipboard.writeText(cypher).then(
-            () => setCopied(true),
-            () => setCopied(false),
-          );
-        }}
-      >
-        {copied ? "Copied" : "Copy query"}
-      </button>
-    </div>
+      <p className="mt-3 text-xs leading-5 text-mute">{labels.found}</p>
+      <details className="group mt-3 min-w-0 max-w-full border-t border-dashed border-[#ddd4c6] pt-3">
+        <summary className="flex w-full min-w-0 cursor-pointer list-none items-start gap-2 rounded-md text-left text-sm font-semibold text-[#3f3a34] [&::-webkit-details-marker]:hidden">
+          <span aria-hidden="true" className="mt-0.5 w-3 shrink-0 font-mono text-mute group-open:hidden">
+            +
+          </span>
+          <span
+            aria-hidden="true"
+            className="mt-0.5 hidden w-3 shrink-0 font-mono text-mute group-open:inline"
+          >
+            -
+          </span>
+          <span className="min-w-0 flex-1 break-words">{labels.toggle}</span>
+        </summary>
+        <div className="mt-3 min-w-0 max-w-full space-y-2">
+          <p className="break-words font-mono text-[11px] leading-5 text-[#3f3a34]">{chain(path)}</p>
+          {introPath.length > 0 && (
+            <p className="break-words font-mono text-[11px] leading-5 text-[#3f3a34]">
+              Intro: {chain(introPath)}
+            </p>
+          )}
+          <p className="break-words font-mono text-[11px] leading-5 text-mute">
+            {backendLabel(backend)}, {hops} {hopWord}, {ms} ms
+            {keywordHits.length > 0 ? `. Bio hits: ${keywordHits.join(", ")}` : ""}
+          </p>
+          <p className="break-words text-xs leading-5 text-mute">
+            Source: GitHub Universe speaker catalog, fetched {fetchedLabel}. Whole-word matches use the
+            public bio and job title.
+          </p>
+          <pre className="max-w-full whitespace-pre-wrap break-words font-mono text-[11px] leading-5 text-[#3f3a34]">
+            {cypher}
+          </pre>
+          <button
+            type="button"
+            className="text-xs font-semibold text-[#b33b12] underline-offset-2 hover:underline"
+            onClick={() => {
+              void navigator.clipboard.writeText(cypher).then(
+                () => setCopied(true),
+                () => setCopied(false),
+              );
+            }}
+          >
+            {copied ? "Copied" : "Copy query"}
+          </button>
+        </div>
+      </details>
+    </section>
   );
 }
 
+function chain(chips: PathChip[]): string {
+  return chips.map((chip) => chip.text).join(" · ");
+}
+
 function Chip({ chip }: { chip: PathChip }) {
-  if (chip.kind === "note") {
-    return <span className="text-xs text-mute">{chip.text}</span>;
-  }
   if (chip.kind === "edge") {
-    return (
-      <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-mute">{chip.text}</span>
-    );
+    return <span className="max-w-full text-xs leading-5 text-mute">{chip.text}</span>;
   }
+  const solid = chip.kind === "node" && chip.tone === "solid";
   return (
     <span
       className={
-        chip.tone === "solid"
-          ? "rounded-full bg-ink px-2.5 py-1 text-xs font-medium text-white"
-          : "rounded-full border border-line bg-white px-2.5 py-1 text-xs text-ink"
+        solid
+          ? "max-w-full break-words rounded-2xl bg-ink px-2.5 py-1 text-left text-xs font-medium leading-5 text-white"
+          : "max-w-full break-words rounded-2xl border border-line bg-white px-2.5 py-1 text-left text-xs leading-5 text-ink"
       }
     >
       {chip.text}
