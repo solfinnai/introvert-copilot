@@ -3,7 +3,7 @@ export type DayFilter = "both" | "wed" | "thu";
 export type GraphBackend = "falkordb" | "memory";
 
 export interface PathChip {
-  kind: "node" | "edge";
+  kind: "node" | "edge" | "note";
   text: string;
   tone: "solid" | "plain";
 }

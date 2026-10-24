@@ -252,12 +252,13 @@ function buildPath(
       { kind: "node", text: name, tone: "solid" },
     ];
   }
-  const term = hits.find(isDistinctive) ?? hits[0] ?? "story";
+  const term = hits.find(isDistinctive) ?? hits[0];
   const chips: PathChip[] = [
-    { kind: "node", text: "You", tone: "solid" },
-    { kind: "edge", text: "BIO", tone: "plain" },
-    { kind: "node", text: term, tone: "plain" },
-    { kind: "edge", text: "DESCRIBES", tone: "plain" },
+    {
+      kind: "note",
+      text: term ? `Keyword match: ${term}` : "Keyword match",
+      tone: "plain",
+    },
     { kind: "node", text: name, tone: "solid" },
   ];
   if (sessionTitle) {

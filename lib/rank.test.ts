@@ -75,6 +75,36 @@ test("met people drop out and Thursday keeps Maeda", () => {
   assert.equal(wednesday.some((person) => person.id === "john-maeda"), false);
 });
 
+test("keyword-only matches are not drawn as graph edges", () => {
+  const catalog = getCatalog();
+  const people = rankPeople(catalog, null, {
+    day: "both",
+    metIds: [],
+    interests: ["__no_such_topic__"],
+    limit: 183,
+  });
+  const keywordOnly = people.filter(
+    (person) => person.sharedTopics.length === 0 && person.keywordHits.length > 0,
+  );
+  assert.ok(keywordOnly.length > 0);
+  for (const person of keywordOnly) {
+    assert.equal(
+      person.path.some((chip) => chip.text === "BIO" || chip.text === "DESCRIBES"),
+      false,
+    );
+    assert.ok(person.path.some((chip) => chip.kind === "note" && chip.text.startsWith("Keyword match")));
+    assert.equal(
+      person.hops,
+      person.path.filter((chip) => chip.kind === "edge").length,
+    );
+  }
+  const maeda = rankPeople(catalog, null, { day: "both", metIds: [], limit: 10 }).find(
+    (person) => person.id === "john-maeda",
+  );
+  assert.equal(maeda?.hops, 3);
+  assert.equal(maeda?.path.some((chip) => chip.kind === "note"), false);
+});
+
 test("sanitize turns dashes into punctuation we can show", () => {
   assert.equal(sanitizeCopy("games \u2014 a background"), "games, a background");
   assert.equal(sanitizeCopy("from 2021 \u2013 2025"), "from 2021 to 2025");
