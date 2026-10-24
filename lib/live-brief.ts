@@ -258,19 +258,29 @@ async function loadSites(
   const started = Date.now();
   const known = seedPageUrls(input).slice(0, PAGE_CAP);
   const bucket: LiveResult[] = [];
-  if (known.length > 0) {
-    const outcome = await withDeadline(
-      unlockAll(known, siteMs, deps, bucket).then(() => "done" as const),
-      siteMs,
-      "timeout" as const,
-    );
-    return summarizeSite(bucket.slice(), outcome);
+  const knownTask = known.length ? unlockAll(known, siteMs, deps, bucket) : Promise.resolve();
+
+  if (known.length >= PAGE_CAP) {
+    const outcome = await withDeadline(knownTask.then(() => "done" as const), siteMs, "timeout" as const);
+    const summary = summarizeSite(bucket.slice(), outcome);
+    if (summary.pages.length > 0 || outcome === "timeout") return summary;
   }
-  const serp = await withDeadline(serpPromise, siteMs, null);
+
+  const serpBudget = Math.max(0, siteMs - (Date.now() - started));
+  const serp = serpBudget > 0 ? await withDeadline(serpPromise, serpBudget, null) : null;
+  if (known.length < PAGE_CAP) {
+    await withDeadline(knownTask, Math.max(0, siteMs - (Date.now() - started)), undefined);
+  }
   const remaining = siteMs - (Date.now() - started);
-  if (!serp || remaining <= 0) return summarizeSite([], "timeout");
-  const targets = unlockTargetsFromSerp(serp, input.name).slice(0, PAGE_CAP);
-  if (!targets.length) return summarizeSite([], "done");
+  const soFar = summarizeSite(bucket.slice(), remaining <= 0 ? "timeout" : "done");
+  if (soFar.pages.length >= PAGE_CAP || remaining <= 0 || !serp) {
+    if (soFar.pages.length > 0) return soFar;
+    return summarizeSite(bucket.slice(), !serp || remaining <= 0 ? "timeout" : "done");
+  }
+  const seen = new Set(known);
+  const extra = unlockTargetsFromSerp(serp, input.name).filter((url) => !seen.has(url.split("#")[0]));
+  const targets = extra.slice(0, PAGE_CAP - soFar.pages.length);
+  if (!targets.length) return soFar.pages.length > 0 ? soFar : summarizeSite(bucket.slice(), "done");
   const outcome = await withDeadline(
     unlockAll(targets, remaining, deps, bucket).then(() => "done" as const),
     remaining,

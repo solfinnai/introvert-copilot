@@ -204,6 +204,46 @@ test("a finished page is kept when another page stalls", async () => {
   assert.ok(result.pages.some((item) => item.url.includes("medium.com")));
 });
 
+test("a failed saved page still opens a page found in search", async () => {
+  const input = sampleInput();
+  input.sources = [{ url: "https://johnmaeda.medium.com/one", title: "One" }];
+  const snapshot = buildSnapshotIntel(input);
+  const serp = JSON.stringify({
+    organic: [
+      {
+        link: "https://www.wired.com/story/maeda",
+        title: "John Maeda profile",
+        description: "John Maeda on design",
+      },
+    ],
+  });
+  const page = `<html><head><title>Wired</title></head><body><p>${"John Maeda writes about design and artificial intelligence. ".repeat(8)}</p></body></html>`;
+  const result = await collectLive({
+    input,
+    snapshot,
+    planContext: planContext(),
+    twitterHandle: null,
+    timeouts: { serp: 80, site: 200, linkedin: 30 },
+    deps: {
+      searchGoogle: async () => ({
+        ok: true as const,
+        body: serp,
+        url: "https://www.google.com/search",
+        fetchedAt: "2026-10-24T00:00:00.000Z",
+      }),
+      unlockPage: async (url) => {
+        if (url.includes("wired.com")) {
+          return { ok: true as const, body: page, url, fetchedAt: "2026-10-24T00:00:00.000Z" };
+        }
+        return { ok: false as const, reason: "thin page" };
+      },
+      scrapeLinkedIn: async () => ({ ok: false as const, reason: "not configured" }),
+      draftPlan: async (ctx) => templatePlan(ctx),
+    },
+  });
+  assert.ok(result.pages.some((item) => item.url.includes("wired.com")));
+});
+
 test("a timeout snapshot is worth caching and a skipped one is not", () => {
   assert.equal(isStoredBrief(sampleCache("failed", "timed out")), true);
   assert.equal(isStoredBrief(sampleCache("failed", "http 429")), true);

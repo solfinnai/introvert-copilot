@@ -2,7 +2,7 @@ import { getCatalog } from "@/lib/catalog";
 import { intelCacheControl, readBriefCache } from "@/lib/intel-cache";
 import type { LiveUpdate } from "@/lib/live-update";
 import { clientIp, rateLimit } from "@/lib/limits";
-import { buildSeedBrief, watchPersonBrief, type PersonBrief } from "@/lib/person-brief";
+import { watchPersonBrief, type PersonBrief } from "@/lib/person-brief";
 import { personCard } from "@/lib/rank";
 
 export const runtime = "nodejs";
@@ -99,7 +99,7 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
       pending
         .then(finish)
         .catch(() => {
-          send({ section: "done", status: "timeout", brief: buildSeedBrief(card) });
+          send({ section: "done", status: "timeout" });
           close();
         });
     },
