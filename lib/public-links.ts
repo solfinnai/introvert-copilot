@@ -406,7 +406,10 @@ function toLink(
   if (parseProfile(rawUrl, name) && !isPersonalSite(rawUrl, name)) return null;
   const blob = `${title} ${snippet} ${decodeURIComponent(url.toString())}`;
   const personal = isPersonalSite(rawUrl, name);
-  if (!personal && !mentionsPerson(blob, name)) return null;
+  if (!personal && !textMentionsPerson(blob, name)) return null;
+  if (host === "facebook.com" || host.endsWith(".facebook.com") || host === "tiktok.com" || host.endsWith(".tiktok.com")) {
+    return null;
+  }
   const group = groupFor(rawUrl, host, kind, name);
   if (!group) return null;
   const cleanTitle = sanitizeCopy(title || host).slice(0, 140) || host;
@@ -476,19 +479,24 @@ function handleMatches(handle: string, name: string, loose: boolean): boolean {
   if (token.length < 3) return false;
   const first = firstName(name);
   const last = lastName(name);
-  if (last.length >= 4 && token.includes(last)) return true;
+  if (last.length >= 4 && token.includes(last)) {
+    if (first.length >= 3 && token.includes(first)) return true;
+    if (token.length <= last.length + 3) return true;
+  }
   const both = `${first}${last}`;
   if (both.length >= 6 && (token.includes(both) || (token.length >= 6 && both.includes(token)))) return true;
   if (loose && first.length >= 4 && token.includes(first)) return true;
   return false;
 }
 
-function mentionsPerson(blob: string, name: string): boolean {
+export function textMentionsPerson(blob: string, name: string): boolean {
   const text = blob.toLowerCase();
-  const last = lastName(name);
-  if (last.length >= 4 && text.includes(last)) return true;
+  const compact = text.replace(/[^a-z0-9]/g, "");
   const first = firstName(name);
-  return first.length >= 4 && last.length >= 4 && text.includes(first) && text.includes(last);
+  const last = lastName(name);
+  if (first.length >= 3 && last.length >= 4 && text.includes(first) && text.includes(last)) return true;
+  const both = `${first}${last}`;
+  return both.length >= 6 && compact.includes(both);
 }
 
 function mergeProfiles(primary: SocialProfile[], extra: SocialProfile[]): SocialProfile[] {

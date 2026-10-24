@@ -142,6 +142,43 @@ test("pages to open prefer a personal site and a matching GitHub profile", () =>
   assert.equal(isGithubProfile("https://github.com/features", "John Maeda"), false);
 });
 
+test("a city that shares the last name is not her public page", () => {
+  const { links, profiles } = buildPublicBundle({
+    name: "Maggie Appleton",
+    company: "GitHub",
+    linkedinUrl: null,
+    twitterHandle: null,
+    sources: [{ url: "https://maggieappleton.com/planning-agents", title: "Planning with agents" }],
+    snapshotFetchedAt: fetched,
+    liveFetchedAt: "2026-10-24T21:10:00.000Z",
+    hits: [
+      {
+        url: "https://www.nbc26.com/news/petition-to-allow-dogs-in-appleton-city-parks",
+        title: "Petition to allow dogs in Appleton city parks",
+        snippet: "Appleton Wisconsin",
+        kind: "news",
+      },
+      {
+        url: "https://www.instagram.com/cityofappleton/",
+        title: "City of Appleton",
+        snippet: "Appleton",
+        kind: "organic",
+      },
+      {
+        url: "https://www.theverge.com/maggie-appleton-agents",
+        title: "Maggie Appleton on agents",
+        snippet: "A profile",
+        kind: "news",
+      },
+    ],
+    pages: [],
+  });
+  assert.equal(links.some((link) => link.url.includes("nbc26.com")), false);
+  assert.equal(profiles.some((profile) => profile.url.includes("cityofappleton")), false);
+  assert.ok(links.some((link) => link.group === "sites" && link.url.includes("maggieappleton.com")));
+  assert.ok(links.some((link) => link.group === "news" && link.url.includes("theverge.com")));
+});
+
 test("html hrefs are resolved and junk schemes are dropped", () => {
   const hrefs = hrefsFromHtml(
     `<a href="/about">About</a><a href="mailto:a@b.c">Mail</a><a href="https://x.com/mappletons">X</a>`,

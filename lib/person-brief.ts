@@ -4,7 +4,15 @@ import { getCatalog } from "./catalog";
 import { curatedById } from "./curated";
 import { henryPublic } from "./henry-profile";
 import { BRIEF_CACHE_VERSION, readBriefCache, writeBriefCache } from "./intel-cache";
-import { buildPublicBundle, pickPagesToOpen, type MinedPage, type PublicHit, type PublicLink, type SocialProfile } from "./public-links";
+import {
+  buildPublicBundle,
+  pickPagesToOpen,
+  textMentionsPerson,
+  type MinedPage,
+  type PublicHit,
+  type PublicLink,
+  type SocialProfile,
+} from "./public-links";
 import {
   applyLiveSources,
   buildSnapshotIntel,
@@ -132,7 +140,10 @@ async function gather(
     kind: hit.kind,
   }));
   const preferred = pickPagesToOpen(publicHits, input.name);
-  const fallback = pickUnlockTargets(intelHits.length ? intelHits : linkHits, input.name, 2);
+  const namedHits = (intelHits.length ? intelHits : linkHits).filter((hit) =>
+    textMentionsPerson(`${hit.title} ${hit.snippet} ${hit.url}`, input.name),
+  );
+  const fallback = preferred.length ? [] : pickUnlockTargets(namedHits, input.name, 2);
   const targets = unique([...preferred, ...fallback]).slice(0, 2);
   const opened = targets.length ? await Promise.all(targets.map((url) => unlockPage(url))) : [];
   const pages: UnlockedPage[] = [];

@@ -4,7 +4,7 @@ import type { ConversationPlan } from "./plan";
 import type { FetchReport } from "./intel";
 import type { PublicLink, SocialProfile } from "./public-links";
 
-export const BRIEF_CACHE_VERSION = 3;
+export const BRIEF_CACHE_VERSION = 4;
 
 export interface CachedBrief {
   version: number;
