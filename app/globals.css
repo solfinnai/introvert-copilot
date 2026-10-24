@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  background: #f3f0e9;
+  color: #1c1916;
+}
+
+::selection {
+  background: #f6d2c2;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}

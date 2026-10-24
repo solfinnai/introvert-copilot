@@ -1,0 +1,28 @@
+{
+  "name": "introvert-copilot",
+  "version": "0.2.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3001",
+    "build": "next build",
+    "start": "next start -p 3001",
+    "test": "tsx --test lib/*.test.ts",
+    "seed": "tsx scripts/seed.ts"
+  },
+  "dependencies": {
+    "falkordb": "^6.6.2",
+    "next": "^15.5.4",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.0",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.17",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}
