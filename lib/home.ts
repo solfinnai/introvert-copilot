@@ -78,11 +78,11 @@ export function httpsUrl(value: string): string | null {
   }
 }
 
-/** Graph size from a GET /api/health body. Null when the check did not succeed. */
+/** Live FalkorDB size from GET /api/health. Memory fallback counts are not the live graph. */
 export function graphSizeFromHealth(body: unknown): string | null {
   if (!body || typeof body !== "object") return null;
   const record = body as Record<string, unknown>;
-  if (record.ok !== true) return null;
+  if (record.ok !== true || record.backend !== "falkordb") return null;
   if (typeof record.nodes !== "number" || typeof record.edges !== "number") return null;
   return formatGraphSize(record.nodes, record.edges);
 }

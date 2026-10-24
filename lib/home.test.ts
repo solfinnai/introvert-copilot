@@ -64,6 +64,7 @@ test("graph size comes from a successful health payload", () => {
     graphSizeFromHealth({ ok: true, backend: "falkordb", nodes: 12, edges: 40 }),
     "12 nodes, 40 edges",
   );
+  assert.equal(graphSizeFromHealth({ ok: true, backend: "memory", nodes: 459, edges: 1104 }), null);
   assert.equal(graphSizeFromHealth({ ok: false, backend: "memory", nodes: 0, edges: 0 }), null);
   assert.equal(graphSizeFromHealth({ ok: true, nodes: "12", edges: 3 }), null);
   assert.equal(graphSizeFromHealth(null), null);
