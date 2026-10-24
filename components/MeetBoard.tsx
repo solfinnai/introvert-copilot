@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { GraphPath, backendLabel } from "./GraphPath";
 import { PersonPhoto } from "./PersonPhoto";
+import { SaveButton } from "./SaveButton";
 import { useSession, type SavedPerson } from "./session";
 import type { DayFilter, MeetResponse, RankedPerson } from "@/lib/types";
 
@@ -14,7 +15,7 @@ const DAYS: { id: DayFilter; label: string }[] = [
 ];
 
 export function MeetBoard({ initial }: { initial: MeetResponse }) {
-  const { state, ready, isSaved, toggleSaved, markMet } = useSession();
+  const { state, ready, markMet } = useSession();
   const [day, setDay] = useState<DayFilter>("both");
   const [data, setData] = useState(initial);
   const [showAll, setShowAll] = useState(false);
@@ -99,9 +100,7 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
             person={hero}
             response={data}
             open={openId === hero.id}
-            saved={ready && isSaved(hero.id)}
             onTogglePath={() => setOpenId(openId === hero.id ? null : hero.id)}
-            onSave={() => toggleSaved(toSaved(hero))}
             onMet={() => {
               const met = state.met.includes(hero.id) ? state.met : [...state.met, hero.id];
               markMet(hero.id);
@@ -122,9 +121,7 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
                 person={person}
                 response={data}
                 open={openId === person.id}
-                saved={ready && isSaved(person.id)}
                 onTogglePath={() => setOpenId(openId === person.id ? null : person.id)}
-                onSave={() => toggleSaved(toSaved(person))}
                 onMet={() => {
                   const met = state.met.includes(person.id) ? state.met : [...state.met, person.id];
                   markMet(person.id);
@@ -150,15 +147,7 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
   );
 }
 
-function HeroCard({
-  person,
-  response,
-  open,
-  saved,
-  onTogglePath,
-  onSave,
-  onMet,
-}: CardProps) {
+function HeroCard({ person, response, open, onTogglePath, onMet }: CardProps) {
   return (
     <article className="rounded-3xl border border-line bg-card p-5 shadow-card md:p-6">
       <header className="flex items-start gap-4">
@@ -167,12 +156,12 @@ function HeroCard({
           <h2 className="text-xl font-semibold tracking-tight">{person.name}</h2>
           <p className="text-sm text-mute">{person.titleLine}</p>
         </div>
-        <StarButton saved={saved} name={person.name} onClick={onSave} />
+        <SaveButton person={toSaved(person)} />
       </header>
       <p className="mt-4 max-w-3xl text-[15px] leading-7 text-[#2c2824]">{person.why}</p>
       <p className="mt-3 text-sm text-mute">Catch them: {person.catchLine}</p>
       <div className="mt-4 flex flex-wrap items-center gap-2">
-        <Link href={`/chat?person=${person.id}`} className="rounded-full border border-line bg-white px-4 py-2 text-sm">
+        <Link href={`/agent?person=${person.id}`} className="rounded-full border border-line bg-white px-4 py-2 text-sm">
           Ask agent about {person.name.split(" ")[0]}
         </Link>
         <Link href={`/people/${person.id}`} className="rounded-full bg-ink px-4 py-2 text-sm text-white">
@@ -198,15 +187,7 @@ function HeroCard({
   );
 }
 
-function SmallCard({
-  person,
-  response,
-  open,
-  saved,
-  onTogglePath,
-  onSave,
-  onMet,
-}: CardProps) {
+function SmallCard({ person, response, open, onTogglePath, onMet }: CardProps) {
   return (
     <article className="rounded-3xl border border-line bg-card p-5 shadow-card">
       <header className="flex items-start gap-3">
@@ -215,12 +196,12 @@ function SmallCard({
           <h2 className="font-semibold tracking-tight">{person.name}</h2>
           <p className="text-sm text-mute">{person.titleLine}</p>
         </div>
-        <StarButton saved={saved} name={person.name} onClick={onSave} />
+        <SaveButton person={toSaved(person)} />
       </header>
       <p className="mt-3 line-clamp-4 text-sm leading-6 text-[#2c2824]">{person.why}</p>
       <p className="mt-3 text-sm text-mute">Catch them: {person.catchLine}</p>
       <div className="mt-4 flex flex-wrap items-center gap-2">
-        <Link href={`/chat?person=${person.id}`} className="rounded-full border border-line bg-white px-3 py-1.5 text-sm">
+        <Link href={`/agent?person=${person.id}`} className="rounded-full border border-line bg-white px-3 py-1.5 text-sm">
           Ask agent
         </Link>
         <Link href={`/people/${person.id}`} className="rounded-full bg-ink px-3 py-1.5 text-sm text-white">
@@ -257,28 +238,6 @@ function PathBlock({ person, response }: { person: RankedPerson; response: MeetR
   );
 }
 
-function StarButton({ saved, name, onClick }: { saved: boolean; name: string; onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      aria-pressed={saved}
-      aria-label={saved ? `Remove ${name} from saved` : `Save ${name}`}
-      className={`grid h-9 w-9 place-items-center rounded-full ${saved ? "text-accent" : "text-[#c3b8aa]"}`}
-      onClick={onClick}
-    >
-      <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-        <path
-          d="M12 2.6l2.7 6.3 6.8.6-5.1 4.4 1.6 6.6L12 16.9 6 20.5l1.6-6.6L2.5 9.5l6.8-.6L12 2.6z"
-          fill={saved ? "currentColor" : "none"}
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinejoin="round"
-        />
-      </svg>
-    </button>
-  );
-}
-
 function toSaved(person: RankedPerson): SavedPerson {
   return {
     id: person.id,
@@ -287,6 +246,8 @@ function toSaved(person: RankedPerson): SavedPerson {
     photoUrl: person.photoUrl,
     opener: person.opener,
     catchLine: person.catchLine,
+    note: "",
+    nextStep: "Ask about their talk",
   };
 }
 
@@ -294,8 +255,6 @@ interface CardProps {
   person: RankedPerson;
   response: MeetResponse;
   open: boolean;
-  saved: boolean;
   onTogglePath: () => void;
-  onSave: () => void;
   onMet: () => void;
 }

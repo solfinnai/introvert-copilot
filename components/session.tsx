@@ -1,30 +1,25 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import {
+  SAVED_STORAGE_KEY,
+  emptyDemoState,
+  parseDemoState,
+  toggleSaved as toggleSavedState,
+  updateSaved as updateSavedState,
+  type DemoState,
+  type SavedDraft,
+  type SavedPerson,
+} from "@/lib/saved";
 
-const KEY = "ic-demo-v1";
-
-export interface SavedPerson {
-  id: string;
-  name: string;
-  titleLine: string;
-  photoUrl: string;
-  opener: string;
-  catchLine: string;
-}
-
-interface DemoState {
-  saved: SavedPerson[];
-  met: string[];
-}
-
-const empty: DemoState = { saved: [], met: [] };
+export type { SavedPerson, SavedDraft };
 
 interface SessionApi {
   state: DemoState;
   ready: boolean;
   isSaved: (id: string) => boolean;
-  toggleSaved: (person: SavedPerson) => void;
+  toggleSaved: (person: SavedDraft) => void;
+  updateSaved: (id: string, patch: { note?: string; nextStep?: string }) => void;
   markMet: (id: string) => void;
   resetLocal: () => void;
 }
@@ -32,11 +27,11 @@ interface SessionApi {
 const SessionContext = createContext<SessionApi | null>(null);
 
 export function SessionProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<DemoState>(empty);
+  const [state, setState] = useState<DemoState>(emptyDemoState);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    setState(readState());
+    setState(parseDemoState(window.localStorage.getItem(SAVED_STORAGE_KEY)));
     let cancelled = false;
     fetch("/api/session", { method: "POST" })
       .catch(() => undefined)
@@ -50,22 +45,15 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!ready) return;
-    window.localStorage.setItem(KEY, JSON.stringify(state));
+    window.localStorage.setItem(SAVED_STORAGE_KEY, JSON.stringify(state));
   }, [state, ready]);
 
   const api: SessionApi = {
     state,
     ready,
     isSaved: (id) => state.saved.some((person) => person.id === id),
-    toggleSaved: (person) => {
-      setState((current) => {
-        const exists = current.saved.some((item) => item.id === person.id);
-        const saved = exists
-          ? current.saved.filter((item) => item.id !== person.id)
-          : [...current.saved, person].slice(0, 24);
-        return { ...current, saved };
-      });
-    },
+    toggleSaved: (person) => setState((current) => toggleSavedState(current, person)),
+    updateSaved: (id, patch) => setState((current) => updateSavedState(current, id, patch)),
     markMet: (id) => {
       setState((current) => ({
         ...current,
@@ -73,8 +61,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       }));
     },
     resetLocal: () => {
-      setState(empty);
-      window.localStorage.removeItem(KEY);
+      setState(emptyDemoState);
+      window.localStorage.removeItem(SAVED_STORAGE_KEY);
     },
   };
 
@@ -85,23 +73,4 @@ export function useSession(): SessionApi {
   const value = useContext(SessionContext);
   if (!value) throw new Error("Session missing");
   return value;
-}
-
-function readState(): DemoState {
-  try {
-    const raw = window.localStorage.getItem(KEY);
-    if (!raw) return empty;
-    const parsed = JSON.parse(raw) as Partial<DemoState>;
-    const saved = Array.isArray(parsed.saved) ? parsed.saved.filter(isSaved) : [];
-    const met = Array.isArray(parsed.met) ? parsed.met.filter((id) => typeof id === "string") : [];
-    return { saved, met };
-  } catch {
-    return empty;
-  }
-}
-
-function isSaved(value: unknown): value is SavedPerson {
-  if (!value || typeof value !== "object") return false;
-  const person = value as SavedPerson;
-  return typeof person.id === "string" && typeof person.name === "string";
 }

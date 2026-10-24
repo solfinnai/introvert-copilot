@@ -1,0 +1,115 @@
+import assert from "node:assert/strict";
+import { test } from "node:test";
+import {
+  AGENT_MODEL_FALLBACK,
+  BUDGET_NOTE,
+  LENGTH_MESSAGE,
+  MAX_OUTPUT_TOKENS,
+  buildOpenAiPayload,
+  classifyAgent,
+  localCoaching,
+  pageBundle,
+  personFacts,
+  readStreamDelta,
+  splitFollowup,
+  systemPrompt,
+} from "./agent";
+
+test("catalog fallback coaches Henry for a real speaker and never invents an email", () => {
+  const person = personFacts("mario-rodriguez");
+  assert.ok(person);
+  assert.equal(person?.company, "GitHub");
+  assert.match(person?.sessions[0]?.title ?? "", /Humans set direction/);
+  assert.equal(person?.linkedinUrl, "https://www.linkedin.com/in/mariorodriguez3/");
+  assert.equal(person?.email, null);
+
+  const reply = localCoaching("fallback", person, "Give me an opener");
+  assert.equal(reply.source, "fallback");
+  assert.match(reply.message, /Mario/);
+  assert.match(reply.message, /Unicorn Studios/);
+  assert.match(reply.message, /1\./);
+  assert.match(reply.message, /2\./);
+  assert.match(reply.message, /You review and send it yourself/);
+  assert.equal(reply.message.includes("\u2014"), false);
+  assert.equal(reply.message.includes("\u2013"), false);
+  assert.ok(reply.draft);
+  assert.equal(reply.draft?.email, null);
+  assert.equal(reply.draft?.linkedinUrl, "https://www.linkedin.com/in/mariorodriguez3/");
+  assert.ok((reply.draft?.linkedinNote.length ?? 0) > 0);
+  assert.equal(reply.draft?.body.includes("\u2014"), false);
+});
+
+test("a missing key or a spent budget stays on the catalog plan", () => {
+  const body = { personId: "mario-rodriguez", messages: [{ role: "user", content: "Draft a follow-up" }] };
+  const offline = classifyAgent({ body, rateOk: true, hasKey: false, budgetOk: true });
+  assert.equal(offline.action, "json");
+  if (offline.action === "json") {
+    assert.equal(offline.reply.source, "fallback");
+    assert.match(offline.reply.message, /catalog/);
+    assert.equal(offline.reply.draft?.email, null);
+  }
+  const capped = classifyAgent({ body, rateOk: true, hasKey: true, budgetOk: false });
+  assert.equal(capped.action, "json");
+  if (capped.action === "json") {
+    assert.equal(capped.reply.source, "budget");
+    assert.match(capped.reply.message, new RegExp(BUDGET_NOTE.slice(0, 24)));
+  }
+  const live = classifyAgent({ body, rateOk: true, hasKey: true, budgetOk: true });
+  assert.equal(live.action, "openai");
+});
+
+test("guards reject a long message before spending a model call", () => {
+  const huge = classifyAgent({
+    body: { messages: [{ role: "user", content: "a".repeat(601) }] },
+    rateOk: true,
+    hasKey: true,
+    budgetOk: true,
+  });
+  assert.equal(huge.action, "json");
+  if (huge.action === "json") assert.equal(huge.reply.message, LENGTH_MESSAGE);
+  const limited = classifyAgent({
+    body: { personId: "mario-rodriguez", messages: [{ role: "user", content: "Hi" }] },
+    rateOk: false,
+    hasKey: true,
+    budgetOk: true,
+  });
+  assert.equal(limited.action, "json");
+  if (limited.action === "json") assert.equal(limited.reply.source, "limit");
+});
+
+test("system prompt carries graph facts and the payload stays small", () => {
+  const person = personFacts("mario-rodriguez");
+  const prompt = systemPrompt(person);
+  assert.match(prompt, /Henry Finn/);
+  assert.match(prompt, /GitHub/);
+  assert.match(prompt, /Humans set direction/);
+  assert.match(prompt, /none in the catalog/);
+  assert.equal(prompt.includes("\u2014"), false);
+  assert.equal(prompt.includes("sk-"), false);
+  const payload = buildOpenAiPayload({
+    person,
+    messages: [{ role: "user", content: "Draft a follow-up" }],
+  });
+  assert.equal(payload.model, AGENT_MODEL_FALLBACK);
+  assert.equal(payload.max_tokens, MAX_OUTPUT_TOKENS);
+  assert.equal(JSON.stringify(payload).includes("OPENAI_API_KEY"), false);
+  const bundle = pageBundle("mario-rodriguez");
+  assert.equal(bundle.person?.id, "mario-rodriguez");
+  assert.equal(bundle.starter.draft?.linkedinUrl, person?.linkedinUrl);
+  assert.ok(bundle.suggestions.some((item) => item.includes("Mario")));
+});
+
+test("follow-up block becomes a draft and stream deltas stay plain text", () => {
+  const person = personFacts("mario-rodriguez");
+  const split = splitFollowup(
+    "Keep the opener short.\nFOLLOWUP\nSubject: After the main stage\nHi Mario. Thanks for the session. Henry Finn",
+    person,
+  );
+  assert.match(split.message, /opener/);
+  assert.equal(split.message.includes("FOLLOWUP"), false);
+  assert.equal(split.draft?.subject, "After the main stage");
+  assert.equal(split.draft?.email, null);
+  assert.equal(split.draft?.linkedinUrl, person?.linkedinUrl);
+  assert.equal(readStreamDelta('data: {"choices":[{"delta":{"content":"Hi"}}]}'), "Hi");
+  assert.equal(readStreamDelta("data: [DONE]"), null);
+});

@@ -21,6 +21,8 @@ const nextConfig: NextConfig = {
     "/people/[id]": seedGlobs,
     "/story": seedGlobs,
     "/chat": seedGlobs,
+    "/agent": seedGlobs,
+    "/api/agent": seedGlobs,
   },
 };
 
