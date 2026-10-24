@@ -103,6 +103,7 @@ function buildDrafts(
     const daySessions = person.sessionIds
       .map((sid) => catalog.sessionsById.get(sid))
       .filter((session): session is SessionNode => !!session && matchesDay(session, day));
+    if (day !== "both" && daySessions.length === 0) continue;
     const sharedSessions = daySessions.filter((session) => sharedSet.has(session.id));
     const chosen = pickSession(sharedSessions.length ? sharedSessions : daySessions, wanted);
     const sharedTopics =

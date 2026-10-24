@@ -46,6 +46,25 @@ test("who to meet ranks a multi-hop path and keeps Maeda near the top", () => {
   }
 });
 
+test("a selected day requires a session that day, even for a keyword hit", () => {
+  const catalog = getCatalog();
+  const maeda = catalog.peopleById.get("john-maeda");
+  assert.ok(maeda);
+  const days = new Set(
+    maeda.sessionIds.map((id) => catalog.sessionsById.get(id)?.dayKey).filter((day) => day && day !== "other"),
+  );
+  assert.deepEqual([...days], ["thu"]);
+  const wednesday = rankPeople(catalog, null, { day: "wed", metIds: [], limit: 183 });
+  assert.equal(
+    wednesday.some((person) => person.id === "john-maeda"),
+    false,
+  );
+  for (const person of wednesday) assert.equal(person.dayKey, "wed");
+  const thursday = rankPeople(catalog, null, { day: "thu", metIds: [], limit: 183 });
+  assert.ok(thursday.some((person) => person.id === "john-maeda"));
+  for (const person of thursday) assert.equal(person.dayKey, "thu");
+});
+
 test("met people drop out and Thursday keeps Maeda", () => {
   const catalog = getCatalog();
   const without = rankPeople(catalog, null, { day: "both", metIds: ["john-maeda"], limit: 10 });
