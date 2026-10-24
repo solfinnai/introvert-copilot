@@ -5,6 +5,7 @@ export const SEED_FILE_GLOBS = [
   "./seed/github-universe-demo/event.json",
   "./seed/github-universe-demo/people.json",
   "./data/demo/henry.json",
+  "./src/data/demo-user.json",
   "./seed/github-universe-demo/seed.cypher",
 ];
 

@@ -26,7 +26,7 @@ const mono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   title: "Introvert Co-pilot",
-  description: "Walk into GitHub Universe knowing exactly what to say.",
+  description: "Walk into every conversation knowing what to say about yourself and what to ask them.",
 };
 
 export const dynamic = "force-dynamic";
