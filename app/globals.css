@@ -19,3 +19,24 @@ button,
 a {
   -webkit-tap-highlight-color: transparent;
 }
+
+@media print {
+  .app-shell {
+    display: block !important;
+  }
+
+  .app-shell > aside,
+  .app-shell header,
+  .app-shell footer,
+  .no-print {
+    display: none !important;
+  }
+
+  .app-shell main {
+    padding: 0 !important;
+  }
+
+  body {
+    background: #fff !important;
+  }
+}

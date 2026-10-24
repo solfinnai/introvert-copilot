@@ -12,8 +12,9 @@ const NAV = [
   { href: "/", label: "Home", n: "01" },
   { href: "/me", label: "Your story", n: "02" },
   { href: "/meet", label: "Who to meet", n: "03" },
-  { href: "/saved", label: "Saved", n: "04" },
-  { href: "/agent", label: "Agent chat", n: "05" },
+  { href: "/speakers", label: "Speakers", n: "04" },
+  { href: "/saved", label: "Saved", n: "05" },
+  { href: "/agent", label: "Agent chat", n: "06" },
 ];
 
 export function AppShell({
@@ -29,7 +30,7 @@ export function AppShell({
 }) {
   return (
     <SessionProvider>
-      <div className="min-h-screen md:grid md:grid-cols-[220px_1fr]">
+      <div className="app-shell min-h-screen md:grid md:grid-cols-[220px_1fr]">
         <Sidebar />
         <div className="flex min-h-screen min-w-0 flex-col">
           <TopBar fetchedLabel={fetchedLabel} henryAvatar={henryAvatar} henryName={henryName} />
@@ -94,7 +95,7 @@ function NavList() {
 function MobileNav() {
   const pathname = usePathname();
   return (
-    <div className="flex gap-2 overflow-x-auto border-b border-line bg-side px-4 py-2 md:hidden">
+    <div className="no-print flex gap-2 overflow-x-auto border-b border-line bg-side px-4 py-2 md:hidden">
       {NAV.map((item) => {
         const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
         return (
