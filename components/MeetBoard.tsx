@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GraphPath, backendLabel } from "./GraphPath";
 import { PersonPhoto } from "./PersonPhoto";
 import { SaveButton } from "./SaveButton";
 import { useSession, type SavedPerson } from "./session";
+import { accumulateMet, isLatestRequest, nextRequestId } from "@/lib/latest-request";
 import type { DayFilter, MeetResponse, RankedPerson } from "@/lib/types";
 
 const DAYS: { id: DayFilter; label: string }[] = [
@@ -23,6 +24,12 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [metNote, setMetNote] = useState(0);
+  const latestRequest = useRef(0);
+  const metRef = useRef<string[]>([]);
+
+  useEffect(() => {
+    metRef.current = state.met;
+  }, [state.met]);
 
   useEffect(() => {
     if (!ready || state.met.length === 0) return;
@@ -33,20 +40,34 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
   }, [ready]);
 
   async function reload(nextDay: DayFilter, met: string[]) {
+    const requestId = nextRequestId(latestRequest.current);
+    latestRequest.current = requestId;
     setLoading(true);
     setError("");
     try {
       const params = new URLSearchParams({ day: nextDay });
       if (met.length) params.set("met", met.join(","));
       const res = await fetch(`/api/meet?${params.toString()}`, { cache: "no-store" });
+      if (!isLatestRequest(latestRequest.current, requestId)) return;
       if (!res.ok) throw new Error("refresh failed");
       const body = (await res.json()) as MeetResponse;
+      if (!isLatestRequest(latestRequest.current, requestId)) return;
       setData(body);
     } catch {
+      if (!isLatestRequest(latestRequest.current, requestId)) return;
       setError("The list did not refresh. Showing the last ranking we had.");
     } finally {
-      setLoading(false);
+      if (isLatestRequest(latestRequest.current, requestId)) setLoading(false);
     }
+  }
+
+  function meetPerson(id: string) {
+    if (!ready) return;
+    const met = accumulateMet(metRef.current, id);
+    metRef.current = met;
+    markMet(id);
+    setMetNote(met.length);
+    void reload(day, met);
   }
 
   const visible = showAll ? data.people : data.people.slice(0, 3);
@@ -77,7 +98,7 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
                 setDay(item.id);
                 setShowAll(false);
                 setOpenId(null);
-                void reload(item.id, state.met);
+                void reload(item.id, metRef.current);
               }}
             >
               {item.label}
@@ -100,13 +121,9 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
             person={hero}
             response={data}
             open={openId === hero.id}
+            locked={!ready}
             onTogglePath={() => setOpenId(openId === hero.id ? null : hero.id)}
-            onMet={() => {
-              const met = state.met.includes(hero.id) ? state.met : [...state.met, hero.id];
-              markMet(hero.id);
-              setMetNote(met.length);
-              void reload(day, met);
-            }}
+            onMet={() => meetPerson(hero.id)}
           />
         ) : (
           <p className="rounded-2xl border border-line bg-white p-6 text-sm">
@@ -121,13 +138,9 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
                 person={person}
                 response={data}
                 open={openId === person.id}
+                locked={!ready}
                 onTogglePath={() => setOpenId(openId === person.id ? null : person.id)}
-                onMet={() => {
-                  const met = state.met.includes(person.id) ? state.met : [...state.met, person.id];
-                  markMet(person.id);
-                  setMetNote(met.length);
-                  void reload(day, met);
-                }}
+                onMet={() => meetPerson(person.id)}
               />
             ))}
           </div>
@@ -147,7 +160,7 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
   );
 }
 
-function HeroCard({ person, response, open, onTogglePath, onMet }: CardProps) {
+function HeroCard({ person, response, open, locked, onTogglePath, onMet }: CardProps) {
   return (
     <article className="rounded-3xl border border-line bg-card p-5 shadow-card md:p-6">
       <header className="flex items-start gap-4">
@@ -167,7 +180,12 @@ function HeroCard({ person, response, open, onTogglePath, onMet }: CardProps) {
         <Link href={`/people/${person.id}`} className="rounded-full bg-ink px-4 py-2 text-sm text-white">
           Conversation plan
         </Link>
-        <button type="button" className="px-2 text-sm text-mute underline-offset-2 hover:underline" onClick={onMet}>
+        <button
+          type="button"
+          className="px-2 text-sm text-mute underline-offset-2 hover:underline disabled:cursor-not-allowed disabled:no-underline disabled:opacity-40"
+          disabled={locked}
+          onClick={onMet}
+        >
           Mark as met
         </button>
         <button
@@ -187,7 +205,7 @@ function HeroCard({ person, response, open, onTogglePath, onMet }: CardProps) {
   );
 }
 
-function SmallCard({ person, response, open, onTogglePath, onMet }: CardProps) {
+function SmallCard({ person, response, open, locked, onTogglePath, onMet }: CardProps) {
   return (
     <article className="rounded-3xl border border-line bg-card p-5 shadow-card">
       <header className="flex items-start gap-3">
@@ -207,7 +225,12 @@ function SmallCard({ person, response, open, onTogglePath, onMet }: CardProps) {
         <Link href={`/people/${person.id}`} className="rounded-full bg-ink px-3 py-1.5 text-sm text-white">
           Conversation plan
         </Link>
-        <button type="button" className="text-sm text-mute underline-offset-2 hover:underline" onClick={onMet}>
+        <button
+          type="button"
+          className="text-sm text-mute underline-offset-2 hover:underline disabled:cursor-not-allowed disabled:no-underline disabled:opacity-40"
+          disabled={locked}
+          onClick={onMet}
+        >
           Mark as met
         </button>
       </div>
@@ -255,6 +278,7 @@ interface CardProps {
   person: RankedPerson;
   response: MeetResponse;
   open: boolean;
+  locked: boolean;
   onTogglePath: () => void;
   onMet: () => void;
 }

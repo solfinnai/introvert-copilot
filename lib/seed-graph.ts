@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { DEFAULT_INTERESTS, getCatalog, memoryGraphCounts } from "./catalog";
-import { getDb, graphName } from "./falkor";
+import { getDb, graphName, noteQueryFailure } from "./falkor";
 import { logBackend, safeError } from "./redact";
 import type { GraphBackend } from "./types";
 
@@ -17,34 +17,63 @@ export interface SeedStatus {
   already: boolean;
 }
 
-interface CypherGraph {
+interface QueryGraph {
   query(query: string, options?: { params?: Record<string, unknown> }): Promise<{ data?: unknown[] }>;
+}
+
+interface CypherGraph extends QueryGraph {
   roQuery(query: string, options?: { params?: Record<string, unknown> }): Promise<{ data?: unknown[] }>;
 }
+
+const MARKER_QUERIES = {
+  catalog: "MERGE (s:Seed {id:'gu-2026'}) SET s.catalog = $version, s.catalog_at = $at",
+  cypher: "MERGE (s:Seed {id:'gu-2026'}) SET s.cypher = $version, s.cypher_at = $at",
+} as const;
 
 let catalogTask: Promise<SeedStatus> | null = null;
 let cypherTask: Promise<SeedStatus> | null = null;
 
+/** A memory result is reusable only when no database is configured. */
+export function shouldCacheSeed(urlConfigured: boolean, backend: GraphBackend): boolean {
+  if (!urlConfigured) return true;
+  return backend === "falkordb";
+}
+
 export function ensureCatalog(): Promise<SeedStatus> {
   if (!catalogTask) {
-    catalogTask = runCatalog().catch((err: unknown) => {
-      catalogTask = null;
-      logBackend("memory", `catalog seed failed: ${safeError(err)}`);
-      return memoryStatus();
-    });
+    const task = runCatalog()
+      .then((status) => {
+        if (!shouldCacheSeed(Boolean(process.env.FALKORDB_URL), status.backend)) catalogTask = null;
+        return status;
+      })
+      .catch((err: unknown) => {
+        catalogTask = null;
+        logBackend("memory", `catalog seed failed: ${safeError(err)}`);
+        return memoryStatus();
+      });
+    catalogTask = task;
   }
   return catalogTask;
 }
 
 export function ensureCypher(): Promise<SeedStatus> {
   if (!cypherTask) {
-    cypherTask = ensureCatalog()
-      .then((status) => (status.backend === "falkordb" ? runCypher(status) : status))
+    const task = ensureCatalog()
+      .then(async (status) => {
+        if (status.backend !== "falkordb") {
+          if (!shouldCacheSeed(Boolean(process.env.FALKORDB_URL), status.backend)) cypherTask = null;
+          return status;
+        }
+        const seeded = await runCypher(status);
+        if (!shouldCacheSeed(Boolean(process.env.FALKORDB_URL), seeded.backend)) cypherTask = null;
+        return seeded;
+      })
       .catch((err: unknown) => {
         cypherTask = null;
         logBackend("falkordb", `cypher seed failed: ${safeError(err)}`);
         return ensureCatalog();
       });
+    cypherTask = task;
   }
   return cypherTask;
 }
@@ -72,11 +101,12 @@ async function runCatalog(): Promise<SeedStatus> {
     const counts = await falkorCounts(graph);
     return { ok: true, backend: "falkordb", ...counts, seeded: true, already: true };
   }
-  await loadCatalog(graph);
-  await graph.query(
-    "MERGE (s:Seed {id:'gu-2026'}) SET s.catalog = $version, s.catalog_at = $at",
-    { params: { version: CATALOG_VERSION, at: new Date().toISOString() } },
-  );
+  const failed = await loadCatalog(graph);
+  const marked = await writeSeedMarker(graph, "catalog", CATALOG_VERSION, failed);
+  if (!marked) {
+    logBackend("falkordb", `catalog left unfinished, ${failed} rows failed`);
+    throw new Error("catalog seed incomplete");
+  }
   logBackend("falkordb", "catalog loaded");
   const counts = await falkorCounts(graph);
   return { ok: true, backend: "falkordb", ...counts, seeded: true, already: false };
@@ -84,7 +114,7 @@ async function runCatalog(): Promise<SeedStatus> {
 
 async function runCypher(status: SeedStatus): Promise<SeedStatus> {
   const db = await getDb();
-  if (!db) return status;
+  if (!db) return memoryStatus();
   const graph = db.selectGraph(graphName()) as unknown as CypherGraph;
   const marker = await readMarker(graph);
   if (marker.cypher >= CYPHER_VERSION) {
@@ -99,23 +129,20 @@ async function runCypher(status: SeedStatus): Promise<SeedStatus> {
       await graph.query(statement);
     } catch (err) {
       failed += 1;
-      if (failed <= 3) logBackend("falkordb", `seed.cypher statement skipped: ${safeError(err)}`);
+      if (failed <= 3) logBackend("falkordb", `seed.cypher statement failed: ${safeError(err)}`);
     }
   }
-  if (failed > 25) {
+  const marked = await writeSeedMarker(graph, "cypher", CYPHER_VERSION, failed);
+  if (!marked) {
     logBackend("falkordb", `seed.cypher left unfinished, ${failed} statements failed`);
-    return status;
+    throw new Error("cypher seed incomplete");
   }
-  await graph.query(
-    "MERGE (s:Seed {id:'gu-2026'}) SET s.cypher = $version, s.cypher_at = $at",
-    { params: { version: CYPHER_VERSION, at: new Date().toISOString() } },
-  );
-  logBackend("falkordb", `seed.cypher loaded, skipped ${failed}`);
+  logBackend("falkordb", "seed.cypher loaded");
   const counts = await falkorCounts(graph);
   return { ok: true, backend: "falkordb", ...counts, seeded: true, already: false };
 }
 
-async function loadCatalog(graph: CypherGraph): Promise<void> {
+async function loadCatalog(graph: CypherGraph): Promise<number> {
   const catalog = getCatalog();
   const at = catalog.fetchedAt || new Date().toISOString();
   await graph.query(
@@ -133,7 +160,8 @@ async function loadCatalog(graph: CypherGraph): Promise<void> {
      MERGE (me)-[:INTERESTED_IN]->(t)`,
     { params: { topics: [...DEFAULT_INTERESTS] } },
   );
-  await unwind(
+  let failed = 0;
+  failed += await unwind(
     graph,
     `UNWIND $rows AS row
      MERGE (p:Person {id: row.id})
@@ -152,7 +180,7 @@ async function loadCatalog(graph: CypherGraph): Promise<void> {
     })),
     20,
   );
-  await unwind(
+  failed += await unwind(
     graph,
     `UNWIND $rows AS row
      MERGE (c:Company {name: row.company})
@@ -165,7 +193,7 @@ async function loadCatalog(graph: CypherGraph): Promise<void> {
     })),
     40,
   );
-  await unwind(
+  failed += await unwind(
     graph,
     `UNWIND $rows AS row
      MERGE (s:Session {id: row.id})
@@ -189,7 +217,7 @@ async function loadCatalog(graph: CypherGraph): Promise<void> {
   const about = catalog.sessions.flatMap((session) =>
     session.topics.map((topic) => ({ sessionId: session.id, topic })),
   );
-  await unwind(
+  failed += await unwind(
     graph,
     `UNWIND $rows AS row
      MATCH (s:Session {id: row.sessionId})
@@ -201,7 +229,7 @@ async function loadCatalog(graph: CypherGraph): Promise<void> {
   const presents = catalog.sessions.flatMap((session) =>
     session.presenterIds.map((personId) => ({ personId, sessionId: session.id })),
   );
-  await unwind(
+  failed += await unwind(
     graph,
     `UNWIND $rows AS row
      MATCH (p:Person {id: row.personId})
@@ -210,31 +238,49 @@ async function loadCatalog(graph: CypherGraph): Promise<void> {
     presents,
     80,
   );
+  return failed;
 }
 
-async function unwind(
-  graph: CypherGraph,
+export async function writeSeedMarker(
+  graph: QueryGraph,
+  kind: keyof typeof MARKER_QUERIES,
+  version: number,
+  failed: number,
+): Promise<boolean> {
+  if (failed !== 0) return false;
+  await graph.query(MARKER_QUERIES[kind], {
+    params: { version, at: new Date().toISOString() },
+  });
+  return true;
+}
+
+export async function unwind(
+  graph: QueryGraph,
   cypher: string,
   rows: Record<string, string>[],
   size: number,
-): Promise<void> {
-  let failed = 0;
+): Promise<number> {
+  let unrecovered = 0;
+  let logged = false;
   for (let i = 0; i < rows.length; i += size) {
     const batch = rows.slice(i, i + size);
     try {
       await graph.query(cypher, { params: { rows: batch } });
     } catch (err) {
-      failed += 1;
-      if (failed === 1) logBackend("falkordb", `a seed batch failed: ${safeError(err)}`);
+      if (!logged) {
+        logged = true;
+        logBackend("falkordb", `a seed batch failed: ${safeError(err)}`);
+      }
       for (const row of batch) {
         try {
           await graph.query(cypher, { params: { rows: [row] } });
         } catch {
-          failed += 1;
+          unrecovered += 1;
         }
       }
     }
   }
+  return unrecovered;
 }
 
 async function readMarker(graph: CypherGraph): Promise<{ catalog: number; cypher: number }> {
@@ -261,16 +307,16 @@ export async function falkorCounts(graph: CypherGraph): Promise<{ nodes: number;
 }
 
 export async function liveCounts(): Promise<{ backend: GraphBackend; nodes: number; edges: number }> {
-  const status = await ensureCypher();
-  if (status.backend === "falkordb") {
-    const db = await getDb();
-    if (db) {
-      try {
+  if (process.env.FALKORDB_URL) {
+    try {
+      const db = await getDb();
+      if (db) {
         const counts = await falkorCounts(db.selectGraph(graphName()) as unknown as CypherGraph);
         return { backend: "falkordb", ...counts };
-      } catch (err) {
-        logBackend("memory", `count failed: ${safeError(err)}`);
       }
+    } catch (err) {
+      noteQueryFailure(err);
+      logBackend("memory", `count failed: ${safeError(err)}`);
     }
   }
   const counts = memoryGraphCounts(getCatalog());

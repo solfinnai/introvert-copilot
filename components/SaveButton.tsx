@@ -14,10 +14,12 @@ export function SaveButton({ person }: { person: SavedDraft }) {
         type="button"
         aria-pressed={on}
         aria-label={on ? `Remove ${person.name} from who I want to talk to` : `Save ${person.name}`}
-        className={`inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border border-line bg-white px-2.5 text-sm ${
+        disabled={!ready}
+        className={`inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border border-line bg-white px-2.5 text-sm disabled:cursor-not-allowed disabled:opacity-40 ${
           on ? "text-accent" : "text-mute"
         }`}
         onClick={() => {
+          if (!ready) return;
           if (!on && state.saved.length >= SAVED_CAP) {
             setFull(true);
             return;
