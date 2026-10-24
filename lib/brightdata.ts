@@ -8,27 +8,31 @@ const REQUEST_URL = "https://api.brightdata.com/request";
 const DATASET_URL =
   "https://api.brightdata.com/datasets/v3/scrape?dataset_id=gd_l1viktl72bvl7bjuj0&format=json";
 
-export function searchGoogle(query: string): Promise<LiveResult> {
+export const SERP_TIMEOUT_MS = 8_000;
+export const SITE_TIMEOUT_MS = 8_000;
+export const LINKEDIN_TIMEOUT_MS = 12_000;
+
+export function searchGoogle(query: string, timeoutMs = SERP_TIMEOUT_MS): Promise<LiveResult> {
   const zone = (process.env.BRIGHTDATA_SERP_ZONE || "").trim();
   const url = `https://www.google.com/search?q=${encodeURIComponent(query)}&brd_json=1&gl=us&hl=en`;
-  return postUnlocker(zone, url, 15000);
+  return postUnlocker(zone, url, timeoutMs);
 }
 
-export function unlockPage(pageUrl: string): Promise<LiveResult> {
+export function unlockPage(pageUrl: string, timeoutMs = SITE_TIMEOUT_MS): Promise<LiveResult> {
   if (!pageUrl || isLinkedInUrl(pageUrl) || isBlockedPublicUrl(pageUrl)) {
     return Promise.resolve({ ok: false, reason: "no public url" });
   }
   const zone = (process.env.BRIGHTDATA_UNLOCKER_ZONE || "").trim();
-  return postUnlocker(zone, pageUrl, 15000);
+  return postUnlocker(zone, pageUrl, timeoutMs);
 }
 
-export async function scrapeLinkedIn(profileUrl: string): Promise<LiveResult> {
+export async function scrapeLinkedIn(profileUrl: string, timeoutMs = LINKEDIN_TIMEOUT_MS): Promise<LiveResult> {
   const key = process.env.BRIGHTDATA_API_KEY;
   if (!key) return { ok: false, reason: "not configured" };
   const url = normalizeLinkedIn(profileUrl);
   if (!url) return { ok: false, reason: "no public url" };
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 18000);
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
     const response = await fetch(DATASET_URL, {
       method: "POST",
