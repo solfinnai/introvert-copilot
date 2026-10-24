@@ -1,0 +1,858 @@
+[
+  {
+    "id": "mario-rodriguez",
+    "name": "Mario Rodriguez",
+    "title": "Chief Product Officer",
+    "company": "GitHub",
+    "photo_url": "https://static.rainfocus.com/github/universe26/att/1687465755984001tNu7/attprofile/Mario%20Rodriguez_1790184807707001hhOi.jpg",
+    "photo_local": "photos/mario-rodriguez.jpg",
+    "linkedin_url": "https://www.linkedin.com/in/mariorodriguez3/",
+    "linkedin_source": "official Universe speaker profile",
+    "bio": "Mario Rodriguez leads GitHub's product organization and the company's AI strategy. He previously led the GitHub Copilot product line, launching and scaling it across thousands of organizations and millions of developers, and led GitHub's Enterprise business, which serves more than 90% of the Fortune 100. He has also been responsible for GitHub's core developer productivity services including repositories, pull requests, and issues. Mario joined GitHub following Microsoft's acquisition of the company, after more than a decade at Microsoft in engineering and product management roles spanning cloud services and developer tools. Earlier in his career he was a founding member of the team behind Xbox's Forza franchise. He founded a charter school expanding access to education in rural America.",
+    "session": {
+      "title": "Humans set direction. Agents close the loop.",
+      "type": "Main Stage",
+      "date": "2026-10-28",
+      "start": "11:15 AM",
+      "end": "11:45 AM",
+      "tz": "America/Los_Angeles",
+      "room": "Main Stage @ Festival Pavilion",
+      "session_id": "1790183556514001KFvX"
+    },
+    "all_sessions": [
+      {
+        "title": "Humans set direction. Agents close the loop.",
+        "type": "Main Stage",
+        "date": "2026-10-28",
+        "start": "11:15 AM",
+        "end": "11:45 AM",
+        "tz": "America/Los_Angeles",
+        "room": "Main Stage @ Festival Pavilion",
+        "session_id": "1790183556514001KFvX"
+      },
+      {
+        "title": "Session After Party: Humans set direction. Agents close the loop.",
+        "type": "Session After Party",
+        "date": "2026-10-28",
+        "start": "12:00 PM",
+        "end": "12:30 PM",
+        "tz": "America/Los_Angeles",
+        "room": "The Speakeasy @ GitHub Central, Festival Pavilion",
+        "session_id": "1791381794501001B57W"
+      }
+    ],
+    "topics": [
+      "AI agents",
+      "developer tools",
+      "GitHub Copilot"
+    ],
+    "sources": [
+      {
+        "url": "https://reg.githubuniverse.com/flow/github/universe26/attendee-portal/page/speakers",
+        "title": "GitHub Universe 2026 official speaker profile",
+        "date": "2026-09-23"
+      },
+      {
+        "url": "https://github.blog/news-insights/company-news/build-an-agent-into-any-app-with-the-github-copilot-sdk/",
+        "title": "Build an agent into any app with the GitHub Copilot SDK",
+        "date": "2026-01-22"
+      },
+      {
+        "url": "https://github.blog/author/mariorod/",
+        "title": "GitHub Copilot app: The agent-native desktop experience (author page)",
+        "date": "2026-06-02"
+      }
+    ],
+    "fetched_at": "2026-10-24T10:45:03-07:00"
+  },
+  {
+    "id": "jay-parikh",
+    "name": "Jay Parikh",
+    "title": "Executive Vice President, CoreAI",
+    "company": "Microsoft",
+    "photo_url": "https://static.rainfocus.com/github/universe26/att/1761163871884001lpsQ/attprofile/2026OCT_JayParikh_portrait-084BW%20%281%29_cropb2_1792758784459001flx8.jpg",
+    "photo_local": "photos/jay-parikh.jpg",
+    "linkedin_url": "https://www.linkedin.com/in/jayparikh/",
+    "linkedin_source": "stackoverflow.blog episode notes",
+    "bio": "Jay Parikh is a seasoned executive, board member, and advisor to some of the world’s fastest-growing and most successful consumer, developer, and enterprise technology companies. In October 2024, he joined Microsoft’s Senior Leadership Team as Executive Vice President of CoreAI, bringing deep expertise in engineering, product, and infrastructure to support CoreAI’s mission: Empower every developer to shape the future with AI. Beyond technology, Jay is committed to building talent, fostering culture, and accelerating customer value. Jay’s diverse background blends technical leadership with team-building, giving him a unique approach to scaling some of the world’s most iconic companies. As Vice President and Global Head of Engineering and Infrastructure at Facebook from 2009 to 2021, he led global teams that designed, developed, and operated the infrastructure powering Facebook’s products, supporting its growth from 300 million to more than 3 billion users. At other points in his career, Jay has held leadership roles at Lacework, Ning, Akamai Technologies, and NetGravity. Known for his inventive spirit, Jay holds more than 20 US patents.",
+    "session": {
+      "title": "Opening Keynote",
+      "type": "Keynote",
+      "date": "2026-10-28",
+      "start": "09:00 AM",
+      "end": "09:45 AM",
+      "tz": "America/Los_Angeles",
+      "room": "Main Stage @ Festival Pavilion",
+      "session_id": "1786370222106001jLNQ"
+    },
+    "all_sessions": [
+      {
+        "title": "Opening Keynote",
+        "type": "Keynote",
+        "date": "2026-10-28",
+        "start": "09:00 AM",
+        "end": "09:45 AM",
+        "tz": "America/Los_Angeles",
+        "room": "Main Stage @ Festival Pavilion",
+        "session_id": "1786370222106001jLNQ"
+      }
+    ],
+    "topics": [
+      "AI agents",
+      "AI platforms",
+      "engineering leadership"
+    ],
+    "sources": [
+      {
+        "url": "https://reg.githubuniverse.com/flow/github/universe26/attendee-portal/page/speakers",
+        "title": "GitHub Universe 2026 official speaker profile",
+        "date": "2026-10-06"
+      },
+      {
+        "url": "https://stackoverflow.blog/2026/07/10/building-more-than-just-an-agent-harness/",
+        "title": "Building more than just an agent harness (Stack Overflow Podcast)",
+        "date": "2026-07-10"
+      },
+      {
+        "url": "https://review.firstround.com/the-fastest-way-to-learn-is-to-run-two-competing-bets-jay-parikh-evp-coreai-microsoft/",
+        "title": "The fastest way to learn is to run two competing bets (First Round)",
+        "date": "2026-08-27"
+      }
+    ],
+    "fetched_at": "2026-10-24T10:45:03-07:00"
+  },
+  {
+    "id": "john-maeda",
+    "name": "John Maeda",
+    "title": "CVP Engineering, GitHub Design and Microsoft CoreAI Design",
+    "company": "Microsoft",
+    "photo_url": "https://static.rainfocus.com/github/universe26/att/1781817220425001qu6F/attprofile/Johnmaeda_1784565959790001LNl6.jpeg",
+    "photo_local": "photos/john-maeda.jpg",
+    "linkedin_url": "https://linkedin.com/in/johnmaeda",
+    "linkedin_source": "official Universe speaker profile",
+    "bio": "John is an American technologist and design leader who has spent his career translating between the worlds of computation, design, and business. It's a bridging act Wired once summed up this way: \"Maeda is to design what Warren Buffett is to finance.\" He currently leads design across GitHub and Microsoft CoreAI as Corporate Vice President of Engineering, and serves on the board of directors of MillerKnoll. His path there runs through the MIT Media Lab, the presidency of the Rhode Island School of Design, a design partner role at Kleiner Perkins, and executive roles at Automattic, Publicis Sapient, and Everbridge. The author of five books, including The Laws of Simplicity and How to Speak Machine, he has seen his work enter the permanent collections of MoMA and the Cartier Foundation, and he was the first recipient of the White House National Design Award. Off the clock, he collects seashells whose patterns mimic Rule 30 of Wolfram's cellular automata, proof that even his beachcombing is computational.",
+    "session": {
+      "title": "Sketching with code in the age of AI",
+      "type": "Main Stage",
+      "date": "2026-10-29",
+      "start": "01:05 PM",
+      "end": "01:35 PM",
+      "tz": "America/Los_Angeles",
+      "room": "Main Stage @ Festival Pavilion",
+      "session_id": "1777674201455001Cr9A"
+    },
+    "all_sessions": [
+      {
+        "title": "Sketching with code in the age of AI",
+        "type": "Main Stage",
+        "date": "2026-10-29",
+        "start": "01:05 PM",
+        "end": "01:35 PM",
+        "tz": "America/Los_Angeles",
+        "room": "Main Stage @ Festival Pavilion",
+        "session_id": "1777674201455001Cr9A"
+      }
+    ],
+    "topics": [
+      "design",
+      "creative coding",
+      "AI agents",
+      "agentic experience"
+    ],
+    "sources": [
+      {
+        "url": "https://reg.githubuniverse.com/flow/github/universe26/attendee-portal/page/speakers",
+        "title": "GitHub Universe 2026 official speaker profile",
+        "date": "2026-07-08"
+      },
+      {
+        "url": "https://johnmaeda.medium.com/design-in-tech-report-2026-from-ux-to-ax-f9d83164f4d2",
+        "title": "Design in Tech Report 2026: From UX to AX",
+        "date": "2026-03-18"
+      }
+    ],
+    "fetched_at": "2026-10-24T10:45:03-07:00"
+  },
+  {
+    "id": "idan-gazit",
+    "name": "Idan Gazit",
+    "title": "Head of GitHub Next",
+    "company": "GitHub",
+    "photo_url": "https://static.rainfocus.com/github/universe26/att/1694120273763001Iy5q/attprofile/Idan_1787603998244001pvYs.jpg",
+    "photo_local": "photos/idan-gazit.jpg",
+    "linkedin_url": "https://www.linkedin.com/in/idangazit/",
+    "linkedin_source": "official Universe speaker profile",
+    "bio": "Idan leads GitHub Next, the birthplace of GitHub Copilot and many more prototypes that explore how AI will make software development faster, easier, safer, and more accessible for developers everywhere. As a hybrid designer and developer, his interests span a variety of fields. Idan is keenly interested in data display issues, typography, and color. You’re likely to hear him talk about the pit of success and the importance of good nouns. Idan was previously a principal engineer at Heroku and is an alumnus of the Django web framework’s core development team. He is a firm believer in the power of web technologies and is most at home in them. Though many evenings you can find him soldering a new keyboard while trying to get Rust to run on a microcontroller.",
+    "session": {
+      "title": "What's next with GitHub Next: tomorrow's tools for making software",
+      "type": "Breakout Session",
+      "date": "2026-10-28",
+      "start": "12:30 PM",
+      "end": "01:10 PM",
+      "tz": "America/Los_Angeles",
+      "room": "Silent Disco Breakouts @ Festival Pavilion",
+      "session_id": "1787603491482001y0IY"
+    },
+    "all_sessions": [
+      {
+        "title": "What's next with GitHub Next: tomorrow's tools for making software",
+        "type": "Breakout Session",
+        "date": "2026-10-28",
+        "start": "12:30 PM",
+        "end": "01:10 PM",
+        "tz": "America/Los_Angeles",
+        "room": "Silent Disco Breakouts @ Festival Pavilion",
+        "session_id": "1787603491482001y0IY"
+      },
+      {
+        "title": "Inside the Lab with GitHub Next",
+        "type": "Breakout Session",
+        "date": "2026-10-28",
+        "start": "11:00 AM",
+        "end": "11:30 AM",
+        "tz": "America/Los_Angeles",
+        "room": "The Speakeasy @ GitHub Central, Festival Pavilion",
+        "session_id": "1791904799664001SHnG"
+      }
+    ],
+    "topics": [
+      "AI agents",
+      "developer tools",
+      "creative tools",
+      "research prototypes"
+    ],
+    "sources": [
+      {
+        "url": "https://reg.githubuniverse.com/flow/github/universe26/attendee-portal/page/speakers",
+        "title": "GitHub Universe 2026 official speaker profile",
+        "date": "2026-04-27"
+      },
+      {
+        "url": "https://githubnext.com/talks/realtime-multiplayer-automation-and-you/",
+        "title": "Realtime multiplayer, automation, and you! (AI Engineer World's Fair)",
+        "date": "2026-07-02"
+      },
+      {
+        "url": "https://githubnext.com/talks/",
+        "title": "One Developer, Two Dozen Agents, Zero Alignment (AI Engineer London)",
+        "date": "2026-04-09"
+      }
+    ],
+    "fetched_at": "2026-10-24T10:45:03-07:00"
+  },
+  {
+    "id": "maggie-appleton",
+    "name": "Maggie Appleton",
+    "title": "Staff Research Engineer",
+    "company": "GitHub",
+    "photo_url": "https://static.rainfocus.com/github/universe26/att/1761577835512001JaKw/attprofile/Maggie%20Appleton_1787604378698001nCxV.jpeg",
+    "photo_local": "photos/maggie-appleton.jpg",
+    "linkedin_url": "https://www.linkedin.com/in/maggieappleton/",
+    "linkedin_source": "official Universe speaker profile",
+    "bio": "Maggie Appleton is a designer, anthropologist, and mediocre developer. She’s a Staff Research Engineer at GitHub Next, where she builds prototypes that explore the next generation of agentic engineering tools. She’s enthusiastic about tools for thought, end-user programming, and digital gardening.",
+    "session": {
+      "title": "What's next with GitHub Next: tomorrow's tools for making software",
+      "type": "Breakout Session",
+      "date": "2026-10-28",
+      "start": "12:30 PM",
+      "end": "01:10 PM",
+      "tz": "America/Los_Angeles",
+      "room": "Silent Disco Breakouts @ Festival Pavilion",
+      "session_id": "1787603491482001y0IY"
+    },
+    "all_sessions": [
+      {
+        "title": "What's next with GitHub Next: tomorrow's tools for making software",
+        "type": "Breakout Session",
+        "date": "2026-10-28",
+        "start": "12:30 PM",
+        "end": "01:10 PM",
+        "tz": "America/Los_Angeles",
+        "room": "Silent Disco Breakouts @ Festival Pavilion",
+        "session_id": "1787603491482001y0IY"
+      },
+      {
+        "title": "Closing Keynote",
+        "type": "Keynote",
+        "date": "2026-10-29",
+        "start": "02:00 PM",
+        "end": "03:00 PM",
+        "tz": "America/Los_Angeles",
+        "room": "Main Stage @ Festival Pavilion",
+        "session_id": "1788965213758001y1se"
+      },
+      {
+        "title": "Inside the Lab with GitHub Next",
+        "type": "Breakout Session",
+        "date": "2026-10-28",
+        "start": "11:00 AM",
+        "end": "11:30 AM",
+        "tz": "America/Los_Angeles",
+        "room": "The Speakeasy @ GitHub Central, Festival Pavilion",
+        "session_id": "1791904799664001SHnG"
+      }
+    ],
+    "topics": [
+      "AI agents",
+      "interface design",
+      "tools for thought"
+    ],
+    "sources": [
+      {
+        "url": "https://reg.githubuniverse.com/flow/github/universe26/attendee-portal/page/speakers",
+        "title": "GitHub Universe 2026 official speaker profile",
+        "date": "2026-08-24"
+      },
+      {
+        "url": "https://maggieappleton.com/planning-agents",
+        "title": "Planning with Agents: Divided Worlds, Boundary Objects, and Thicker Interfaces",
+        "date": "2026-09-14"
+      },
+      {
+        "url": "https://maggieappleton.com/now-2026-08/",
+        "title": "Now: August 2026",
+        "date": "2026-08"
+      }
+    ],
+    "fetched_at": "2026-10-24T10:45:03-07:00"
+  },
+  {
+    "id": "kent-c-dodds",
+    "name": "Kent C. Dodds",
+    "title": "Product Engineer",
+    "company": "kody.codes",
+    "photo_url": "https://static.rainfocus.com/github/universe26/att/1785971794624001WhyC/attprofile/Kent%20C.%20Dodds_1789998476733001gPBA.png",
+    "photo_local": "photos/kent-c-dodds.jpg",
+    "linkedin_url": "https://www.linkedin.com/in/kentcdodds/",
+    "linkedin_source": "official Universe speaker profile",
+    "bio": "Kent C. Dodds is a world renowned web development educator and engineer. He's actively involved in the open source community. He is the creator of EpicProduct.engineer, EpicWeb.dev, EpicAI.pro, EpicReact.dev, and TestingJavaScript.com. He also built Kody, an open-source personal software ecosystem for multi-agent work. He's a Microsoft MVP, GitHub Star, instructor on egghead.io and Frontend Masters, live streamer, and podcaster. Kent is married and the father of six kids and he lives in Utah.",
+    "session": {
+      "title": "What's worth building when AI can build anything?",
+      "type": "Main Stage",
+      "date": "2026-10-29",
+      "start": "09:50 AM",
+      "end": "10:20 AM",
+      "tz": "America/Los_Angeles",
+      "room": "Main Stage @ Festival Pavilion",
+      "session_id": "1789650872339001QXAF"
+    },
+    "all_sessions": [
+      {
+        "title": "What's worth building when AI can build anything?",
+        "type": "Main Stage",
+        "date": "2026-10-29",
+        "start": "09:50 AM",
+        "end": "10:20 AM",
+        "tz": "America/Los_Angeles",
+        "room": "Main Stage @ Festival Pavilion",
+        "session_id": "1789650872339001QXAF"
+      },
+      {
+        "title": "Session After Party: What's worth building when AI can build anything?",
+        "type": "Session After Party",
+        "date": "2026-10-29",
+        "start": "10:35 AM",
+        "end": "11:05 AM",
+        "tz": "America/Los_Angeles",
+        "room": "The Speakeasy @ GitHub Central, Festival Pavilion",
+        "session_id": "1791126652057001FXKu"
+      }
+    ],
+    "topics": [
+      "AI agents",
+      "MCP",
+      "web development",
+      "developer education"
+    ],
+    "sources": [
+      {
+        "url": "https://reg.githubuniverse.com/flow/github/universe26/attendee-portal/page/speakers",
+        "title": "GitHub Universe 2026 official speaker profile",
+        "date": "2026-09-17"
+      },
+      {
+        "url": "https://kentcdodds.com/blog/introducing-kody-your-personal-software-factory",
+        "title": "Introducing Kody: Your Personal Software Factory",
+        "date": "2026-09-08"
+      }
+    ],
+    "fetched_at": "2026-10-24T10:45:03-07:00"
+  },
+  {
+    "id": "angie-jones",
+    "name": "Angie Jones",
+    "title": "VP",
+    "company": "Agentic AI Foundation",
+    "photo_url": "https://static.rainfocus.com/github/universe26/att/1692917321245001vYxt/attprofile/headshot-angie-jones_1775692230980001pxTe.jpg",
+    "photo_local": "photos/angie-jones.jpg",
+    "linkedin_url": "https://www.linkedin.com/in/angiejones/",
+    "linkedin_source": "official Universe speaker profile",
+    "bio": "Angie is the VP of Developer Experience at the Agentic AI Foundation, where she guides how agentic systems are designed, implemented, and adopted across the global developer ecosystem. An award-winning educator and international keynote speaker, Angie shares her extensive knowledge with software companies and conference audiences worldwide. As a Master Inventor, Angie is recognized for her innovative, out-of-the-box thinking, which has led to 27 patented inventions in virtual worlds, collaboration software, social networking, smarter planet initiatives, and software development processes.",
+    "session": {
+      "title": "Still open: How AI reshaped open source",
+      "type": "Panel Discussion",
+      "date": "2026-10-28",
+      "start": "03:30 PM",
+      "end": "04:10 PM",
+      "tz": "America/Los_Angeles",
+      "room": "BATS Theatre @ Fort Mason Building B, 3rd Floor",
+      "session_id": "1782252285787001MWBm"
+    },
+    "all_sessions": [
+      {
+        "title": "Still open: How AI reshaped open source",
+        "type": "Panel Discussion",
+        "date": "2026-10-28",
+        "start": "03:30 PM",
+        "end": "04:10 PM",
+        "tz": "America/Los_Angeles",
+        "room": "BATS Theatre @ Fort Mason Building B, 3rd Floor",
+        "session_id": "1782252285787001MWBm"
+      }
+    ],
+    "topics": [
+      "AI agents",
+      "open source",
+      "open standards",
+      "developer experience"
+    ],
+    "sources": [
+      {
+        "url": "https://reg.githubuniverse.com/flow/github/universe26/attendee-portal/page/speakers",
+        "title": "GitHub Universe 2026 official speaker profile",
+        "date": "2026-04-08"
+      },
+      {
+        "url": "https://aaif.io/blog/building-the-foundation-for-agentic-ai",
+        "title": "Building the Foundation for Agentic AI",
+        "date": "2026-04-02"
+      }
+    ],
+    "fetched_at": "2026-10-24T10:45:03-07:00"
+  },
+  {
+    "id": "angela-jiang",
+    "name": "Angela Jiang",
+    "title": "Head of Product, Claude Platform",
+    "company": "Anthropic",
+    "photo_url": "https://static.rainfocus.com/github/universe26/att/1792015053474001kVda/attprofile/Angela%20Jiang%2C%20Claude%20Platform_1792084633942001A1nk.jpeg",
+    "photo_local": "photos/angela-jiang.jpg",
+    "linkedin_url": "https://www.linkedin.com/in/angelajiang/",
+    "linkedin_source": "official Universe speaker profile",
+    "bio": "Angela Jiang is the Head of Product for the Claude Platform at Anthropic, including model APIs, hyperscaler integrations, agentic infrastructure, and connectivity controls for businesses as well as Anthropic’s own product infrastructure. Before joining Anthropic, she was Head of Product for the API Platform at OpenAI and led embedded payments at Stripe.",
+    "session": {
+      "title": "The view from the labs: What's next for AI-assisted development",
+      "type": "Main Stage",
+      "date": "2026-10-29",
+      "start": "09:00 AM",
+      "end": "09:30 AM",
+      "tz": "America/Los_Angeles",
+      "room": "Main Stage @ Festival Pavilion",
+      "session_id": "1776470103196001fJPe"
+    },
+    "all_sessions": [
+      {
+        "title": "The view from the labs: What's next for AI-assisted development",
+        "type": "Main Stage",
+        "date": "2026-10-29",
+        "start": "09:00 AM",
+        "end": "09:30 AM",
+        "tz": "America/Los_Angeles",
+        "room": "Main Stage @ Festival Pavilion",
+        "session_id": "1776470103196001fJPe"
+      }
+    ],
+    "topics": [
+      "AI agents",
+      "AI platforms",
+      "MCP"
+    ],
+    "sources": [
+      {
+        "url": "https://reg.githubuniverse.com/flow/github/universe26/attendee-portal/page/speakers",
+        "title": "GitHub Universe 2026 official speaker profile",
+        "date": "2026-10-14"
+      },
+      {
+        "url": "https://sequoiacap.com/podcast/anthropics-katelyn-lesse-angela-jiang-building-an-ecosystem-not-a-walled-garden",
+        "title": "Building an Ecosystem, not a Walled Garden (Sequoia Training Data)",
+        "date": "2026-07-14"
+      }
+    ],
+    "fetched_at": "2026-10-24T10:45:03-07:00"
+  },
+  {
+    "id": "rohan-varma",
+    "name": "Rohan Varma",
+    "title": "Product Lead, Enterprise Agents",
+    "company": "OpenAI",
+    "photo_url": "https://static.rainfocus.com/github/universe26/att/1785277817841001XlN9/attprofile/Rohan%20Varma_1785277995183001g7Vn.jpeg",
+    "photo_local": "photos/rohan-varma.jpg",
+    "linkedin_url": "https://www.linkedin.com/in/rohannvarma/",
+    "linkedin_source": "official Universe speaker profile",
+    "bio": "GAP",
+    "session": {
+      "title": "The view from the labs: What's next for AI-assisted development",
+      "type": "Main Stage",
+      "date": "2026-10-29",
+      "start": "09:00 AM",
+      "end": "09:30 AM",
+      "tz": "America/Los_Angeles",
+      "room": "Main Stage @ Festival Pavilion",
+      "session_id": "1776470103196001fJPe"
+    },
+    "all_sessions": [
+      {
+        "title": "The view from the labs: What's next for AI-assisted development",
+        "type": "Main Stage",
+        "date": "2026-10-29",
+        "start": "09:00 AM",
+        "end": "09:30 AM",
+        "tz": "America/Los_Angeles",
+        "room": "Main Stage @ Festival Pavilion",
+        "session_id": "1776470103196001fJPe"
+      },
+      {
+        "title": "Session After Party: The view from the labs: What's next for AI-assisted development",
+        "type": "Session After Party",
+        "date": "2026-10-29",
+        "start": "09:45 AM",
+        "end": "10:15 AM",
+        "tz": "America/Los_Angeles",
+        "room": "The Speakeasy @ GitHub Central, Festival Pavilion",
+        "session_id": "1791124397678001jrYp"
+      }
+    ],
+    "topics": [
+      "AI agents",
+      "coding agents",
+      "product management"
+    ],
+    "sources": [
+      {
+        "url": "https://reg.githubuniverse.com/flow/github/universe26/attendee-portal/page/speakers",
+        "title": "GitHub Universe 2026 official speaker profile",
+        "date": "2026-10-14"
+      },
+      {
+        "url": "https://www.linkedin.com/posts/rohannvarma_im-joining-openai-codex-to-work-on-the-future-activity-7431784004246216704---Ee",
+        "title": "I'm joining OpenAI Codex to work on the future of agentic development (LinkedIn post)",
+        "date": "GAP"
+      }
+    ],
+    "fetched_at": "2026-10-24T10:45:03-07:00"
+  },
+  {
+    "id": "cassidy-williams",
+    "name": "Cassidy Williams",
+    "title": "Sr. Director, Developer Advocacy",
+    "company": "GitHub",
+    "photo_url": "https://static.rainfocus.com/github/universe26/att/1725036381202001ffsN/attprofile/cityleansquareframed_1791496920152001DFwE.png",
+    "photo_local": "photos/cassidy-williams.jpg",
+    "linkedin_url": "GAP",
+    "linkedin_source": "GAP",
+    "bio": "Cassidy Williams (aka cassidoo) is Senior Director of Developer Advocacy at GitHub, where she helps developers build better with open source and modern developer tools. She's a software engineer, startup advisor, and investor, and writer of a weekly newsletter of tech news, coding practice, and jokes that's been running since 2017. Cassidy has spoken at the Grace Hopper Conference, SXSW, TEDx, the United Nations, and hundreds of other events, and was named one of Glamour's 35 Women Under 35 Changing the Tech Industry. Based in Chicago, she loves mechanical keyboards, cool pens, and making memes.",
+    "session": {
+      "title": "Opening Keynote",
+      "type": "Keynote",
+      "date": "2026-10-28",
+      "start": "09:00 AM",
+      "end": "09:45 AM",
+      "tz": "America/Los_Angeles",
+      "room": "Main Stage @ Festival Pavilion",
+      "session_id": "1786370222106001jLNQ"
+    },
+    "all_sessions": [
+      {
+        "title": "Opening Keynote",
+        "type": "Keynote",
+        "date": "2026-10-28",
+        "start": "09:00 AM",
+        "end": "09:45 AM",
+        "tz": "America/Los_Angeles",
+        "room": "Main Stage @ Festival Pavilion",
+        "session_id": "1786370222106001jLNQ"
+      }
+    ],
+    "topics": [
+      "developer advocacy",
+      "AI agents",
+      "developer education"
+    ],
+    "sources": [
+      {
+        "url": "https://reg.githubuniverse.com/flow/github/universe26/attendee-portal/page/speakers",
+        "title": "GitHub Universe 2026 official speaker profile",
+        "date": "2026-10-08"
+      },
+      {
+        "url": "https://github.blog/ai-and-ml/decoding-the-new-ai-lingo-loops-harnesses-squads-hill-climbing-oh-my/",
+        "title": "Decoding the new AI lingo: Loops, harnesses, squads, hill climbing... oh my!",
+        "date": "GAP"
+      },
+      {
+        "url": "https://github.blog/ai-and-ml/llms/why-ai-is-pushing-developers-toward-typed-languages/",
+        "title": "Why AI is pushing developers toward typed languages",
+        "date": "GAP"
+      }
+    ],
+    "fetched_at": "2026-10-24T10:45:03-07:00"
+  },
+  {
+    "id": "martin-woodward",
+    "name": "Martin Woodward",
+    "title": "VP, Developer Relations",
+    "company": "GitHub",
+    "photo_url": "https://static.rainfocus.com/github/universe26/att/1687465756038001t5oT/attprofile/M.%20Woodward_1755712125897001m5xy_1788382348730001m6LD.jpeg",
+    "photo_local": "photos/martin-woodward.jpg",
+    "linkedin_url": "GAP",
+    "linkedin_source": "GAP",
+    "bio": "Martin is the VP of developer relations at GitHub, helping developers and open source communities create delightful things. Prior to that role, he was part of the Microsoft team that built tooling for DevOps teams inside and outside the company, transforming how Microsoft builds software—by reshaping how it collaborates with open source communities and engages with developers. Martin was the original creator of the Microsoft organization on GitHub. He also helped set up the .NET Foundation and brought in companies like Amazon, Google, Samsung, and Red Hat to help drive its future direction. Martin joined Microsoft when it acquired his five-person startup—built on an Eclipse-based Java platform—and later served on the acquisition team when Microsoft acquired GitHub.",
+    "session": {
+      "title": "Closing Keynote",
+      "type": "Keynote",
+      "date": "2026-10-29",
+      "start": "02:00 PM",
+      "end": "03:00 PM",
+      "tz": "America/Los_Angeles",
+      "room": "Main Stage @ Festival Pavilion",
+      "session_id": "1788965213758001y1se"
+    },
+    "all_sessions": [
+      {
+        "title": "Closing Keynote",
+        "type": "Keynote",
+        "date": "2026-10-29",
+        "start": "02:00 PM",
+        "end": "03:00 PM",
+        "tz": "America/Los_Angeles",
+        "room": "Main Stage @ Festival Pavilion",
+        "session_id": "1788965213758001y1se"
+      }
+    ],
+    "topics": [
+      "developer relations",
+      "open source",
+      "GitHub Copilot"
+    ],
+    "sources": [
+      {
+        "url": "https://reg.githubuniverse.com/flow/github/universe26/attendee-portal/page/speakers",
+        "title": "GitHub Universe 2026 official speaker profile",
+        "date": "2026-09-14"
+      },
+      {
+        "url": "https://stateofopencon.com/2026/09/25/2026-martinwoodward-speaker/",
+        "title": "State of Open Conference 26 speaker page",
+        "date": "2026-09-25"
+      },
+      {
+        "url": "https://github.blog/author/martinwoodward/",
+        "title": "Martin Woodward, GitHub Blog author page",
+        "date": "GAP"
+      }
+    ],
+    "fetched_at": "2026-10-24T10:45:03-07:00"
+  },
+  {
+    "id": "yasuhiro-osaki",
+    "name": "Yasuhiro Osaki",
+    "title": "Software Engineer",
+    "company": "Sony",
+    "photo_url": "https://static.rainfocus.com/github/universe26/att/1696301111381001ifAP/attprofile/20230329_1785399789757001jGYg.jpg",
+    "photo_local": "photos/yasuhiro-osaki.jpg",
+    "linkedin_url": "https://www.linkedin.com/in/yasuhiro-osaki-769025b2/",
+    "linkedin_source": "official Universe speaker profile",
+    "bio": "Yasuhiro is a Software Engineer at Sony, where he has spent over a decade driving GitHub adoption and serving as GitHub Owner across the organization. Sony’s development landscape spans embedded software to web and cloud applications, and he has developed enterprise-specific strategies for GitHub utilization at scale. In the past year alone, Yasuhiro helped grow GitHub Enterprise Cloud users from 4,000 to 7,000 and GitHub Copilot users from 900 to 4,000. He currently advises multiple organizations as a GitHub Enterprise Owner. He holds three GitHub Certifications (Actions, Admin, and GitHub Advanced Security) and recently spoke at GitHub Universe ’25 Recap Tokyo, receiving an audience rating of 4.38 out of 5.",
+    "session": {
+      "title": "GitHub configuration as code: Scaling org management with Terraform",
+      "type": "Product Demo",
+      "date": "2026-10-29",
+      "start": "09:15 AM",
+      "end": "09:30 AM",
+      "tz": "America/Los_Angeles",
+      "room": "Silent Disco Demos @ Festival Pavilion",
+      "session_id": "1777547424946001LZQq"
+    },
+    "all_sessions": [
+      {
+        "title": "GitHub configuration as code: Scaling org management with Terraform",
+        "type": "Product Demo",
+        "date": "2026-10-29",
+        "start": "09:15 AM",
+        "end": "09:30 AM",
+        "tz": "America/Los_Angeles",
+        "room": "Silent Disco Demos @ Festival Pavilion",
+        "session_id": "1777547424946001LZQq"
+      }
+    ],
+    "topics": [
+      "entertainment tech",
+      "platform engineering",
+      "infrastructure as code"
+    ],
+    "sources": [
+      {
+        "url": "https://reg.githubuniverse.com/flow/github/universe26/attendee-portal/page/speakers",
+        "title": "GitHub Universe 2026 official speaker profile",
+        "date": "2026-04-30"
+      }
+    ],
+    "fetched_at": "2026-10-24T10:45:03-07:00"
+  },
+  {
+    "id": "qianqian-ye",
+    "name": "Qianqian Ye",
+    "title": "Director of Creative Technology and Adjunct Associate Professor",
+    "company": "Processing Foundation, University of Southern California",
+    "photo_url": "https://static.rainfocus.com/github/universe26/att/1775673106371001R3KP/attprofile/qianqian-ye-profile-2026_1785453605085001ZeAi.jpg",
+    "photo_local": "photos/qianqian-ye.jpg",
+    "linkedin_url": "https://www.linkedin.com/in/qianqianye",
+    "linkedin_source": "official Universe speaker profile",
+    "bio": "Qianqian (Q) Ye is a Chinese creative technologist, designer, and educator based in Los Angeles. As Director of Creative Technology at the Processing Foundation, they lead projects, programs, and partnerships that connect open-source technology, creative practice, and community. Qianqian has taught creative coding as an Adjunct Associate Professor in USC's Media Arts + Practice program since 2020. From 2021 to 2025, they served as p5.js Lead at the Processing Foundation, overseeing the design, development, and community stewardship of p5.js, an open-source coding tool for accessible, inclusive creative coding used by more than 5 million people worldwide. They have also been an Internet Archive DWeb Fellow, NYU ITP/IMA Project Fellow, and Senior Civic Media Fellow at the USC Annenberg Innovation Lab.",
+    "session": {
+      "title": "Sketching with code in the age of AI",
+      "type": "Main Stage",
+      "date": "2026-10-29",
+      "start": "01:05 PM",
+      "end": "01:35 PM",
+      "tz": "America/Los_Angeles",
+      "room": "Main Stage @ Festival Pavilion",
+      "session_id": "1777674201455001Cr9A"
+    },
+    "all_sessions": [
+      {
+        "title": "Sketching with code in the age of AI",
+        "type": "Main Stage",
+        "date": "2026-10-29",
+        "start": "01:05 PM",
+        "end": "01:35 PM",
+        "tz": "America/Los_Angeles",
+        "room": "Main Stage @ Festival Pavilion",
+        "session_id": "1777674201455001Cr9A"
+      }
+    ],
+    "topics": [
+      "creative coding",
+      "creator tools",
+      "open source",
+      "arts and technology"
+    ],
+    "sources": [
+      {
+        "url": "https://reg.githubuniverse.com/flow/github/universe26/attendee-portal/page/speakers",
+        "title": "GitHub Universe 2026 official speaker profile",
+        "date": "2026-05-01"
+      },
+      {
+        "url": "https://processingfoundation.org/blog/celebrating-4-years-of-p5js-leadership-with-qianqian-ye/",
+        "title": "Celebrating 4 Years of p5.js Leadership with Qianqian Ye",
+        "date": "GAP"
+      }
+    ],
+    "fetched_at": "2026-10-24T10:45:03-07:00"
+  },
+  {
+    "id": "mina-tawadrous",
+    "name": "Mina Tawadrous",
+    "title": "Associate Director, Product Management",
+    "company": "SiriusXM",
+    "photo_url": "https://static.rainfocus.com/github/universe26/att/1699482521920001jIKT/attprofile/Headshot_1777517427580001cVpQ.png",
+    "photo_local": "photos/mina-tawadrous.jpg",
+    "linkedin_url": "https://www.linkedin.com/in/mina-tawadrous/",
+    "linkedin_source": "official Universe speaker profile",
+    "bio": "Mina leads Product in Platform Engineering at SiriusXM, where he works on developer productivity and experience, and on moving product decisions out of spreadsheets and into code. Before product management, he built games — a background that’s made him allergic to internal tools nobody wants to open. He’s previously spoken on “Assumptions as Code” and on how internal product management differs from its external counterpart. Across both, he’s made a habit of applying engineering rigor to the parts of product work that usually escape it. Based in Toronto, Mina is raising three kids, working through a graphic novel collection that keeps outgrowing its shelf, and maintaining an absurd yo-yo collection on the side.",
+    "session": {
+      "title": "Prioritization as code: Assumptions by pull request, scored by AI",
+      "type": "Ship & Tell",
+      "date": "2026-10-29",
+      "start": "01:20 PM",
+      "end": "01:35 PM",
+      "tz": "America/Los_Angeles",
+      "room": "Ship & Tell @ Firehouse",
+      "session_id": "1777516784245001f6zP"
+    },
+    "all_sessions": [
+      {
+        "title": "Prioritization as code: Assumptions by pull request, scored by AI",
+        "type": "Ship & Tell",
+        "date": "2026-10-29",
+        "start": "01:20 PM",
+        "end": "01:35 PM",
+        "tz": "America/Los_Angeles",
+        "room": "Ship & Tell @ Firehouse",
+        "session_id": "1777516784245001f6zP"
+      }
+    ],
+    "topics": [
+      "entertainment tech",
+      "product management",
+      "AI prioritization"
+    ],
+    "sources": [
+      {
+        "url": "https://reg.githubuniverse.com/flow/github/universe26/attendee-portal/page/speakers",
+        "title": "GitHub Universe 2026 official speaker profile",
+        "date": "2026-04-30"
+      }
+    ],
+    "fetched_at": "2026-10-24T10:45:03-07:00"
+  },
+  {
+    "id": "jake-albaugh",
+    "name": "Jake Albaugh",
+    "title": "Developer Advocate",
+    "company": "Figma",
+    "photo_url": "https://static.rainfocus.com/github/universe26/att/1721921357878001AGv8/attprofile/portrait_1785967021579001Qzr0.png",
+    "photo_local": "photos/jake-albaugh.jpg",
+    "linkedin_url": "https://www.linkedin.com/in/jak-e/",
+    "linkedin_source": "official Universe speaker profile",
+    "bio": "Jake is a Developer Advocate at Figma, where they work across marketing, product, and sales to create value for developers. Before joining Figma, Jake spent 12 years as a software engineer, working across the web stack and helping bridge the gap between design and development. Their experience includes building tools for front-end developers as an early hire at CodePen. Creatively, Jake builds web toys at www.jake.fun, teaches algorithmic music and the Web Audio API, and has been playing survival Minecraft since 2010.",
+    "session": {
+      "title": "How to see what your agent is building before it builds it (Sponsored)",
+      "type": "Breakout Session",
+      "date": "2026-10-28",
+      "start": "03:30 PM",
+      "end": "04:10 PM",
+      "tz": "America/Los_Angeles",
+      "room": "Cowell Theater @ Gateway Pavilion",
+      "session_id": "1777591820072001GDDH"
+    },
+    "all_sessions": [
+      {
+        "title": "How to see what your agent is building before it builds it (Sponsored)",
+        "type": "Breakout Session",
+        "date": "2026-10-28",
+        "start": "03:30 PM",
+        "end": "04:10 PM",
+        "tz": "America/Los_Angeles",
+        "room": "Cowell Theater @ Gateway Pavilion",
+        "session_id": "1777591820072001GDDH"
+      }
+    ],
+    "topics": [
+      "design tools",
+      "MCP",
+      "AI agents",
+      "creator tools"
+    ],
+    "sources": [
+      {
+        "url": "https://reg.githubuniverse.com/flow/github/universe26/attendee-portal/page/speakers",
+        "title": "GitHub Universe 2026 official speaker profile",
+        "date": "2026-04-30"
+      },
+      {
+        "url": "https://config.figma.com/san-francisco/session/07a28549-f6a7-4621-8dca-504608ad449b/",
+        "title": "Figma deep dive: Agentic workflows and the MCP (Config 2026)",
+        "date": "GAP"
+      },
+      {
+        "url": "https://help.figma.com/hc/en-us/articles/36189347137047",
+        "title": "Figma MCP collection: Figma + Developer Workflows (feat. Jake Albaugh)",
+        "date": "GAP"
+      }
+    ],
+    "fetched_at": "2026-10-24T10:45:03-07:00"
+  }
+]

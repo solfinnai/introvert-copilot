@@ -1,0 +1,2053 @@
+[
+ {
+  "id": "jake-albaugh",
+  "name": "Jake Albaugh",
+  "title": "Developer Advocate",
+  "company": "Figma",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1721921357878001AGv8/attprofile/portrait_1785967021579001Qzr0.png",
+  "linkedin_url": "https://www.linkedin.com/in/jak-e/",
+  "sessions": [
+   "How to see what your agent is building before it builds it (Sponsored)"
+  ]
+ },
+ {
+  "id": "bas-alberts",
+  "name": "Bas Alberts",
+  "title": "Principal Security Reseracher",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1745936367087001EQAS/attprofile/IMG_4917_1786633288639001UN2X.jpeg",
+  "linkedin_url": "GAP",
+  "sessions": [
+   "How GitHub secures open source",
+   "Session After Party: How GitHub secures open source"
+  ]
+ },
+ {
+  "id": "matt-alvarez",
+  "name": "Matt Alvarez",
+  "title": "Principal Software Engineer",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1756150958160001eo6d/attprofile/Matt%20Alvarez_1789756467582001pk4t.jpeg",
+  "linkedin_url": "GAP",
+  "sessions": [
+   "Building Copilot in the cloud"
+  ]
+ },
+ {
+  "id": "jeff-an",
+  "name": "Jeff An",
+  "title": "CTO & Co-founder",
+  "company": "Momentic",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1787616064220001mxn7/attprofile/jeff_1787616064361001mSI7.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/jeff-an/",
+  "sessions": [
+   "Beyond pass or fail: How agents verify AI-generated code (Sponsored)"
+  ]
+ },
+ {
+  "id": "alexander-androncik",
+  "name": "Alexander Androncik",
+  "title": "Corp. VP, Applied AI",
+  "company": "Advanced Micro Devices (AMD)",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1698155176352001xFka/attprofile/Alex%20Androncik_1785955303028001dBOU.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/alexander-androncik-4bab33349/",
+  "sessions": [
+   "Beyond \"hours saved\": How AMD and ING measure AI at enterprise scale"
+  ]
+ },
+ {
+  "id": "maggie-appleton",
+  "name": "Maggie Appleton",
+  "title": "Staff Research Engineer",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1761577835512001JaKw/attprofile/Maggie%20Appleton_1787604378698001nCxV.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/maggieappleton/",
+  "sessions": [
+   "What's next with GitHub Next: tomorrow's tools for making software",
+   "Closing Keynote",
+   "Inside the Lab with GitHub Next"
+  ]
+ },
+ {
+  "id": "julio-arruda",
+  "name": "Julio Arruda",
+  "title": "Chief Architect",
+  "company": "GFT Technologies",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1683652303283001DEOr/attprofile/JEZ08143_1785360655011001jMnd.jpeg",
+  "linkedin_url": "https://linkedin.com/in/julioarrudac",
+  "sessions": [
+   "How to shift specifications from contracts to hypotheses"
+  ]
+ },
+ {
+  "id": "kevin-backhouse",
+  "name": "Kevin Backhouse",
+  "title": "Staff Manager, Security Research",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1685735841165001lbOJ/attprofile/PXL_20240710_185207656.PORTRAIT%20%283%29_1785439363231001Uh3I.jpg",
+  "linkedin_url": "https://uk.linkedin.com/in/kevinbackhouse",
+  "sessions": [
+   "Drowning in AI-generated vulnerability reports? Here's how to stay afloat"
+  ]
+ },
+ {
+  "id": "ayman-bagabas",
+  "name": "Ayman Bagabas",
+  "title": "Senior Software Engineer",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1786655592532001E5CV/attprofile/Ayman%202026%20Portraits%20by%20Saif-03_1790805149706001sNv4.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/aymanbagabas/",
+  "sessions": [
+   "Rediscover the command line: Practical workflows with GitHub CLI"
+  ]
+ },
+ {
+  "id": "eric-bailey",
+  "name": "Eric Bailey",
+  "title": "Accessibility advocate",
+  "company": "Independent",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1723487023886001ahix/attprofile/eric-bailey-speaker-photo_1785778499275001bU20.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/ericwbailey/",
+  "sessions": [
+   "Accelerate accessibility with AI and automation"
+  ]
+ },
+ {
+  "id": "leo-balter",
+  "name": "Leo Balter",
+  "title": "Senior Product Manager",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1692886929706001yQKB/attprofile/IMG_7629_1788907593666001XOxu.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/leobalter/",
+  "sessions": [
+   "What happens behind the scenes when you run npm install"
+  ]
+ },
+ {
+  "id": "sam-basu",
+  "name": "Sam Basu",
+  "title": "Lead Developer Advocate",
+  "company": "Uno Platform",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1776137309458001vjsc/attprofile/Headshot_1776397286986001gG2m.png",
+  "linkedin_url": "https://www.linkedin.com/in/isambasu/",
+  "sessions": [
+   "MCP, skills, or custom agents: Picking the right tool for the job"
+  ]
+ },
+ {
+  "id": "michael-beemer",
+  "name": "Michael Beemer",
+  "title": "Principle Product Manager",
+  "company": "Dynatrace",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1792785179320001iUwm/attprofile/1629681370639_1792786106112001oCel.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/beeme1mr/",
+  "sessions": [
+   "Your agents write the fix. Observability supplies the context. (Sponsored)"
+  ]
+ },
+ {
+  "id": "dave-benedic",
+  "name": "Dave Benedic",
+  "title": "Sr. Manager - Agentic Platforms",
+  "company": "Insight",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1777580256403001HBaF/attprofile/Dave%20ben_1791398618072001RGzp.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/david-benedic-bb21358b/",
+  "sessions": [
+   "Going beyond suggestions: How to govern agentic workflows in GitHub (Sponsored)"
+  ]
+ },
+ {
+  "id": "brendan-bergen",
+  "name": "Brendan Bergen",
+  "title": "Director, AI Enablement",
+  "company": "Vanguard",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1777590287143001mnTA/attprofile/Brendan%20Bergen_1786068243574001Xw6z.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/brendan-bergen-6176661",
+  "sessions": [
+   "From AI-assisted work to agent-enabled delivery: Scaling AI across product teams"
+  ]
+ },
+ {
+  "id": "abel-berhane",
+  "name": "Abel Berhane",
+  "title": "Sr Service Delivery Engineer",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1774907852299001CTAy/attprofile/TeamsPhoto_1787934667284001YI9c.PNG",
+  "linkedin_url": "GAP",
+  "sessions": [
+   "Admin readiness for AI usage management"
+  ]
+ },
+ {
+  "id": "kartik-bharath",
+  "name": "Kartik Bharath",
+  "title": "Solutions Engineer",
+  "company": "Tailscale",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1785195220343001KR0X/attprofile/2026_1786636814797001cZLW.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/kartik-ram-bharath/",
+  "sessions": [
+   "Agent-driven deployment beyond localhost, shared securely with your team (Sponsored)"
+  ]
+ },
+ {
+  "id": "tom-bisbee",
+  "name": "Tom Bisbee",
+  "title": "Engineering Leader",
+  "company": "Rubrik",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1786715913621001KAkf/attprofile/Tom%20Bisbee_1786715913796001K2TA.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/tom-bisbee/",
+  "sessions": [
+   "AI and attacks wipe your code and workflow in seconds. Can you recover? (Sponsored)"
+  ]
+ },
+ {
+  "id": "sue-black",
+  "name": "Sue Black",
+  "title": "Professor of Computer Science and Technology Evangelist",
+  "company": "Durham University",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1789651997091001h2xh/attprofile/Sue%20Black_1790265519368001MrSo.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/sueblack/",
+  "sessions": [
+   "What's worth building when AI can build anything?",
+   "Session After Party: What's worth building when AI can build anything?"
+  ]
+ },
+ {
+  "id": "pierce-boggan",
+  "name": "Pierce Boggan",
+  "title": "Product - GitHub Copilot",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1789140562894001l2AC/attprofile/image%20%284%29_1792684529580001vpUP.png",
+  "linkedin_url": "https://www.linkedin.com/in/pierceboggan/",
+  "sessions": [
+   "Work together, your way, with GitHub Copilot",
+   "Session After Party: Work together, your way, with GitHub Copilot"
+  ]
+ },
+ {
+  "id": "evan-boyle",
+  "name": "Evan Boyle",
+  "title": "Principal Manager, Software Engineering",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1791496580152001KuzL/attprofile/Evan%20Boyle_1792505754717001qAgS.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/evan-boyle-107a1445/",
+  "sessions": [
+   "Humans set direction. Agents close the loop.",
+   "Session After Party: Humans set direction. Agents close the loop."
+  ]
+ },
+ {
+  "id": "damian-brady",
+  "name": "Damian Brady",
+  "title": "Staff Developer Advocate",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1696543287344001dF9K/attprofile/Damian%20Brady_1792014421629001LTwE.png",
+  "linkedin_url": "GAP",
+  "sessions": [
+   "Opening Keynote"
+  ]
+ },
+ {
+  "id": "yanan-cai",
+  "name": "Yanan Cai",
+  "title": "Principal Product Manager",
+  "company": "Microsoft",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1791561115557001TFez/attprofile/E01DLHH5JM6-U0AJUG0GU65-63d158fa43ad-512_1791561142837001vu4y.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/yanan-cai-6239a4ab/",
+  "sessions": [
+   "How Microsoft AI builds coding models optimized for GitHub Copilot"
+  ]
+ },
+ {
+  "id": "alejandro-carderera",
+  "name": "Alejandro Carderera",
+  "title": "Staff Applied Researcher",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1730130715640001vsRb/attprofile/AlexColor_V1%20%284%29_1777558075779001yYMa.png",
+  "linkedin_url": "https://www.linkedin.com/in/alejandrocarderera",
+  "sessions": [
+   "How GitHub taught Copilot to remember and when to forget"
+  ]
+ },
+ {
+  "id": "jorge-castro",
+  "name": "Jorge Castro",
+  "title": "Open Source Community Engineer and Developer Relations",
+  "company": "CNCF",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1715181454175001Hmj1/attprofile/k8s-pp_1787586451294001N7SU.png",
+  "linkedin_url": "https://www.linkedin.com/in/jorge-castro2112/",
+  "sessions": [
+   "What open source can teach us about agents in CI/CD"
+  ]
+ },
+ {
+  "id": "brian-celenza",
+  "name": "Brian Celenza",
+  "title": "Principal Software Engineer",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1730217678268001g2iV/attprofile/me_1791587256361001AhlN.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/bcelenza/",
+  "sessions": [
+   "Scaling GitHub’s infrastructure for how developers build today"
+  ]
+ },
+ {
+  "id": "walker-chabbott",
+  "name": "Walker Chabbott",
+  "title": "Product Manager III",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1695047642558001tX7W/attprofile/Facetune_23-07-2024-11-24-02_1775249888564001HlsX.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/wchabbott/",
+  "sessions": [
+   "Your benchmark is lying: What evals actually look like"
+  ]
+ },
+ {
+  "id": "donia-chaiehloudj",
+  "name": "Donia Chaiehloudj",
+  "title": "Senior Software Engineer",
+  "company": "Isovalent part of Cisco",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1776153290962001Ywx4/attprofile/Donia_Chaiehloudj_profile_picture%20%288%29_1777490074718001WUcS.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/donia-chaiehloudj",
+  "sessions": [
+   "Who's watching the agents? What AI code does in production"
+  ]
+ },
+ {
+  "id": "ying-chang",
+  "name": "Ying Chang",
+  "title": "Sr. Product Manager",
+  "company": "Microsoft",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1791994844565001HQP8/attprofile/Ying%20Chang_1791995040047001R003.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/ying-chang-187b6045/",
+  "sessions": [
+   "Agentic security for every developer"
+  ]
+ },
+ {
+  "id": "james-chatmas",
+  "name": "James Chatmas",
+  "title": "Principal Solutions Engineer",
+  "company": "Octopus Deploy",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1696509573849001itAh/attprofile/T02G7QA31-UJ751GRKN-e18d02e94077-512_1785768836719001rKVc.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/jchatmas/",
+  "sessions": [
+   "Day 1 deploy, day 2 recovery: AI agents across the full delivery lifecycle (Sponsored)"
+  ]
+ },
+ {
+  "id": "carlin-cherry",
+  "name": "Carlin Cherry",
+  "title": "Senior Product Manager",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1709164010992001eEdt/attprofile/2023MayDSC_1442_Carlin_centered_Crop_1785508858221001fqiH.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/carlincherry/",
+  "sessions": [
+   "Resolve your security alerts faster with GitHub Copilot",
+   "How to think about reachability and use it to prioritize vulnerabilities"
+  ]
+ },
+ {
+  "id": "annamalai-chockalingam",
+  "name": "Annamalai Chockalingam",
+  "title": "Sr. Product Manager, Local AI Developers",
+  "company": "NVIDIA",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1792185660142001bW4V/attprofile/1623210736655_1792696557795001Jvk2.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/achocka/",
+  "sessions": [
+   "Build and run AI locally with NVIDIA (Sponsored)"
+  ]
+ },
+ {
+  "id": "callum-cieciala",
+  "name": "Callum Cieciala",
+  "title": "VP, Developer Experience",
+  "company": "Galaxy",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1777561131408001fYWn/attprofile/hs2_1786098449413001gkLt.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/callumcieciala",
+  "sessions": [
+   "The Low Orbit Agentic Cannon: Scaling Copilot through internal tooling"
+  ]
+ },
+ {
+  "id": "jon-clements",
+  "name": "Jon Clements",
+  "title": "DevOps & Pipeline Product Manager",
+  "company": "Chevron",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1724863931261001IfNJ/attprofile/575ed616-1e9b-4eaa-ab95-d5fe0723cdc0_1790603737698001AuoY.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/jonathan-clements-b9441733",
+  "sessions": [
+   "Beyond the repository: Using a migration to rethink how you build"
+  ]
+ },
+ {
+  "id": "gregg-cochran",
+  "name": "Gregg Cochran",
+  "title": "Staff Program Manager",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1724851742880001nFr3/attprofile/Gregg%20Cochran_1786061293170001Poxj.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/greggcochran/",
+  "sessions": [
+   "How one open source project turned funding into security at scale"
+  ]
+ },
+ {
+  "id": "alpha-romer-coma",
+  "name": "Alpha Romer Coma",
+  "title": "Senior Data Engineer",
+  "company": "ViableView",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1744218970649001rp28/attprofile/coma_1777209216763001Q1XM.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/alpharomercoma",
+  "sessions": [
+   "When is local Copilot worth it? Three open-weight coders vs. Copilot out of the box"
+  ]
+ },
+ {
+  "id": "frances-coronel",
+  "name": "Frances Coronel",
+  "title": "Senior Software Engineer",
+  "company": "Slack",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1718209686405001HTMY/attprofile/home_1786061344372001xm0N.jpg",
+  "linkedin_url": "https://linkedin.com/in/francescoronel",
+  "sessions": [
+   "How a shared AI config became Slack's internal tool platform"
+  ]
+ },
+ {
+  "id": "landon-cox",
+  "name": "Landon Cox",
+  "title": "Senior Principle Researcher",
+  "company": "Microsoft",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1777673854269001pz9T/attprofile/Landon%20Cox_1792464062560001jrkl.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/landon-cox-6727363/",
+  "sessions": [
+   "Agentic Workflows: Automation at scale"
+  ]
+ },
+ {
+  "id": "christophe-cr-mon",
+  "name": "Christophe Crémon",
+  "title": "Forward Deployed Engineer - Agentic AI",
+  "company": "Onepoint",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1777559014230001dVfL/attprofile/profile-pic_1777560881876001TiV1.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/christophecremon",
+  "sessions": [
+   "Capture the flag: Three AI teams, one codebase, zero mercy"
+  ]
+ },
+ {
+  "id": "peli-de-halleux",
+  "name": "Peli de Halleux",
+  "title": "Agentic Engineer, GitHub Next",
+  "company": "Microsoft",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1777450204317001zcJY/attprofile/Peli_1786068200969001wq5a.png",
+  "linkedin_url": "https://www.linkedin.com/in/pelidehalleux/",
+  "sessions": [
+   "The factory mindset: Agentic workflows in production",
+   "Session After Party: The factory mindset: Agentic workflows in production",
+   "Agentic Workflows: Automation at scale"
+  ]
+ },
+ {
+  "id": "samuvel-tamilselvan-devasagayam",
+  "name": "Samuvel Tamilselvan Devasagayam",
+  "title": "Principal Platform Architect",
+  "company": "Fiserv Inc",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1776814346994001nVJG/attprofile/1763613607745%20%281%29_1785434801200001V9sR.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/samuvel-tamilselvan-devasagayam-06631553",
+  "sessions": [
+   "We shipped governance: What broke, what worked, what we’d do again"
+  ]
+ },
+ {
+  "id": "kristin-n-dew",
+  "name": "Kristin N. Dew",
+  "title": "Senior Researcher",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1777664743572001SUjr/attprofile/Dew%20headshot%20cropped_1786128014915001GrwA.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/kristindew/",
+  "sessions": [
+   "Turning user feedback into requirements with a custom Copilot agent"
+  ]
+ },
+ {
+  "id": "nhu-do",
+  "name": "Nhu Do",
+  "title": "Senior Product Manager",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1730217260193001ONtz/attprofile/16AD108F-8C52-4474-A706-7CF19E684046_1786220535987001lK33.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/nhudo/",
+  "sessions": [
+   "Inside Copilot's model router: How auto picks the right model for every task"
+  ]
+ },
+ {
+  "id": "kent-c-dodds",
+  "name": "Kent C. Dodds",
+  "title": "Product Engineer",
+  "company": "kody.codes",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1785971794624001WhyC/attprofile/Kent%20C.%20Dodds_1789998476733001gPBA.png",
+  "linkedin_url": "https://www.linkedin.com/in/kentcdodds/",
+  "sessions": [
+   "What's worth building when AI can build anything?",
+   "Session After Party: What's worth building when AI can build anything?"
+  ]
+ },
+ {
+  "id": "jeff-doolittle",
+  "name": "Jeff Doolittle",
+  "title": "Distinguished Engineer, Principal Architect",
+  "company": "Trimble",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1761664371450001vb2S/attprofile/headshot-2025b-zoom_1775671913281001uaBB.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/jeffdoolittle/",
+  "sessions": [
+   "Four days, zero lines: The AI force multiplier"
+  ]
+ },
+ {
+  "id": "anirudh-dubey",
+  "name": "Anirudh Dubey",
+  "title": "Product Marketing (Rubrik DevOps Protection)",
+  "company": "Rubrik",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1777621697296001zCYn/attprofile/1705652652189_1786732000379001aJHG.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/anirudhdubey/",
+  "sessions": [
+   "AI and attacks wipe your code and workflow in seconds. Can you recover? (Sponsored)"
+  ]
+ },
+ {
+  "id": "javier-dur-n",
+  "name": "Javier Durán",
+  "title": "Senior Manager AI",
+  "company": "itti (Grupo Vázquez)",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1785270083959001XanW/attprofile/foto-headshot-1x1_1785839913237001avkC.png",
+  "linkedin_url": "https://www.linkedin.com/in/javiermduran/",
+  "sessions": [
+   "One PM, four weeks, full compliance: How itti shipped a banking product with agents"
+  ]
+ },
+ {
+  "id": "serge-dybskiy",
+  "name": "Serge Dybskiy",
+  "title": "Developer Experience Engineer",
+  "company": "Sentry",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1785876748469001ECLT/attprofile/Screenshot%202026-08-04%20at%201.51.12%E2%80%AFPM_1785876748569001Ew1S.png",
+  "linkedin_url": "https://www.linkedin.com/in/sergical/",
+  "sessions": [
+   "Opening the black box: Tracing, debugging, and fixing your GitHub Actions agents (Sponsored)"
+  ]
+ },
+ {
+  "id": "ron-efroni",
+  "name": "Ron Efroni",
+  "title": "CEO and Co-Founder",
+  "company": "Flox and NixOS",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1686069111593001ys0A/attprofile/UUPGDC4H_400x400_1786330606062001V2K3.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/ronefroni/",
+  "sessions": [
+   "The O(1) patch: Securing the supply chain against AI-discovered zero-days"
+  ]
+ },
+ {
+  "id": "mitch-enderle",
+  "name": "Mitch Enderle",
+  "title": "Executive Director, Platform Engineering",
+  "company": "CVS Health",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1757015641955001ZKt3/attprofile/Mitch%20Enderle%20%281%29_1761238520261001mXh4%20%281%29_1791397730373001YfKm.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/mitch-enderle-3831508/",
+  "sessions": [
+   "Modernizing CI/CD with agents, GitHub Actions, and human oversight\n (Sponsored)"
+  ]
+ },
+ {
+  "id": "jason-etcovitch",
+  "name": "Jason Etcovitch",
+  "title": "Principal Software Engineer",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1699461399745001CjiR/attprofile/10660468_1785858316567001afoQ.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/jasonetco/",
+  "sessions": [
+   "Building Copilot in the cloud"
+  ]
+ },
+ {
+  "id": "tyler-even",
+  "name": "Tyler Even",
+  "title": "VP, R&D",
+  "company": "Precisely",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1752611720320001w5TT/attprofile/ProfilePic_1777298914458001mljT.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/teven/",
+  "sessions": [
+   "Copilot at scale: What 95% more pull requests taught us about measuring success"
+  ]
+ },
+ {
+  "id": "steven-ewing",
+  "name": "Steven Ewing",
+  "title": "Staff Software Engineer",
+  "company": "Coinbase",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1698793901741001Lib6/attprofile/steven_1785859154659001M5yt.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/steven-ewing/",
+  "sessions": [
+   "AI, Actions, and tooling: Coinbase's move to GitHub with data residency"
+  ]
+ },
+ {
+  "id": "michael-fairchild",
+  "name": "Michael Fairchild",
+  "title": "Accessibility engineer",
+  "company": "Independent",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1777682948173001RCCS/attprofile/Michael%20Fairchild_1786068425423001BY0B.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/michael-fairchild-15381928/",
+  "sessions": [
+   "Accelerate accessibility with AI and automation"
+  ]
+ },
+ {
+  "id": "adam-ferrari",
+  "name": "Adam Ferrari",
+  "title": "SVP of Engineering",
+  "company": "Jellyfish",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1785529803526001UEKt/attprofile/headshot_1785529803621001Udyt.png",
+  "linkedin_url": "https://www.linkedin.com/in/adamferrari/",
+  "sessions": [
+   "Stop guessing: What 100M pull requests and 150T tokens tell us about AI impact (Sponsored)"
+  ]
+ },
+ {
+  "id": "james-fletcher",
+  "name": "James Fletcher",
+  "title": "Senior Product Manager",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1715337711236001Gykn/attprofile/James%20Fletcher_1786068462656001yvKM.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/james-fletcher-1853a4159/",
+  "sessions": [
+   "Keep vulnerabilities out of your codebase, without leaving where you build"
+  ]
+ },
+ {
+  "id": "pamela-fox",
+  "name": "Pamela Fox",
+  "title": "Principal Cloud Advocate in Python",
+  "company": "Microsoft",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1683842376812001m7gi/attprofile/pamelafox_headshot_smile_1777699243564001WSa1.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/pamela-s-fox/",
+  "sessions": [
+   "Building a developer knowledge base for GitHub Copilot"
+  ]
+ },
+ {
+  "id": "sai-gade",
+  "name": "Sai Gade",
+  "title": "Global Head - AIDLC, Platform Engineering & SRE",
+  "company": "UST",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1759331348226001HlF4/attprofile/Sai%20Gade%201_1792173050635001SRd9.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/sai-gade-5a562330/",
+  "sessions": [
+   "Modernizing CI/CD with agents, GitHub Actions, and human oversight\n (Sponsored)"
+  ]
+ },
+ {
+  "id": "caro-galvin",
+  "name": "Caro Galvin",
+  "title": "Senior Product Manager",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1715350935257001Lc5k/attprofile/me_cgalvin_1mb_1785951751775001FlOx.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/cmcgalvin/",
+  "sessions": [
+   "Beyond correct: Making code quality worth acting on"
+  ]
+ },
+ {
+  "id": "michael-gamble",
+  "name": "Michael Gamble",
+  "title": "partner marketing",
+  "company": "Arm",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1728293377804001CEp2/attprofile/1dc560d8-dd5f-42ad-afb2-f73e267f6d1e_1791569351978001sojU.png",
+  "linkedin_url": "https://www.linkedin.com/in/michaelgamble",
+  "sessions": [
+   "From x86/x64 to Arm: Migrating a Large-Scale Linux Web App with GitHub Copilot (Sponsored)"
+  ]
+ },
+ {
+  "id": "kaush-ganguly",
+  "name": "Kaush Ganguly",
+  "title": "Sr. Cloud Solution Architect - AI Apps",
+  "company": "Microsoft",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1683707625375001TUbD/attprofile/KG-headshot_1777701732800001NWA2.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/kaushaya/",
+  "sessions": [
+   "Agentic modernization of .NET and Java apps with GitHub Copilot"
+  ]
+ },
+ {
+  "id": "idan-gazit",
+  "name": "Idan Gazit",
+  "title": "Head of GitHub Next",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1694120273763001Iy5q/attprofile/Idan_1787603998244001pvYs.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/idangazit/",
+  "sessions": [
+   "What's next with GitHub Next: tomorrow's tools for making software",
+   "Inside the Lab with GitHub Next"
+  ]
+ },
+ {
+  "id": "steve-glass",
+  "name": "Steve Glass",
+  "title": "Senior Product Manager",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1777473235971001H2Xj/attprofile/Steve%20Glass_1782312045910001YXqp.png",
+  "linkedin_url": "https://www.linkedin.com/in/sglass1/",
+  "sessions": [
+   "Disrupting supply chain attacks: A threat framework for GitHub Actions",
+   "Session After Party: Disrupting supply chain attacks: A threat framework for GitHub Actions"
+  ]
+ },
+ {
+  "id": "alex-gorischek",
+  "name": "Alex Gorischek",
+  "title": "Senior Research Engineer",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1787354992642001uhKf/attprofile/E01DLHH5JM6-U0AQZULUG3V-37f2f87d3ec5-512_1792696630118001JpUV.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/alexgorischek/",
+  "sessions": [
+   "Inside the Lab with GitHub Next"
+  ]
+ },
+ {
+  "id": "mickey-gousset",
+  "name": "Mickey Gousset",
+  "title": "Staff DevOps Architect | ODST | FDE",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1715290358277001IuU9/attprofile/mickey-headshot-2025-2_1776793024905001In55.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/mickeygousset/",
+  "sessions": [
+   "Stop prompting, start delegating: Configure Copilot to own the work",
+   "What happens between pressing Enter and getting a response from GitHub Copilot"
+  ]
+ },
+ {
+  "id": "andrea-griffiths",
+  "name": "Andrea Griffiths",
+  "title": "Senior Developer Advocate",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1685584659600001bgLK/attprofile/A.Griffiths_1785789788582001ntFI.png",
+  "linkedin_url": "https://www.linkedin.com/in/acolombiadev/",
+  "sessions": [
+   "Build once, run on any agent: a practical guide to agent skills"
+  ]
+ },
+ {
+  "id": "grant-griffiths",
+  "name": "Grant Griffiths",
+  "title": "Founding Engineer",
+  "company": "NeuBird AI",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1760972025737001NWQl/attprofile/Grant%20Griffiths_1785236220834001NXx3.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/gwgriffiths4/",
+  "sessions": [
+   "How to go from alert to pull request in minutes: Wiring NeuBird and Copilot via MCP (Sponsored)"
+  ]
+ },
+ {
+  "id": "michael-grinich",
+  "name": "Michael Grinich",
+  "title": "CEO",
+  "company": "WorkOS",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1759265517921001S428/attprofile/m2TFWGlC_400x400-1_1786029450086001Oo0E.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/grinich/",
+  "sessions": [
+   "Auth for agents: How auth.md lets agents skip the sign-up form (Sponsored)"
+  ]
+ },
+ {
+  "id": "maria-victoria-gromysch",
+  "name": "Maria Victoria Gromysch",
+  "title": "Test Engineer",
+  "company": "NVIDIA",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1777685195945001WmCp/attprofile/IMG_1010_1777685197119001Wc7u.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/mariag8",
+  "sessions": [
+   "Building domain-specific AI agents for hardware reliability at NVIDIA"
+  ]
+ },
+ {
+  "id": "achin-gupta",
+  "name": "Achin Gupta",
+  "title": "Staff Software Engineer",
+  "company": "Intuit",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1777686068448001FY1d/attprofile/1774565540066_1777686068548001FMfs.png",
+  "linkedin_url": "https://www.linkedin.com/in/guptaachin/",
+  "sessions": [
+   "The 2am RCA Agent: Architecting AI that investigates, not hallucinates"
+  ]
+ },
+ {
+  "id": "cameron-hamilton",
+  "name": "Cameron Hamilton",
+  "title": "Creator",
+  "company": "Alliance AI",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1790175710875001qLXM/attprofile/Cam%20headshot%20close2%20%281%29_1790285056302001VybX.png",
+  "linkedin_url": "https://www.linkedin.com/in/cameron-r-hamilton/",
+  "sessions": [
+   "Beyond the prompt: Building an AI that takes initiative",
+   "Session After Party: Beyond the prompt: Building an AI that takes initiative"
+  ]
+ },
+ {
+  "id": "christopher-harrison",
+  "name": "Christopher Harrison",
+  "title": "Senior Developer Advocate",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1684527155555001kvYJ/attprofile/headshot_1778275328719001p5QA.jpg",
+  "linkedin_url": "https://linkedin.com/in/geektrainer",
+  "sessions": [
+   "Treat your AI context as infrastructure"
+  ]
+ },
+ {
+  "id": "jared-hatfield",
+  "name": "Jared Hatfield",
+  "title": "Principal Application Architect",
+  "company": "UPS",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1777390555511001JrY5/attprofile/Jared-Hatfield-Headshot-August-2026_1786060308314001Nyhr.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/jaredhatfield",
+  "sessions": [
+   "Building AI fluency at UPS"
+  ]
+ },
+ {
+  "id": "erin-havens",
+  "name": "Erin Havens",
+  "title": "Senior Product Manager",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1695060072936001Zz7u/attprofile/1602878139660_1792697163793001uhnh.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/havenserin/",
+  "sessions": [
+   "Bringing AI-detected secret scanning to push time and on-prem environments"
+  ]
+ },
+ {
+  "id": "ryan-hecht",
+  "name": "Ryan Hecht",
+  "title": "Product Manager",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1699547169825001krXG/attprofile/cropped_1790366784304001SZIf.png",
+  "linkedin_url": "https://www.linkedin.com/in/ryanahecht/",
+  "sessions": [
+   "Rediscover the command line: Practical workflows with GitHub CLI",
+   "GitHub Copilot and Windows: Bringing local models into the workflow"
+  ]
+ },
+ {
+  "id": "burke-holland",
+  "name": "Burke Holland",
+  "title": "Principal Cloud Advocate",
+  "company": "Microsoft",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1790700744585001b0hx/attprofile/image%20%2858%29_1792711085141001qQVD.png",
+  "linkedin_url": "https://www.linkedin.com/in/burkeholland/",
+  "sessions": [
+   "Opening Keynote",
+   "Work together, your way, with GitHub Copilot",
+   "Session After Party: Work together, your way, with GitHub Copilot"
+  ]
+ },
+ {
+  "id": "eric-hollenberry",
+  "name": "Eric Hollenberry",
+  "title": "Principal Product Manager, Metrics",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1699462765566001lKc9/attprofile/Profile%20Hollenberry_1784137628987001YYQP.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/hollenberry/",
+  "sessions": [
+   "Beyond \"hours saved\": How AMD and ING measure AI at enterprise scale"
+  ]
+ },
+ {
+  "id": "philip-holleran",
+  "name": "Philip Holleran",
+  "title": "Field CTO",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1745520780302001vyrp/attprofile/E01DLHH5JM6-U0D39H3DF-bed45fe167ba-512_1789138269505001mV0C.png",
+  "linkedin_url": "GAP",
+  "sessions": [
+   "Agentic engineering past the pilot: An enterprise playbook"
+  ]
+ },
+ {
+  "id": "ankit-kumar-honey",
+  "name": "Ankit Kumar Honey",
+  "title": "Senior Engineering Manager",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1699461601870001DY6x/attprofile/Ankit-Passport-Pic_1777609834748001lN62.png",
+  "linkedin_url": "https://www.linkedin.com/in/ankit-kumar-honey",
+  "sessions": [
+   "How to think about reachability and use it to prioritize vulnerabilities"
+  ]
+ },
+ {
+  "id": "markus-howard",
+  "name": "Markus Howard",
+  "title": "Associate Director, Software Engineering",
+  "company": "Moderna",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1777553887968001JWup/attprofile/IMG_8423%202_1785466802585001G6yG.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/markus-howard-engineer",
+  "sessions": [
+   "The night shift: Copilot agents that maintain their own self-hosted runners"
+  ]
+ },
+ {
+  "id": "jenny-hwang",
+  "name": "Jenny Hwang",
+  "title": "Director of Product Research",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1715363935252001iNZi/attprofile/Jenny%20Hwang_1786555530431001LUlF.png",
+  "linkedin_url": "https://www.linkedin.com/in/njennyhwang/",
+  "sessions": [
+   "Expand Copilot beyond coding: Non-code workflows your team isn't using yet"
+  ]
+ },
+ {
+  "id": "jeremiah-isaacson",
+  "name": "Jeremiah Isaacson",
+  "title": "CTO",
+  "company": "Nuevo Foundation",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1697650998115001DwEv/attprofile/Image%20%284%29_1777612918314001Qr9O.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/jeremiahjordanisaacson/",
+  "sessions": [
+   "How to turn your team's repeated workflows into GitHub Copilot CLI skills"
+  ]
+ },
+ {
+  "id": "vicky-israni",
+  "name": "Vicky Israni",
+  "title": "Senior Solutions Engineer",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1744351551269001je0O/attprofile/Vicky%20Israni_1782311530117001oEWY.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/vicky-israni/",
+  "sessions": [
+   "Real ways we cut token costs without slowing developers"
+  ]
+ },
+ {
+  "id": "brittany-istenes",
+  "name": "Brittany Istenes",
+  "title": "OSS strategist/Community Architect",
+  "company": "Independent",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1685978733762001LxQA/attprofile/Brittany_Istenes_headshot_1784214407429001ZKrY.png",
+  "linkedin_url": "https://www.linkedin.com/in/brittany-istenes/",
+  "sessions": [
+   "The human side of AI: How building community drove 94% Copilot adoption"
+  ]
+ },
+ {
+  "id": "adam-jacob",
+  "name": "Adam Jacob",
+  "title": "CEO and Co-Founder",
+  "company": "Swamp Club",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1777675947876001stxC/attprofile/Adam_Cropped%20%281%29_1783651450465001Dcu4.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/adamjacob",
+  "sessions": [
+   "Write-only code: What happens to peer review when agents write the diffs"
+  ]
+ },
+ {
+  "id": "jon-janego",
+  "name": "Jon Janego",
+  "title": "Senior Product Manager",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1715288718733001EQzg/attprofile/jtjan-high-res-current-photo-smaller-square%20copy_1785446238750001p3wC.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/jonjanego/",
+  "sessions": [
+   "Resolve your security alerts faster with GitHub Copilot"
+  ]
+ },
+ {
+  "id": "yadhav-jayaraman",
+  "name": "Yadhav Jayaraman",
+  "title": "Staff Service Delivery Engineer",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1691522429456001L3kZ/attprofile/Yadhav%20Jayaraman_1786122140410001gc5Y.JPEG",
+  "linkedin_url": "https://www.linkedin.com/in/yjayaraman",
+  "sessions": [
+   "Own your Copilot: Advanced customization for developers and platform teams"
+  ]
+ },
+ {
+  "id": "angela-jiang",
+  "name": "Angela Jiang",
+  "title": "Head of Product, Claude Platform",
+  "company": "Anthropic",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1792015053474001kVda/attprofile/Angela%20Jiang%2C%20Claude%20Platform_1792084633942001A1nk.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/angelajiang/",
+  "sessions": [
+   "The view from the labs: What's next for AI-assisted development"
+  ]
+ },
+ {
+  "id": "parker-johnston",
+  "name": "Parker Johnston",
+  "title": "Agentic Field CTO",
+  "company": "Insight",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1746145404906001CkyS/attprofile/1766023267912_1792696746135001DG4I.jpeg",
+  "linkedin_url": "GAP",
+  "sessions": [
+   "Going beyond suggestions: How to govern agentic workflows in GitHub (Sponsored)"
+  ]
+ },
+ {
+  "id": "angie-jones",
+  "name": "Angie Jones",
+  "title": "VP",
+  "company": "Agentic AI Foundation",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1692917321245001vYxt/attprofile/headshot-angie-jones_1775692230980001pxTe.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/angiejones/",
+  "sessions": [
+   "Still open: How AI reshaped open source"
+  ]
+ },
+ {
+  "id": "sameen-karim",
+  "name": "Sameen Karim",
+  "title": "Senior Product Manager",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1777519412373001m6WA/attprofile/studio%20profile%20picture_1785951388132001OnC0.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/sameenkarim",
+  "sessions": [
+   "Stop waiting on your own pull requests: GitHub Stacked PRs in practice"
+  ]
+ },
+ {
+  "id": "steven-karis",
+  "name": "Steven Karis",
+  "title": "Chief Architect",
+  "company": "ResolveAI",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1785986741141001w6Pw/attprofile/T04MNTXDWGJ-U063A3B047N-8155dca2bf97-512_1785986742025001wkdL.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/steven-karis-62817a96/",
+  "sessions": [
+   "Four primitives to evaluate and improve your on-call agent's autonomy (Sponsored)"
+  ]
+ },
+ {
+  "id": "julia-kasper",
+  "name": "Julia Kasper",
+  "title": "Product Manager",
+  "company": "Microsoft",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1761601511739001H64z/attprofile/1561120896326_1787683236924001mIJj.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/jukasper/",
+  "sessions": [
+   "Your benchmark is lying: What evals actually look like",
+   "How we optimize GitHub Copilot for every new model.",
+   "Work together, your way, with GitHub Copilot",
+   "How Microsoft AI builds coding models optimized for GitHub Copilot",
+   "Session After Party: Work together, your way, with GitHub Copilot"
+  ]
+ },
+ {
+  "id": "andy-kelly",
+  "name": "Andy Kelly",
+  "title": "VP of Research and Development",
+  "company": "Precisely",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1752611791015001J0sm/attprofile/andy_kelly_github_universe_headshot_1790882247513001BKya.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/andydkelly/",
+  "sessions": [
+   "Copilot at scale: What 95% more pull requests taught us about measuring success"
+  ]
+ },
+ {
+  "id": "kevin-kennedy",
+  "name": "Kevin Kennedy",
+  "title": "Principal Software Engineer",
+  "company": "Micron Technology",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1755807083980001uGqs/attprofile/Kevin%20Kennedy_1790171426900001UH4q.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/kkennedyusu",
+  "sessions": [
+   "Beyond the code: How Forge powers the rest of the SDLC"
+  ]
+ },
+ {
+  "id": "tiffany-kitchen",
+  "name": "Tiffany Kitchen",
+  "title": "Head of Product",
+  "company": "Pendo",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1790351297022001fOes/attprofile/headshot%20%281%29_1791469411939001sbAt.png",
+  "linkedin_url": "https://www.linkedin.com/in/tiffany-kitchen-product-manager/",
+  "sessions": [
+   "AI agents write the code. Novus decides what to build next.  (Sponsored)"
+  ]
+ },
+ {
+  "id": "allie-laabs",
+  "name": "Allie Laabs",
+  "title": "Developer Relations",
+  "company": "TypeSafe AI",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1791508119101001tyPC/attprofile/OpenAI%20Playground%202026-09-22%20at%2017.47.23%20%280%29_1791589076479001nVs5.png",
+  "linkedin_url": "https://www.linkedin.com/in/allielaabs/",
+  "sessions": [
+   "Jev: Shipping a category-creator"
+  ]
+ },
+ {
+  "id": "andre-landgraf",
+  "name": "Andre Landgraf",
+  "title": "Staff Developer Advocate",
+  "company": "Databricks",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1777657145023001F7OK/attprofile/profile_1777682245611001zdE4.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/andre-landgraf/",
+  "sessions": [
+   "Make your Postgres agent-ready: Branching, isolation, and safer shipping"
+  ]
+ },
+ {
+  "id": "greg-larkin",
+  "name": "Greg Larkin",
+  "title": "Senior Service Delivery Engineer",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1699390359876001Rn0P/attprofile/RKOHeadshot1_1788448810897001GB8w.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/greglarkin/",
+  "sessions": [
+   "Own your Copilot: Advanced customization for developers and platform teams"
+  ]
+ },
+ {
+  "id": "romain-le-disez",
+  "name": "Romain Le Disez",
+  "title": "FDA & Alliance Lead",
+  "company": "Onepoint",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1761646539079001OXpS/attprofile/Romain_1782764354838001DiLh.png",
+  "linkedin_url": "https://www.linkedin.com/in/romain-le-disez-870968137/",
+  "sessions": [
+   "Capture the flag: Three AI teams, one codebase, zero mercy"
+  ]
+ },
+ {
+  "id": "april-leonard",
+  "name": "April Leonard",
+  "title": "VP, Engineering",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1699473035093001TDcX/attprofile/April%20Leonard%20Headshot_1790200267947001haJc.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/aprilschuff/",
+  "sessions": [
+   "The view from the labs: What's next for AI-assisted development",
+   "Opening Keynote",
+   "Session After Party: The view from the labs: What's next for AI-assisted development"
+  ]
+ },
+ {
+  "id": "ronen-lewit",
+  "name": "Ronen Lewit",
+  "title": "VP Strategics and Field CTO",
+  "company": "JFrog",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1729704712665001qg5w/attprofile/JFrog_Ronen%20Lewit_1792246503741001eDH0.png",
+  "linkedin_url": "https://www.linkedin.com/in/ronen-lewit-0a9173/",
+  "sessions": [
+   "Supply chain controls for AI agents with JFrog and GitHub (Sponsored)"
+  ]
+ },
+ {
+  "id": "karen-li",
+  "name": "Karen Li",
+  "title": "Software Engineer III",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1699295376402001GKxx/attprofile/Karen_Li_Headshot_1785978769632001Oa9G.png",
+  "linkedin_url": "https://www.linkedin.com/in/karenjli",
+  "sessions": [
+   "What happens behind the scenes when you run npm install"
+  ]
+ },
+ {
+  "id": "alexander-lichter",
+  "name": "Alexander Lichter",
+  "title": "Systems Engineer",
+  "company": "VoidZero (Cloudflare)",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1745004107585001M3SH/attprofile/me-original_1776357935241001sywh.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/alexanderlichter/",
+  "sessions": [
+   "One CLI to replace your entire JavaScript toolchain"
+  ]
+ },
+ {
+  "id": "nick-liffen",
+  "name": "Nick Liffen",
+  "title": "GTM Strategy",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1685628214607001rF1d/attprofile/Jul%2023%202025%203_1785955728722001TFjg.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/nickliffen/",
+  "sessions": [
+   "Agentic engineering past the pilot: An enterprise playbook"
+  ]
+ },
+ {
+  "id": "yunika-liu",
+  "name": "Yunika Liu",
+  "title": "Product Builder",
+  "company": "Independent",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1729196816429001lun0/attprofile/IMG_2448_1777502594898001mExZ.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/yunikaliu/",
+  "sessions": [
+   "A pixel dog that writes songs: Lessons from my first MCP server"
+  ]
+ },
+ {
+  "id": "david-losert",
+  "name": "David Losert",
+  "title": "Strategic Technical Architect, International",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1699341568745001BE39/attprofile/avatar_new_1789367479474001z9hZ.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/david-losert/",
+  "sessions": [
+   "GitHub Copilot at scale: An interactive lab for enterprise admins"
+  ]
+ },
+ {
+  "id": "john-maeda",
+  "name": "John Maeda",
+  "title": "CVP Engineering, GitHub Design and Microsoft CoreAI Design",
+  "company": "Microsoft",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1781817220425001qu6F/attprofile/Johnmaeda_1784565959790001LNl6.jpeg",
+  "linkedin_url": "https://linkedin.com/in/johnmaeda",
+  "sessions": [
+   "Sketching with code in the age of AI"
+  ]
+ },
+ {
+  "id": "divya-mahajan",
+  "name": "Divya Mahajan",
+  "title": "Software Development Engineer",
+  "company": "Amazon",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1777674945059001EoUx/attprofile/1774460878943_1777685942521001dZ5p.png",
+  "linkedin_url": "https://www.linkedin.com/in/dm-divyamahajan/",
+  "sessions": [
+   "The 2am RCA Agent: Architecting AI that investigates, not hallucinates"
+  ]
+ },
+ {
+  "id": "shravan-mahajan",
+  "name": "Shravan Mahajan",
+  "title": "Software Engineer",
+  "company": "TestMu AI",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1785516458765001PqZV/attprofile/50CB2713-D69E-4B21-939B-242AFA7B2389_1785516458863001Pe9g.png",
+  "linkedin_url": "https://www.linkedin.com/in/shvn/",
+  "sessions": [
+   "Build a self-validating agentic loop with GitHub Copilot (Sponsored)"
+  ]
+ },
+ {
+  "id": "camila-maia",
+  "name": "Camila Maia",
+  "title": "Co-founder",
+  "company": "Cumbuca Dev",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1686647544975001PtM2/attprofile/Camila%20M_1786128147990001BxnM.jpeg",
+  "linkedin_url": "https://linkedin.com/in/cmaiacd",
+  "sessions": [
+   "How one open source project turned funding into security at scale"
+  ]
+ },
+ {
+  "id": "benedict-mak",
+  "name": "Benedict Mak",
+  "title": "Director, Security Engineering",
+  "company": "Manulife",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1695651639599001U9Dn/attprofile/Benedict%20Mak%20Profile_1777577381182001sPSq.jpg",
+  "linkedin_url": "GAP",
+  "sessions": [
+   "People, process, and GitHub: Eliminating 90% of enterprise AppSec risk"
+  ]
+ },
+ {
+  "id": "tim-mason",
+  "name": "Tim Mason",
+  "title": "Principal Engineer",
+  "company": "Marks and Spencer",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1785161862192001xkAl/attprofile/TimMason-Headshot_1786446347339001yDJd.jpeg",
+  "linkedin_url": "GAP",
+  "sessions": [
+   "The factory mindset: Agentic workflows in production",
+   "Session After Party: The factory mindset: Agentic workflows in production"
+  ]
+ },
+ {
+  "id": "dylan-mccarthy",
+  "name": "Dylan McCarthy",
+  "title": "Principal Consultant",
+  "company": "Nexwave",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1685316289726001Jven/attprofile/Dylan%20M_1786068634136001oRl1.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/dylan-mccarthy-181199ab/",
+  "sessions": [
+   "Shut the context window! You're letting the tokens out"
+  ]
+ },
+ {
+  "id": "josh-mcintosh",
+  "name": "Josh McIntosh",
+  "title": "Senior Software Development Manager",
+  "company": "Micron Technology Inc.",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1777652095719001hqgy/attprofile/HeadShot_1790258203253001lz16.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/joshua-mcintosh-812aa311/",
+  "sessions": [
+   "Beyond the code: How Forge powers the rest of the SDLC"
+  ]
+ },
+ {
+  "id": "catharine-mcnally",
+  "name": "Catharine McNally",
+  "title": "Staff Program Manager",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1698961577054001hecr/attprofile/Catherine%20M_1786068659762001FGWA.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/catharinemcnally/",
+  "sessions": [
+   "Turning user feedback into requirements with a custom Copilot agent"
+  ]
+ },
+ {
+  "id": "bea-mendez-gandica",
+  "name": "Bea Mendez Gandica",
+  "title": "CEO/Founder",
+  "company": "Nuevo Foundation",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1777613357747001v3F9/attprofile/1718216633763_1777613357912001vlCf.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/beagandica/",
+  "sessions": [
+   "How to turn your team's repeated workflows into GitHub Copilot CLI skills",
+   "I made my Octolamp think with GitHub Copilot CLI hooks"
+  ]
+ },
+ {
+  "id": "vanessa-minik",
+  "name": "Vanessa Minik",
+  "title": "Senior Service Delivery Engineer",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1691184248357001w6XF/attprofile/Picture1_1787688191718001WnvN.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/vanessa-minik-47ab9410a/",
+  "sessions": [
+   "Admin readiness for AI usage management"
+  ]
+ },
+ {
+  "id": "james-montemagno",
+  "name": "James Montemagno",
+  "title": "Principal Technical PM Lead",
+  "company": "Microsoft",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1790967222685001mCc8/attprofile/IMG_0080_1791297070507001K2Bm.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/jamesmontemagno/",
+  "sessions": [
+   "Work together, your way, with GitHub Copilot",
+   "Give GitHub Copilot more work context with Work IQ",
+   "Session After Party: Work together, your way, with GitHub Copilot"
+  ]
+ },
+ {
+  "id": "tommaso-moro",
+  "name": "Tommaso Moro",
+  "title": "Software Engineer III",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1750710672424001iy51/attprofile/F493EC3D-1223-4DDE-8F00-2DE0894FA194_1_201_a_1786007808661001f3CM.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/tommaso-moro/",
+  "sessions": [
+   "Discover, install, and manage agent skills from your terminal with gh skill"
+  ]
+ },
+ {
+  "id": "sam-morrow",
+  "name": "Sam Morrow",
+  "title": "Staff Software Engineer",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1685606809874001rJOG/attprofile/IMG_9812%20%281%29%20%281%29_1785441766445001jNRL.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/sammorrow",
+  "sessions": [
+   "Securing MCP: Real exploits, what actually mitigates them, and what doesn't",
+   "Connecting Copilot"
+  ]
+ },
+ {
+  "id": "sumanth-mothkuri",
+  "name": "Sumanth Mothkuri",
+  "title": "Sr. Platform Engineer",
+  "company": "Equifax",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1777520824902001cJ4W/attprofile/IMG_4243_1785813994361001f7dw.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/sumanth-mothkuri",
+  "sessions": [
+   "Delete the wiki: An MCP platform that closes its own loop"
+  ]
+ },
+ {
+  "id": "sanjeev-murthy",
+  "name": "Sanjeev Murthy",
+  "title": "Director, Cybersecurity",
+  "company": "Visa",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1727450452964001QGx9/attprofile/Sanjeev_profile_1786127755679001FNTX.png",
+  "linkedin_url": "https://www.linkedin.com/in/sanjeevnmurthy/",
+  "sessions": [
+   "Visa's Zero-Secrets Initiative: no hardcoded secrets, no exceptions"
+  ]
+ },
+ {
+  "id": "ken-muse",
+  "name": "Ken Muse",
+  "title": "Staff DevOps Architect | ODST | FDE",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1686431611703001EqqI/attprofile/KenMuse_1775863805392001bP7L.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/kmuse",
+  "sessions": [
+   "Stop prompting, start delegating: Configure Copilot to own the work",
+   "What happens between pressing Enter and getting a response from GitHub Copilot"
+  ]
+ },
+ {
+  "id": "cooper-nederhood",
+  "name": "Cooper Nederhood",
+  "title": "Senior Applied Researcher",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1699462878211001nWCv/attprofile/Cooper%20N_1786068684069001wS9L.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/cooper-nederhood-b2a70072/",
+  "sessions": [
+   "How GitHub taught Copilot to remember and when to forget"
+  ]
+ },
+ {
+  "id": "jacob-newman",
+  "name": "Jacob Newman",
+  "title": "Principal Product Manager",
+  "company": "Amplitude",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1787271946274001uhDt/attprofile/jacob_1787271946377001uDJa.png",
+  "linkedin_url": "https://www.linkedin.com/in/jacobnewman/",
+  "sessions": [
+   "How to ship fast, measure impact, and know when to intervene in the AI era (Sponsored)"
+  ]
+ },
+ {
+  "id": "janice-niemeir",
+  "name": "Janice Niemeir",
+  "title": "Director, Docs Engagement & Experience",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1699392208201001T40f/attprofile/headshot%20square_1786712120889001MSpY.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/janice-niemeir/",
+  "sessions": [
+   "Goodbye, tutorial hell: AI guides and the new documentation layer"
+  ]
+ },
+ {
+  "id": "franck-nijhof",
+  "name": "Franck Nijhof",
+  "title": "Lead of Home Assistant",
+  "company": "Open Home Foundation",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1756254549349001qUf1/attprofile/avatar_2024_color_1777664765151001pBqf.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/frenck",
+  "sessions": [
+   "Code is the easy part: Building Home Assistant in the open"
+  ]
+ },
+ {
+  "id": "said-nikjou",
+  "name": "Said Nikjou",
+  "title": "Sr. Cloud Solution Architect",
+  "company": "Microsoft",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1789133692509001o2KV/attprofile/said_1789134263667001mMEJ.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/snikjou/",
+  "sessions": [
+   "Building a developer knowledge base for GitHub Copilot"
+  ]
+ },
+ {
+  "id": "andrew-norris",
+  "name": "Andrew Norris",
+  "title": "Bluebox Product Management",
+  "company": "Dynatrace",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1791921239556001f2QR/attprofile/1634601111334_1792696903557001gPiI.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/andrewsnorris/",
+  "sessions": [
+   "Your agents write the fix. Observability supplies the context. (Sponsored)"
+  ]
+ },
+ {
+  "id": "david-o-regan",
+  "name": "David O'Regan",
+  "title": "Staff EM",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1777571700465001GJZZ/attprofile/PXL_20250301_211418867-EDIT_1790203174672001EpW1.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/oregand7/",
+  "sessions": [
+   "Plugins and engines: Extending GitHub Copilot live"
+  ]
+ },
+ {
+  "id": "jeffrey-opdam",
+  "name": "Jeffrey Opdam",
+  "title": "Architect",
+  "company": "ING",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1720780935919001LLRs/attprofile/Picture_1785484776123001MkMT.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/jeffrey-opdam/",
+  "sessions": [
+   "Beyond \"hours saved\": How AMD and ING measure AI at enterprise scale"
+  ]
+ },
+ {
+  "id": "yasuhiro-osaki",
+  "name": "Yasuhiro Osaki",
+  "title": "Software Engineer",
+  "company": "Sony",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1696301111381001ifAP/attprofile/20230329_1785399789757001jGYg.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/yasuhiro-osaki-769025b2/",
+  "sessions": [
+   "GitHub configuration as code: Scaling org management with Terraform"
+  ]
+ },
+ {
+  "id": "greg-ose",
+  "name": "Greg Ose",
+  "title": "Principal Product Security Engineer",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1695149064229001EKN1/attprofile/gregose-profile-large_1777660821974001QA4x.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/gregose/",
+  "sessions": [
+   "Disrupting supply chain attacks: A threat framework for GitHub Actions",
+   "Session After Party: Disrupting supply chain attacks: A threat framework for GitHub Actions"
+  ]
+ },
+ {
+  "id": "priya-pahwa",
+  "name": "Priya Pahwa",
+  "title": "Director",
+  "company": "Django Software Foundation",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1686592131164001FkZ3/attprofile/Priya%20Profile_1777702346718001akcU.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/priyapahwa",
+  "sessions": [
+   "Still open: How AI reshaped open source"
+  ]
+ },
+ {
+  "id": "jay-parikh",
+  "name": "Jay Parikh",
+  "title": "Executive Vice President, CoreAI",
+  "company": "Microsoft",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1761163871884001lpsQ/attprofile/2026OCT_JayParikh_portrait-084BW%20%281%29_cropb2_1792758784459001flx8.jpg",
+  "linkedin_url": "GAP",
+  "sessions": [
+   "Opening Keynote"
+  ]
+ },
+ {
+  "id": "jenny-patchen",
+  "name": "Jenny Patchen",
+  "title": "Sr. Director, Shared Platforms & Services",
+  "company": "Levi Strauss & Co.",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1755022358247001ShqW/attprofile/Jenny%20Patchen_1785954217899001udmU.png",
+  "linkedin_url": "https://www.linkedin.com/in/jennypatchen/",
+  "sessions": [
+   "17 agents, one SDLC: How Levi Strauss reimagined development on GitHub",
+   "Session After Party: 17 agents, one SDLC: How Levi Strauss reimagined development on GitHub"
+  ]
+ },
+ {
+  "id": "david-pereira",
+  "name": "David Pereira",
+  "title": "AI & Digital Solution Architect",
+  "company": "Siemens Energy",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1777119502048001q8hV/attprofile/david-work-profile_1777589861750001Gj1i.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/jose-david-pereira/",
+  "sessions": [
+   "What Copilot code review catches (and how to build a custom agent for the rest)"
+  ]
+ },
+ {
+  "id": "ryan-platt",
+  "name": "Ryan Platt",
+  "title": "Senior Cloud Architect",
+  "company": "Vanguard",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1715088212991001UvOR/attprofile/Platt_Ryan_18%20copy_1790810182574001ecVD.jpg",
+  "linkedin_url": "GAP",
+  "sessions": [
+   "From AI-assisted work to agent-enabled delivery: Scaling AI across product teams"
+  ]
+ },
+ {
+  "id": "hrushikesh-pokala",
+  "name": "Hrushikesh Pokala",
+  "title": "Sr Software Engineer - Lead",
+  "company": "Equifax",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1775674233306001Tk03/attprofile/92C9D289-A45A-4FC5-B4D7-8686FD40558C_1775690798296001lUp2.PNG",
+  "linkedin_url": "https://www.linkedin.com/in/hrushiph",
+  "sessions": [
+   "Delete the wiki: An MCP platform that closes its own loop"
+  ]
+ },
+ {
+  "id": "zachary-pollock",
+  "name": "Zachary Pollock",
+  "title": "Sr. Software Engineer",
+  "company": "Chevron",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1695217609216001M9BP/attprofile/GH-universe-headshot_1790876844655001LqLT.png",
+  "linkedin_url": "GAP",
+  "sessions": [
+   "Beyond the repository: Using a migration to rethink how you build"
+  ]
+ },
+ {
+  "id": "dylan-ratcliffe",
+  "name": "Dylan Ratcliffe",
+  "title": "Founder & CEO",
+  "company": "Overmind",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1755624535596001ehoJ/attprofile/headshot_1781738239403001X3F7.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/dylanratcliffe/",
+  "sessions": [
+   "Write-only code: What happens to peer review when agents write the diffs"
+  ]
+ },
+ {
+  "id": "aaron-reich",
+  "name": "Aaron Reich",
+  "title": "Chief Technology Officer",
+  "company": "Avanade",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1728947931718001NQRK/attprofile/Aaron%20Reich_1790281377862001ZUXG.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/aaron-reich/",
+  "sessions": [
+   "Build without breaking trust (Sponsored)"
+  ]
+ },
+ {
+  "id": "xavier-ren-corail",
+  "name": "Xavier René-Corail",
+  "title": "Sr. Dir, Security Research",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1683825114408001nGm8/attprofile/headshot-2025-square_1777568954524001C3Fx.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/xavier-ren%C3%A9-corail-2428431/",
+  "sessions": [
+   "How GitHub secures open source",
+   "Session After Party: How GitHub secures open source"
+  ]
+ },
+ {
+  "id": "mario-rodriguez",
+  "name": "Mario Rodriguez",
+  "title": "Chief Product Officer",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1687465755984001tNu7/attprofile/Mario%20Rodriguez_1790184807707001hhOi.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/mariorodriguez3/",
+  "sessions": [
+   "Humans set direction. Agents close the loop.",
+   "Session After Party: Humans set direction. Agents close the loop."
+  ]
+ },
+ {
+  "id": "tim-rogers",
+  "name": "Tim Rogers",
+  "title": "Principal Product Manager",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1697183379437001R4Y9/attprofile/Tim%20Rogers_1792537647715001ajAZ.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/timrogers1/",
+  "sessions": [
+   "Automate the everyday with Copilot Automations"
+  ]
+ },
+ {
+  "id": "baruch-sadogursky",
+  "name": "Baruch Sadogursky",
+  "title": "Head of Developer Relations",
+  "company": "Port.io",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1786298949043001shg7/attprofile/Photo%20from%20Google%20Photos_1789597588175001ojQo.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/jbaruch/",
+  "sessions": [
+   "When a prototype becomes critical, does your GitHub policy know? (Sponsored)"
+  ]
+ },
+ {
+  "id": "katie-savage",
+  "name": "Katie Savage",
+  "title": "Technical Program Manager",
+  "company": "Microsoft",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1730132720921001ElMl/attprofile/katie_1791405616070001fELe.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/kt-savage/",
+  "sessions": [
+   "Work together, your way, with GitHub Copilot",
+   "Give GitHub Copilot more work context with Work IQ",
+   "Session After Party: Work together, your way, with GitHub Copilot"
+  ]
+ },
+ {
+  "id": "josh-scriven",
+  "name": "Josh Scriven",
+  "title": "Microsoft Americas Practice, AI Leader",
+  "company": "IBM Consulting",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1777679202201001q4zO/attprofile/Designer_1792625462054001EcGR.png",
+  "linkedin_url": "https://www.linkedin.com/in/josh-scriven/",
+  "sessions": [
+   "IBM Neo: From specifications to verified software delivery (Sponsored)"
+  ]
+ },
+ {
+  "id": "richard-seroter",
+  "name": "Richard Seroter",
+  "title": "Senior Director and Chief Evangelist",
+  "company": "Google Cloud",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1789631318147001LxaO/attprofile/RichardSeroter4736-hi_1789632334143001Ll5E.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/seroter/",
+  "sessions": [
+   "The view from the labs: What's next for AI-assisted development",
+   "Session After Party: The view from the labs: What's next for AI-assisted development"
+  ]
+ },
+ {
+  "id": "maya-shavin",
+  "name": "Maya Shavin",
+  "title": "Staff Software Engineer",
+  "company": "Salesforce",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1686645252066001oKBi/attprofile/Maya_2020_1777549414160001yKza.JPG",
+  "linkedin_url": "https://www.linkedin.com/in/mayashavin/",
+  "sessions": [
+   "Accelerate accessibility with AI and automation"
+  ]
+ },
+ {
+  "id": "kautilay-siingh",
+  "name": "Kautilay Siingh",
+  "title": "Security Architect",
+  "company": "VISA",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1776119328122001oS8S/attprofile/Github_universe_final_1786127575220001dlel.png",
+  "linkedin_url": "https://www.linkedin.com/in/kautilaysiingh/",
+  "sessions": [
+   "Visa's Zero-Secrets Initiative: no hardcoded secrets, no exceptions"
+  ]
+ },
+ {
+  "id": "nish-sinha",
+  "name": "Nish Sinha",
+  "title": "Software Engineer III",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1692200542764001GAQj/attprofile/Nishant%20Sinha%20Square_1791312781987001oI51.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/nishnha/",
+  "sessions": [
+   "Supercharge Copilot code review with custom review instructions"
+  ]
+ },
+ {
+  "id": "siddhant-sinha",
+  "name": "Siddhant Sinha",
+  "title": "Lead Member, Technical Staff",
+  "company": "TestMu AI",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1785537838761001nM4u/attprofile/WhatsApp%20Image%202026-08-01%20at%2012.38.10%20AM_1785537838911001nFFE.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/sid573/",
+  "sessions": [
+   "Build a self-validating agentic loop with GitHub Copilot (Sponsored)"
+  ]
+ },
+ {
+  "id": "david-slater",
+  "name": "David Slater",
+  "title": "Director, Research",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1699463104853001mRhk/attprofile/1000011945-square-2048_1792718859452001z95S.jpg",
+  "linkedin_url": "GAP",
+  "sessions": [
+   "Inside the Lab with GitHub Next"
+  ]
+ },
+ {
+  "id": "paul-snider",
+  "name": "Paul Snider",
+  "title": "CTO",
+  "company": "Provation / Fortive",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1777569490902001Sy3s/attprofile/profile_1785954676386001kLWu.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/paulsnider/",
+  "sessions": [
+   "The factory mindset: Agentic workflows in production",
+   "Session After Party: The factory mindset: Agentic workflows in production"
+  ]
+ },
+ {
+  "id": "eric-sorenson",
+  "name": "Eric Sorenson",
+  "title": "Senior Product Manager",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1694567634692001MFJO/attprofile/IMG_6867_1776888593966001Gj7V.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/ericsorenson/",
+  "sessions": [
+   "Stop malicious packages before they reach your build with GitHub Package Firewall"
+  ]
+ },
+ {
+  "id": "erin-mikail-staples",
+  "name": "Erin Mikail Staples",
+  "title": "Staff Developer Experience Engineer",
+  "company": "Tiger Data",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1686678866005001uQkv/attprofile/Erin_1788545421791001PQyR.jpeg",
+  "linkedin_url": "https://linkedin.com/in/erinmikail",
+  "sessions": [
+   "Goodbye, tutorial hell: AI guides and the new documentation layer"
+  ]
+ },
+ {
+  "id": "zach-steindler",
+  "name": "Zach Steindler",
+  "title": "Principal Engineer",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1698956387483001A8Kv/attprofile/zach_cropped_1776954822649001G07B.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/steiza",
+  "sessions": [
+   "Your CI has full internet access. GitHub Actions firewall changes that."
+  ]
+ },
+ {
+  "id": "kevin-stubbings",
+  "name": "Kevin Stubbings",
+  "title": "Security Researcher",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1699462504875001X6nI/attprofile/Kevin-clean_1785901257648001ddGG.png",
+  "linkedin_url": "https://www.linkedin.com/in/kwstubbs/",
+  "sessions": [
+   "Drowning in AI-generated vulnerability reports? Here's how to stay afloat"
+  ]
+ },
+ {
+  "id": "ed-summers",
+  "name": "Ed Summers",
+  "title": "Head of Accessibility",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1686657637413001PuMJ/attprofile/Ed%20Summers_1786068796244001XV4y.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/edsummersnc/",
+  "sessions": [
+   "Accelerate accessibility with AI and automation"
+  ]
+ },
+ {
+  "id": "monika-tamber",
+  "name": "Monika Tamber",
+  "title": "AVP, Application Security & Operational Governance",
+  "company": "Manulife",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1758038851788001VsZZ/attprofile/Monika_Tamber_headshot_highres_1777658113478001v0Kq.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/monika-tamber-p-eng-cissp-ccsp-cism-22a59b4",
+  "sessions": [
+   "People, process, and GitHub: Eliminating 90% of enterprise AppSec risk"
+  ]
+ },
+ {
+  "id": "madelyn-tarr",
+  "name": "Madelyn Tarr",
+  "title": "GAP",
+  "company": "Amplitude",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1791556328441001Fwsh/attprofile/d26111c3-5bb0-4d35-a038-70ac9fdcf9ca_1791556393388001mEgK.png",
+  "linkedin_url": "GAP",
+  "sessions": [
+   "How to ship fast, measure impact, and know when to intervene in the AI era (Sponsored)"
+  ]
+ },
+ {
+  "id": "mina-tawadrous",
+  "name": "Mina Tawadrous",
+  "title": "Associate Director, Product Management",
+  "company": "SiriusXM",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1699482521920001jIKT/attprofile/Headshot_1777517427580001cVpQ.png",
+  "linkedin_url": "https://www.linkedin.com/in/mina-tawadrous/",
+  "sessions": [
+   "Prioritization as code: Assumptions by pull request, scored by AI"
+  ]
+ },
+ {
+  "id": "nick-taylor",
+  "name": "Nick Taylor",
+  "title": "Developer Advocate/Software Engineer",
+  "company": "Pomerium",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1714445176861001BD1U/attprofile/latest-headshot%203_1777489272699001NHPk.jpeg",
+  "linkedin_url": "https://linkedin.com/in/nickytonline",
+  "sessions": [
+   "Open PRs, don't merge them: Fine-grained authorization for hosted MCP servers"
+  ]
+ },
+ {
+  "id": "spencer-taylor",
+  "name": "Spencer Taylor",
+  "title": "Principal Developer Relations Engineer",
+  "company": "New Relic",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1785347286471001yqPp/attprofile/Screenshot%202026-07-29%20at%2012.52.08%E2%80%AFPM_1787770119705001Zwkq.png",
+  "linkedin_url": "https://www.linkedin.com/in/spencetaylor/",
+  "sessions": [
+   "What does shift left mean in an agentic world? (Sponsored)"
+  ]
+ },
+ {
+  "id": "pierre-tempel",
+  "name": "Pierre Tempel",
+  "title": "Director, Product Management",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1695047674656001ZiRw/attprofile/cheeky%20suit%201_1777569591357001qjuJ.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/pierre-tempel/",
+  "sessions": [
+   "Agentic security for every developer"
+  ]
+ },
+ {
+  "id": "shishir-tewari",
+  "name": "Shishir Tewari",
+  "title": "Senior Manager, Data Engineering",
+  "company": "Procore Technologies",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1775668620305001pEsT/attprofile/Shishir_Tewari_1775958405627001m0R2.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/shishir-tewari-36113514/",
+  "sessions": [
+   "Build once, run on any agent: a practical guide to agent skills"
+  ]
+ },
+ {
+  "id": "jihan-thomas",
+  "name": "Jihan Thomas",
+  "title": "Chief AI Architect",
+  "company": "IBM",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1777678753640001XhOR/attprofile/chad_thomas%20%281%29_1792791513764001mfEe.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/chadcthomas/",
+  "sessions": [
+   "IBM Neo: From specifications to verified software delivery (Sponsored)"
+  ]
+ },
+ {
+  "id": "simona-toader",
+  "name": "Simona Toader",
+  "title": "Sr Software Global Black Belt",
+  "company": "Microsoft",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1776788371460001opj5/attprofile/Simona-Toader_1786027305737001LZ2O.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/simona-toader/",
+  "sessions": [
+   "Automating PR quality with Copilot CLI and GitHub Actions"
+  ]
+ },
+ {
+  "id": "rohan-varma",
+  "name": "Rohan Varma",
+  "title": "Product Lead, Enterprise Agents",
+  "company": "OpenAI",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1785277817841001XlN9/attprofile/Rohan%20Varma_1785277995183001g7Vn.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/rohannvarma/",
+  "sessions": [
+   "The view from the labs: What's next for AI-assisted development",
+   "Session After Party: The view from the labs: What's next for AI-assisted development"
+  ]
+ },
+ {
+  "id": "jocelyn-velarde",
+  "name": "Jocelyn Velarde",
+  "title": "GitHub Campus Expert",
+  "company": "Tec de Monterrey",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1790615092640001VIr5/attprofile/DSC_0881%20%281%29_1792001745658001h4iL.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/jocelynvelarde/",
+  "sessions": [
+   "Closing Keynote"
+  ]
+ },
+ {
+  "id": "leonardo-esteban-villa",
+  "name": "Leonardo Esteban Villa",
+  "title": "Tech Lead Venture",
+  "company": "itti",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1783696982691001Zpoc/attprofile/Leonardo_1790346004789001ebs1.png",
+  "linkedin_url": "https://www.linkedin.com/in/leonardovillarodriguez-productmanagement",
+  "sessions": [
+   "One PM, four weeks, full compliance: How itti shipped a banking product with agents"
+  ]
+ },
+ {
+  "id": "grace-vorreuter",
+  "name": "Grace Vorreuter",
+  "title": "Principal User Researcher",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1699463231224001B4xT/attprofile/new%20profile%20pic_1786124547380001XYrj.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/gracevorreuter/",
+  "sessions": [
+   "Expand Copilot beyond coding: Non-code workflows your team isn't using yet"
+  ]
+ },
+ {
+  "id": "david-a-wheeler",
+  "name": "David A. Wheeler",
+  "title": "Fellow/Director of Open Source Supply Chain Security, OpenSSF",
+  "company": "The Linux Foundation",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1759517237363001lQdR/attprofile/dwheeler-2003c-big_1777668715290001zHOh.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/dr-david-a-wheeler/",
+  "sessions": [
+   "Still open: How AI reshaped open source"
+  ]
+ },
+ {
+  "id": "cassidy-williams",
+  "name": "Cassidy Williams",
+  "title": "Sr. Director, Developer Advocacy",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1725036381202001ffsN/attprofile/cityleansquareframed_1791496920152001DFwE.png",
+  "linkedin_url": "GAP",
+  "sessions": [
+   "Opening Keynote"
+  ]
+ },
+ {
+  "id": "ashley-wolf",
+  "name": "Ashley Wolf",
+  "title": "Director, Open Source Programs",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1685995646510001IlnZ/attprofile/Ashley%20Wolf_1791205647947001COTz.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/ashleywolf/",
+  "sessions": [
+   "Still open: How AI reshaped open source"
+  ]
+ },
+ {
+  "id": "william-woodruff",
+  "name": "William Woodruff",
+  "title": "Member of Technical Staff",
+  "company": "OpenAI",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1715352580561001WhDd/attprofile/3059210_1777507440462001zwi7.jpeg",
+  "linkedin_url": "GAP",
+  "sessions": [
+   "Security by default: a maintainer’s wishlist for GitHub Actions v2"
+  ]
+ },
+ {
+  "id": "martin-woodward",
+  "name": "Martin Woodward",
+  "title": "VP, Developer Relations",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1687465756038001t5oT/attprofile/M.%20Woodward_1755712125897001m5xy_1788382348730001m6LD.jpeg",
+  "linkedin_url": "GAP",
+  "sessions": [
+   "Closing Keynote"
+  ]
+ },
+ {
+  "id": "xin-wu",
+  "name": "Xin Wu",
+  "title": "Principal Software Engineer",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1699470377884001rNlh/attprofile/IMG_7429_1786183918977001lU9l.jpeg",
+  "linkedin_url": "https://www.linkedin.com/in/xinwu1",
+  "sessions": [
+   "One skill, one CLI, one production health report"
+  ]
+ },
+ {
+  "id": "qianqian-ye",
+  "name": "Qianqian Ye",
+  "title": "Director of Creative Technology and Adjunct Associate Professor",
+  "company": "Processing Foundation, University of Southern California",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1775673106371001R3KP/attprofile/qianqian-ye-profile-2026_1785453605085001ZeAi.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/qianqianye",
+  "sessions": [
+   "Sketching with code in the age of AI"
+  ]
+ },
+ {
+  "id": "april-yoho",
+  "name": "April Yoho",
+  "title": "Senior Developer Advocate",
+  "company": "GitHub",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1685619186942001eQLJ/attprofile/AprilPorto_headshot_1789378592641001OD2M.jpg",
+  "linkedin_url": "https://www.linkedin.com/in/aprilyoho/",
+  "sessions": [
+   "GitHub Copilot at scale: An interactive lab for enterprise admins"
+  ]
+ },
+ {
+  "id": "luke-young",
+  "name": "Luke Young",
+  "title": "Principal Security Engineer",
+  "company": "Confluent",
+  "photo_url": "https://static.rainfocus.com/github/universe26/att/1777655944022001vjDf/attprofile/Headshot_1786397243971001fjwJ.png",
+  "linkedin_url": "https://www.linkedin.com/in/bored-engineer",
+  "sessions": [
+   "PATs, rulesets, and IP allowlists: How Confluent secured GitHub Enterprise Cloud"
+  ]
+ }
+]

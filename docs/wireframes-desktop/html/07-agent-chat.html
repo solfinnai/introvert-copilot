@@ -1,0 +1,40 @@
+<html><head><style>*{box-sizing:border-box;margin:0;padding:0}body{width:1440px;height:900px;font-family:"Inter","IBM Plex Sans","Helvetica Neue",Arial,sans-serif;font-size:13px;color:#222;background:#f4f4f4;display:flex;overflow:hidden}
+.side{width:224px;background:#e6e6e6;border-right:1px solid #bbb;padding:18px 12px;display:flex;flex-direction:column;gap:3px}
+.logo{font-weight:700;font-size:16px;margin:0 8px 18px}.logo small{display:block;font-weight:400;font-size:11px;color:#666}
+.nav{padding:9px 10px;border-radius:6px;color:#444;display:flex;gap:10px;align-items:center}.nav b{width:14px;height:14px;border:1.5px solid #777;border-radius:3px;display:inline-block}
+.nav.on{background:#fff;border:1px solid #aaa;font-weight:600;color:#000}.nav.on b{background:#333;border-color:#333}
+.sidefoot{margin-top:auto;font-size:11px;color:#666;border-top:1px solid #bbb;padding:10px 8px}
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.top{height:56px;background:#fff;border-bottom:1px solid #bbb;display:flex;align-items:center;padding:0 22px;gap:14px}
+.sel{border:1px solid #999;border-radius:6px;padding:7px 12px;font-weight:600}.sel:after{content:" v";color:#888}
+.pill{border:1px dashed #777;border-radius:20px;padding:4px 11px;font-size:11px;color:#444}
+.btn{border:1px solid #888;border-radius:6px;padding:7px 13px;background:#fff;font-weight:500;display:inline-block}.btn.pri{background:#222;color:#fff;border-color:#222}
+.sp{flex:1}.content{flex:1;padding:22px;display:grid;gap:18px;min-height:0;overflow:hidden}
+.card{background:#fff;border:1px solid #bbb;border-radius:8px;padding:16px;min-height:0;overflow:hidden}
+h1{font-size:22px;margin-bottom:2px}h2{font-size:14px;margin-bottom:10px;text-transform:uppercase;letter-spacing:.04em;color:#555}h3{font-size:14px;margin-bottom:4px}
+.muted{color:#777;font-size:12px}.av{border-radius:50%;object-fit:cover;background:#ccc;filter:grayscale(1);flex:none}
+.row{display:flex;gap:10px;align-items:center}.col{display:flex;flex-direction:column;gap:8px}
+.chip{display:inline-block;border:1px solid #999;border-radius:14px;padding:3px 10px;font-size:11px;margin:2px 4px 2px 0;background:#fafafa}.chip.on{background:#333;color:#fff}
+.src{display:inline-block;border:1px solid #bbb;background:#eee;border-radius:3px;padding:1px 6px;font-size:10px;margin-right:4px}
+.gap{display:inline-block;border:1px dashed #555;padding:1px 6px;font-size:10px;font-weight:700;border-radius:3px}
+.conf{font-size:10px;font-weight:700;border:1px solid #444;border-radius:3px;padding:1px 5px}
+.line{height:9px;background:#ddd;border-radius:3px;margin:6px 0}.line.s{width:60%}.line.m{width:80%}
+.input{border:1px solid #999;border-radius:6px;padding:9px 11px;background:#fff;color:#888}
+.qr{display:grid;border:8px solid #fff;outline:1px solid #999}
+.box{border:1px dashed #999;border-radius:6px;padding:10px}
+.ann{position:absolute;background:#fff8c4;border:1px solid #cbb94a;font-size:11px;padding:3px 7px;border-radius:3px;color:#5a4d00}
+code,pre{font-family:"IBM Plex Mono",Menlo,monospace;font-size:11px}pre{background:#eee;border:1px solid #ccc;border-radius:6px;padding:10px;white-space:pre-wrap}
+.li{padding:9px 0;border-bottom:1px solid #e3e3e3}
+</style></head><body><div class="side"><div class="logo">Introvert Co-pilot<small>Conference co-pilot for introverts</small></div><div class="nav "><b></b>Home</div><div class="nav "><b></b>Know yourself</div><div class="nav "><b></b>Event feed</div><div class="nav "><b></b>Who to meet</div><div class="nav on"><b></b>Agent chat</div><div class="nav "><b></b>Notes</div><div class="nav "><b></b>Follow-ups</div><div class="nav "><b></b>Debrief</div><div class="sidefoot">Powered by Bright Data, FalkorDB,<br>OpenAI, TrueForge. Reviewed by Qodo.</div></div>
+<div class="main"><div class="top"><div class="sel">GitHub Universe 2026</div><span class="muted">Oct 28-29, Fort Mason Center, SF</span><span class="pill">Open demo, no login</span><div class="sp"></div><b style="font-size:15px">Agent chat</b><div class="sp"></div><span class="muted">session sid: 7f3a...</span><span class="btn">Reset demo</span></div>
+<div class="content" style="grid-template-columns:1fr 440px">
+<div class="card" style="display:flex;flex-direction:column"><div class="row"><h2 style="margin:0">Ask your co-pilot</h2><div class="sp"></div><span class="chip">OpenAI tool calling</span><span class="chip">Runs on TrueForge if go</span></div><div style="flex:1;overflow:hidden"><div style="display:flex;justify-content:flex-end;margin:8px 0"><div style="max-width:70%;padding:10px 13px;border-radius:10px;background:#333;color:#fff">Who should I talk to next?</div></div><div style="display:flex;justify-content:flex-start;margin:8px 0"><div style="max-width:70%;padding:10px 13px;border-radius:10px;background:#eee;border:1px solid #ccc">Maggie Appleton. You both care about tools for thought, and she speaks at the GitHub Next session at 2:00 PM. You have not met her yet. Want a 30-second prep?<div class=muted style=margin-top:6px>Memory used: 2 nodes, 1 path. Tool: find_people</div></div></div><div style="display:flex;justify-content:flex-end;margin:8px 0"><div style="max-width:70%;padding:10px 13px;border-radius:10px;background:#333;color:#fff">What did I promise Kent?</div></div><div style="display:flex;justify-content:flex-start;margin:8px 0"><div style="max-width:70%;padding:10px 13px;border-radius:10px;background:#eee;border:1px solid #ccc">You told Kent C. Dodds you would send him the Co-pilot demo link and your MCP memory notes by Monday. Logged 10:20 AM from your notes.<div class=muted style=margin-top:6px>Memory used: 2 nodes, 1 path. Tool: find_people</div></div></div><div style="display:flex;justify-content:flex-end;margin:8px 0"><div style="max-width:70%;padding:10px 13px;border-radius:10px;background:#333;color:#fff">I just met Jake, he is into Figma MCP and creator tools</div></div><div style="display:flex;justify-content:flex-start;margin:8px 0"><div style="max-width:70%;padding:10px 13px;border-radius:10px;background:#eee;border:1px solid #ccc">Saved. Added (Henry)-[:MET]->(Jake Albaugh) with topics MCP and creator tools. He is now hidden from "who to meet".<div class=muted style=margin-top:6px>Memory used: 2 nodes, 1 path. Tool: find_people</div></div></div></div>
+<div class="row" style="margin:8px 0"><span class="chip">Next person</span><span class="chip">What do I owe</span><span class="chip">Prep me</span><span class="chip">Recap</span></div><div class="row"><div class="input" style="flex:1">Ask about people, promises, or log a meeting...</div><span class="btn pri">Send</span></div></div>
+<div class="card col"><div class="row"><h2 style="margin:0">Memory used</h2><div class="sp"></div><span class="chip on">FalkorDB memory</span></div><div class="muted">For last answer: "I just met Jake..."</div>
+<div class="box"><b>Tool calls</b><div><code>log_meeting("Jake Albaugh", ["MCP","creator tools"])</code></div><div><code>get_person("Jake Albaugh")</code></div></div>
+<div class="box"><b>Graph path</b><div class="row" style="margin-top:8px;flex-wrap:wrap"><span class="chip on">Henry</span>-MET-&gt;<span class="chip">Jake Albaugh</span>-INTERESTED_IN-&gt;<span class="chip">MCP</span>&lt;-<span class="chip">Kent C. Dodds</span></div></div>
+<b>Cypher</b><pre>MATCH (me:Person {sid:$sid,isMe:true}), (p:Person {name:$name})
+MERGE (me)-[m:MET]->(p) SET m.at=timestamp()
+WITH p UNWIND $topics AS t
+MERGE (tp:Topic {name:t}) MERGE (p)-[:INTERESTED_IN]->(tp)</pre>
+<div class="box"><b>Chat memory</b><div class="muted">(:Message) nodes saved: 6. Linked [:ABOUT] to Maggie, Kent, Jake</div></div><span class="btn">Open in graph view</span></div></div></div></body></html>
