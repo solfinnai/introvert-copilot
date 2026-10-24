@@ -6,7 +6,7 @@ Built for the WeMakeDevs Patch the Conference hackathon (Oct 24 2026). FalkorDB 
 
 ## What works
 
-- App shell: left nav, top bar, cached snapshot pill, Reset demo.
+- App shell: left nav (Home, Who to meet, Speakers, Saved, Ask agent, Your story) and a top bar with the event and the demo person. No status pill.
 - Seed snapshot: 183 speakers and 157 sessions from `seed/github-universe-demo`.
 - Who to meet (`/meet`): day filter, scores, graph path expander, save, mark as met.
 - Person page (`/people/[id]`): conversation plan first, then public intel. Google results, a public page, and the LinkedIn dataset run when Bright Data is configured. If a fetch fails, that section stays on the seed snapshot and is labeled Cached snapshot. Every claim shows a source and a fetched time.
@@ -17,7 +17,7 @@ Built for the WeMakeDevs Patch the Conference hackathon (Oct 24 2026). FalkorDB 
 - `falkors://` (TLS, non-standard port) is parsed into host, port, username, and password. TLS is turned on explicitly. The URL is never logged.
 - Idempotent seed: the catalog loads into FalkorDB Cloud when the graph is empty. `npm run seed` does the same from a shell. `POST /api/seed` is locked behind `SEED_TOKEN`.
 - `GET /api/health` returns `{ ok, backend, nodes, edges }` only.
-- Per-browser session in an httpOnly cookie plus localStorage. Reset rotates the cookie and clears local saves. It does not delete the shared graph.
+- Per-browser session in an httpOnly cookie plus localStorage. Saved people, notes, met marks, topic chips, and your own words live in this browser. "Reset my saved list" on Saved clears those local keys. It does not delete the shared graph. `POST /api/reset` only rotates the anonymous cookie.
 
 ## What is stubbed
 

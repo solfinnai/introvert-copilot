@@ -15,7 +15,7 @@ import {
 } from "@/lib/speakers";
 
 export function SavedBoard({ speakers }: { speakers: DirectorySpeaker[] }) {
-  const { state, ready, updateSaved } = useSession();
+  const { state, ready, updateSaved, resetLocal } = useSession();
   const groups = new Map<string, string[]>();
   for (const person of state.saved) {
     if (!person.catchLine) continue;
@@ -146,6 +146,18 @@ export function SavedBoard({ speakers }: { speakers: DirectorySpeaker[] }) {
           {names.join(" and ")} are both at {when}. Pick one so you are not in two places.
         </p>
       ))}
+
+      {ready && (
+        <p className="mt-10">
+          <button
+            type="button"
+            className="text-xs text-mute underline decoration-[#e3dcd0] underline-offset-4 hover:text-ink hover:decoration-ink"
+            onClick={() => resetLocal()}
+          >
+            Reset my saved list
+          </button>
+        </p>
+      )}
     </div>
   );
 }

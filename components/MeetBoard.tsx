@@ -125,7 +125,7 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
 
       <p className="mt-4 max-w-3xl text-xs leading-5 text-mute">
         {backendLabel(data.backend)} walked you to a topic, then a session, then a speaker. People you
-        mark as met stay out of this list until you reset the demo.
+        mark as met stay out of this list until you reset your saved list.
         {metNote > 0 ? ` You have marked ${metNote} so far.` : ""}
       </p>
       {error && <p className="mt-3 text-sm text-[#9a3412]">{error}</p>}
