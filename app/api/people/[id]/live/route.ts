@@ -1,8 +1,8 @@
 import { getCatalog } from "@/lib/catalog";
-import { INTEL_CACHE_CONTROL, readBriefCache } from "@/lib/intel-cache";
+import { intelCacheControl, readBriefCache } from "@/lib/intel-cache";
 import type { LiveUpdate } from "@/lib/live-update";
 import { clientIp, rateLimit } from "@/lib/limits";
-import { buildSeedBrief, watchPersonBrief } from "@/lib/person-brief";
+import { buildSeedBrief, watchPersonBrief, type PersonBrief } from "@/lib/person-brief";
 import { personCard } from "@/lib/rank";
 
 export const runtime = "nodejs";
@@ -38,11 +38,32 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
       ],
       "hit",
       null,
+      memory.savedAt,
     );
   }
 
   const limit = rateLimit(`live:${clientIp(req)}`, 12, 60_000);
   if (!limit.ok) return text("Slow down a little and open one person at a time.", 429, "0");
+
+  const buffered: LiveUpdate[] = [];
+  let sink: ((update: LiveUpdate) => void) | null = null;
+  const pending = watchPersonBrief(card, (update) => {
+    if (sink) sink(update);
+    else buffered.push(update);
+  });
+  const quick = await Promise.race([
+    pending.then((brief) => ({ kind: "brief" as const, brief })),
+    new Promise<{ kind: "wait" }>((resolve) => setTimeout(() => resolve({ kind: "wait" }), 150)),
+  ]);
+  if (quick.kind === "brief" && quick.brief.fromCache) {
+    const stored = await readBriefCache(id).catch(() => null);
+    return ndjson(
+      [{ section: "done", status: "cached", brief: quick.brief }],
+      "hit",
+      String(limit.remaining),
+      stored?.savedAt ?? new Date().toISOString(),
+    );
+  }
 
   const encoder = new TextEncoder();
   const stream = new ReadableStream<Uint8Array>({
@@ -65,14 +86,20 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
           closed = true;
         }
       };
-      watchPersonBrief(card, send)
-        .then((brief) => {
-          send({ section: "done", status: brief.fromCache ? "cached" : "live", brief });
-          close();
-        })
+      const finish = (brief: PersonBrief) => {
+        send({ section: "done", status: brief.fromCache ? "cached" : "live", brief });
+        close();
+      };
+      sink = send;
+      for (const update of buffered.splice(0)) send(update);
+      if (quick.kind === "brief") {
+        finish(quick.brief);
+        return;
+      }
+      pending
+        .then(finish)
         .catch(() => {
-          const seed = buildSeedBrief(card);
-          send({ section: "done", status: "timeout", brief: seed });
+          send({ section: "done", status: "timeout", brief: buildSeedBrief(card) });
           close();
         });
     },
@@ -91,11 +118,16 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
   });
 }
 
-function ndjson(updates: LiveUpdate[], cache: "hit" | "miss", remaining: string | null): Response {
+function ndjson(
+  updates: LiveUpdate[],
+  cache: "hit" | "miss",
+  remaining: string | null,
+  savedAt: string,
+): Response {
   const body = updates.map((update) => JSON.stringify(update)).join("\n") + "\n";
   const headers: Record<string, string> = {
     "Content-Type": "application/x-ndjson; charset=utf-8",
-    "Cache-Control": INTEL_CACHE_CONTROL,
+    "Cache-Control": intelCacheControl(savedAt),
     "X-Content-Type-Options": "nosniff",
     "X-Intel-Cache": cache,
   };

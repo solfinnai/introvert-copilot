@@ -38,12 +38,36 @@ export function PersonLive({
   ms: number;
   report: boolean;
 }) {
+  const [shown, setShown] = useState(card);
+  const [graphBackend, setGraphBackend] = useState(backend);
+  const [graphMs, setGraphMs] = useState(ms);
   const [intel, setIntel] = useState(seed.intel);
   const [plan, setPlan] = useState(seed.plan);
   const [fetchReport, setFetchReport] = useState(seed.report);
   const [links, setLinks] = useState(seed.links);
   const [profiles, setProfiles] = useState(seed.profiles);
   const [pending, setPending] = useState<LivePending | null>({ ...LIVE_LABELS });
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const run = async () => {
+      try {
+        const response = await fetch(`/api/people/${encodeURIComponent(card.id)}/path`, {
+          signal: controller.signal,
+        });
+        if (!response.ok) return;
+        const body = (await response.json()) as { card?: RankedPerson; backend?: GraphBackend; ms?: number };
+        if (!body.card || body.card.id !== card.id) return;
+        setShown(body.card);
+        if (body.backend) setGraphBackend(body.backend);
+        if (typeof body.ms === "number") setGraphMs(body.ms);
+      } catch {
+        /* The memory path stays on the page. */
+      }
+    };
+    void run();
+    return () => controller.abort();
+  }, [card.id]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -150,11 +174,11 @@ export function PersonLive({
     <>
       <header className="mt-3">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-          <PersonPhoto src={card.photoUrl} name={card.name} size={72} />
+          <PersonPhoto src={shown.photoUrl} name={shown.name} size={72} />
           <div className="min-w-0">
-            <h1 className="break-words font-serif text-4xl tracking-tight">{card.name}</h1>
-            <p className="text-mute">{card.titleLine}</p>
-            <p className="mt-1 text-sm">Catch them: {card.catchLine}</p>
+            <h1 className="break-words font-serif text-4xl tracking-tight">{shown.name}</h1>
+            <p className="text-mute">{shown.titleLine}</p>
+            <p className="mt-1 text-sm">Catch them: {shown.catchLine}</p>
           </div>
         </div>
         <div className="mt-4">
@@ -162,7 +186,7 @@ export function PersonLive({
         </div>
       </header>
       <div className="no-print mt-4">
-        <PersonActions person={toSaved(card)} />
+        <PersonActions person={toSaved(shown)} />
         <ReportLinks id={card.id} report={report} />
       </div>
       <section className="mt-6 rounded-3xl border border-line bg-card p-5" data-sessions={sessions.length}>
@@ -182,13 +206,13 @@ export function PersonLive({
       </section>
       <div id="report" data-seed="true">
         <PersonDossier
-          card={card}
+          card={shown}
           intel={intel}
           plan={plan}
           report={fetchReport}
           links={links}
-          backend={backend}
-          ms={ms}
+          backend={graphBackend}
+          ms={graphMs}
           cypher={cypher}
           fetchedLabel={fetchedLabel}
           pending={pending}

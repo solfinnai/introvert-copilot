@@ -119,7 +119,7 @@ async function loadThroughRuntime(card: RankedPerson): Promise<PersonBrief> {
     if (!record?.brief) return loadPersonBriefInner(card);
     if (justComputed) return record.brief;
     const cached = markRuntimeHit(record.brief);
-    await remember(card.id, cached);
+    void remember(card.id, cached, record.savedAt);
     return cached;
   } catch {
     const held = takeUncachedBrief(card.id);
@@ -151,6 +151,7 @@ async function loadPersonBriefInner(card: RankedPerson): Promise<PersonBrief> {
     planContext: planContext(card, input, snapshot),
     twitterHandle: person?.twitterHandle ?? null,
     onUpdate: (update) => emitUpdate(card.id, update),
+    planContextFor: (intel) => planContext(card, input, intel),
   });
   const brief: PersonBrief = {
     intel: collected.intel,
@@ -199,17 +200,16 @@ function markRuntimeHit(brief: PersonBrief): PersonBrief {
   return { ...brief, fromCache: true, intel: markCached(brief.intel) };
 }
 
-async function remember(id: string, brief: PersonBrief): Promise<void> {
+async function remember(id: string, brief: PersonBrief, savedAt = new Date().toISOString()): Promise<void> {
   const stored: CachedBrief = {
     version: BRIEF_CACHE_VERSION,
-    savedAt: new Date().toISOString(),
+    savedAt,
     intel: brief.intel,
     plan: brief.plan,
     report: brief.report,
     profiles: brief.profiles,
     links: brief.links,
   };
-  if (!isStoredBrief(stored)) return;
   await writeBriefCache(id, stored).catch(() => undefined);
 }
 

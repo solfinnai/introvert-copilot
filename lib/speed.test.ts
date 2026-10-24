@@ -4,7 +4,7 @@ import path from "path";
 import { test } from "node:test";
 import { LINKEDIN_TIMEOUT_MS, SERP_TIMEOUT_MS, SITE_TIMEOUT_MS, searchGoogle, unlockPage } from "./brightdata";
 import { getCatalog } from "./catalog";
-import { INTEL_CACHE_CONTROL, INTEL_CACHE_TTL_MS, isStoredBrief, type CachedBrief } from "./intel-cache";
+import { INTEL_CACHE_CONTROL, INTEL_CACHE_TTL_MS, intelCacheControl, isStoredBrief, type CachedBrief } from "./intel-cache";
 import { buildSnapshotIntel, isBlockedPublicUrl, type SnapshotInput } from "./intel";
 import { collectLive, seedPageUrls } from "./live-brief";
 import { LIVE_LABELS } from "./live-labels";
@@ -20,11 +20,20 @@ test("live calls use short per-call timeouts and the brief cache lasts 6 hours",
   assert.equal(LINKEDIN_TIMEOUT_MS, 12_000);
   assert.equal(INTEL_CACHE_TTL_MS, 6 * 60 * 60 * 1000);
   assert.match(INTEL_CACHE_CONTROL, /max-age=21600/);
+  assert.equal(INTEL_CACHE_CONTROL.includes("stale-while-revalidate"), false);
+  const aged = new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString();
+  const header = intelCacheControl(aged);
+  const maxAge = Number(header.match(/max-age=(\d+)/)?.[1]);
+  assert.ok(maxAge <= 3600 && maxAge >= 3590);
   assert.equal(LIVE_LABELS.news, "Finding recent news...");
 });
 
 test("private and non-http urls are not fetched", () => {
   assert.equal(isBlockedPublicUrl("http://127.0.0.1/latest"), true);
+  assert.equal(isBlockedPublicUrl("http://[::1]/secret"), true);
+  assert.equal(isBlockedPublicUrl("http://[fd00::1]/secret"), true);
+  assert.equal(isBlockedPublicUrl("http://100.64.1.1/meta"), true);
+  assert.equal(isBlockedPublicUrl("http://metadata.internal/secret"), true);
   assert.equal(isBlockedPublicUrl("http://169.254.169.254/"), true);
   assert.equal(isBlockedPublicUrl("http://10.0.0.5/admin"), true);
   assert.equal(isBlockedPublicUrl("http://localhost/secret"), true);
@@ -118,6 +127,81 @@ test("a stalled live fetch keeps the cached snapshot", async () => {
   assert.ok(updates.includes("site:timeout"));
   assert.ok(updates.includes("linkedin:timeout"));
   assert.ok(result.intel.news.some((claim) => /Design in Tech/.test(claim.text)));
+});
+
+test("a finished search is kept when another search stalls", async () => {
+  const snapshot = buildSnapshotIntel(sampleInput());
+  let calls = 0;
+  const body = JSON.stringify({
+    organic: [
+      {
+        link: "https://www.wired.com/story/maeda",
+        title: "John Maeda profile",
+        description: "John Maeda on design and AI",
+      },
+    ],
+  });
+  const result = await collectLive({
+    input: sampleInput(),
+    snapshot,
+    planContext: planContext(),
+    twitterHandle: null,
+    timeouts: { serp: 40, site: 40, linkedin: 40 },
+    deps: {
+      searchGoogle: () => {
+        calls += 1;
+        if (calls === 1) {
+          return Promise.resolve({
+            ok: true as const,
+            body,
+            url: "https://www.google.com/search",
+            fetchedAt: "2026-10-24T00:00:00.000Z",
+          });
+        }
+        return new Promise(() => undefined);
+      },
+      unlockPage: () => Promise.resolve({ ok: false as const, reason: "not configured" }),
+      scrapeLinkedIn: () => Promise.resolve({ ok: false as const, reason: "not configured" }),
+      draftPlan: async (ctx) => templatePlan(ctx),
+    },
+  });
+  assert.equal(result.report.serp, "live");
+  assert.ok(result.hits.some((hit) => hit.url.includes("wired.com")));
+});
+
+test("a finished page is kept when another page stalls", async () => {
+  const input = sampleInput();
+  input.sources = [
+    { url: "https://johnmaeda.medium.com/one", title: "One" },
+    { url: "https://maeda.example.com/about", title: "About" },
+  ];
+  const snapshot = buildSnapshotIntel(input);
+  const page = `<html><head><title>Design in Tech</title></head><body><p>${"John Maeda writes about design and artificial intelligence. ".repeat(8)}</p></body></html>`;
+  const result = await collectLive({
+    input,
+    snapshot,
+    planContext: planContext(),
+    twitterHandle: null,
+    timeouts: { serp: 30, site: 80, linkedin: 30 },
+    deps: {
+      searchGoogle: () => Promise.resolve({ ok: false as const, reason: "not configured" }),
+      unlockPage: (url) => {
+        if (url.includes("medium.com")) {
+          return Promise.resolve({
+            ok: true as const,
+            body: page,
+            url,
+            fetchedAt: "2026-10-24T00:00:00.000Z",
+          });
+        }
+        return new Promise(() => undefined);
+      },
+      scrapeLinkedIn: () => Promise.resolve({ ok: false as const, reason: "not configured" }),
+      draftPlan: async (ctx) => templatePlan(ctx),
+    },
+  });
+  assert.equal(result.report.unlock, "live");
+  assert.ok(result.pages.some((item) => item.url.includes("medium.com")));
 });
 
 test("a timeout snapshot is worth caching and a skipped one is not", () => {

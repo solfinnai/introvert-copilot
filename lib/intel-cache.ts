@@ -7,7 +7,22 @@ import type { PublicLink, SocialProfile } from "./public-links";
 export const BRIEF_CACHE_VERSION = 5;
 export const INTEL_CACHE_TTL_MS = 6 * 60 * 60 * 1000;
 export const INTEL_CACHE_SECONDS = INTEL_CACHE_TTL_MS / 1000;
-export const INTEL_CACHE_CONTROL = `public, max-age=${INTEL_CACHE_SECONDS}, s-maxage=${INTEL_CACHE_SECONDS}, stale-while-revalidate=86400`;
+export const INTEL_CACHE_CONTROL = `public, max-age=${INTEL_CACHE_SECONDS}, s-maxage=${INTEL_CACHE_SECONDS}`;
+
+/** Remaining lifetime, so a five-hour-old brief is not advertised as fresh for six more hours. */
+export function intelCacheControl(savedAt: string): string {
+  const saved = Date.parse(savedAt);
+  if (Number.isNaN(saved)) return "no-store";
+  const seconds = Math.floor((INTEL_CACHE_TTL_MS - (Date.now() - saved)) / 1000);
+  if (seconds < 1) return "no-store";
+  return `public, max-age=${seconds}, s-maxage=${seconds}`;
+}
+
+const writes = new Map<string, "durable" | "memory" | "skipped">();
+
+export function briefWriteResult(id: string): "durable" | "memory" | "skipped" | null {
+  return writes.get(id) ?? null;
+}
 
 export interface CachedBrief {
   version: number;
@@ -73,12 +88,18 @@ export async function readBriefCache(id: string): Promise<CachedBrief | null> {
   }
 }
 
-export async function writeBriefCache(id: string, brief: CachedBrief): Promise<void> {
-  if (!safeId(id) || !isStoredBrief(brief)) return;
+export async function writeBriefCache(id: string, brief: CachedBrief): Promise<"durable" | "memory" | "skipped"> {
+  if (!safeId(id) || !isStoredBrief(brief)) {
+    writes.set(id, "skipped");
+    return "skipped";
+  }
   memory.set(id, brief);
   try {
     const db = await withTimeout(getDb(), 2000, "cache connect timed out");
-    if (!db) return;
+    if (!db) {
+      writes.set(id, "memory");
+      return "memory";
+    }
     const graph = db.selectGraph(graphName());
     await withTimeout(
       graph.query("MATCH (p:Person {id: $id}) SET p.brief_json = $brief", {
@@ -87,8 +108,11 @@ export async function writeBriefCache(id: string, brief: CachedBrief): Promise<v
       2000,
       "cache write timed out",
     );
+    writes.set(id, "durable");
+    return "durable";
   } catch {
-    /* The page still renders if the graph cache is down. */
+    writes.set(id, "memory");
+    return "memory";
   }
 }
 

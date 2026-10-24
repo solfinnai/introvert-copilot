@@ -215,8 +215,11 @@ export function isBlockedPublicUrl(url: string): boolean {
 }
 
 function isPrivateHost(host: string): boolean {
-  if (host === "localhost" || host.endsWith(".localhost") || host === "0.0.0.0" || host === "::1") return true;
-  const ipv4 = host.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+  const bare = host.replace(/^\[|\]$/g, "");
+  if (bare === "localhost" || host.endsWith(".localhost") || bare.endsWith(".localhost")) return true;
+  if (bare === "0.0.0.0" || bare.endsWith(".internal")) return true;
+  if (bare.includes(":")) return true;
+  const ipv4 = bare.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
   if (!ipv4) return false;
   const parts = ipv4.slice(1).map((part) => Number(part));
   if (parts.some((part) => part > 255)) return true;
@@ -225,6 +228,7 @@ function isPrivateHost(host: string): boolean {
   if (a === 169 && b === 254) return true;
   if (a === 172 && b >= 16 && b <= 31) return true;
   if (a === 192 && b === 168) return true;
+  if (a === 100 && b >= 64 && b <= 127) return true;
   return false;
 }
 

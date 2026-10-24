@@ -9,6 +9,6 @@ export const maxDuration = 60;
 
 export default async function MeetPage() {
   const initial = await recommend({ day: "both", metIds: [], limit: 10 });
-  after(() => scheduleTopSpeakerWarm());
+  after(() => scheduleTopSpeakerWarm(initial.people.map((person) => person.id)));
   return <MeetBoard initial={initial} />;
 }

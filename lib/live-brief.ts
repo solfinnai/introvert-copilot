@@ -37,7 +37,6 @@ import {
 } from "./public-links";
 
 const PAGE_CAP = 2;
-const SERP_WAIT_WHEN_NO_PAGE_MS = 3_000;
 
 export interface LiveDeps {
   searchGoogle: (query: string, timeoutMs: number) => Promise<LiveResult>;
@@ -54,6 +53,7 @@ export interface CollectInput {
   deps?: LiveDeps;
   timeouts?: { serp?: number; site?: number; linkedin?: number };
   onUpdate?: (update: LiveUpdate) => void;
+  planContextFor?: (intel: PersonIntel) => PlanContext;
 }
 
 export interface CollectedBrief {
@@ -114,10 +114,13 @@ export async function collectLive(args: CollectInput): Promise<CollectedBrief> {
   let plan = templatePlan(args.planContext);
 
   const queries = readingQueries(input.name, input.company);
-  const serpPromise = withDeadline(
-    Promise.all(queries.map((query) => callLive(() => deps.searchGoogle(query, serpMs)))),
-    serpMs,
-    queries.map(() => ({ ok: false as const, reason: "timed out" })),
+  const serpPromise = Promise.all(
+    queries.map((query) =>
+      withDeadline(callLive(() => deps.searchGoogle(query, serpMs)), serpMs, {
+        ok: false as const,
+        reason: "timed out",
+      }),
+    ),
   );
   const linkedinPromise = linkedinUrl
     ? withDeadline(
@@ -211,11 +214,22 @@ export async function collectLive(args: CollectInput): Promise<CollectedBrief> {
   });
 
   const [, , , settledPlan] = await Promise.all([serpDone, linkedinDone, siteDone, planDone, linksDone]);
+  let finalPlan = settledPlan;
+  const finalIntel = intelNow();
+  if (args.planContextFor && claimSignature(finalIntel) !== claimSignature(args.snapshot)) {
+    const revised = await withDeadline(
+      deps.draftPlan(args.planContextFor(finalIntel)).catch(() => finalPlan),
+      9_000,
+      finalPlan,
+    );
+    finalPlan = revised;
+    emit("plan", finalPlan.mode === "openai" ? "openai" : "template", finalPlan);
+  }
   const bundle = bundleNow();
   return {
-    intel: intelNow(),
-    plan: settledPlan,
-    report: { ...report, plan: settledPlan.mode },
+    intel: finalIntel,
+    plan: finalPlan,
+    report: { ...report, plan: finalPlan.mode },
     hits: publicHits,
     pages: mined,
     liveFetchedAt: foundSomething() ? fetchedAt : null,
@@ -252,9 +266,9 @@ async function loadSites(
     );
     return summarizeSite(bucket.slice(), outcome);
   }
-  const serp = await withDeadline(serpPromise, Math.min(SERP_WAIT_WHEN_NO_PAGE_MS, siteMs), null);
+  const serp = await withDeadline(serpPromise, siteMs, null);
   const remaining = siteMs - (Date.now() - started);
-  if (!serp || remaining < 700) return summarizeSite([], "timeout");
+  if (!serp || remaining <= 0) return summarizeSite([], "timeout");
   const targets = unlockTargetsFromSerp(serp, input.name).slice(0, PAGE_CAP);
   if (!targets.length) return summarizeSite([], "done");
   const outcome = await withDeadline(
@@ -279,8 +293,18 @@ function summarizeSite(
 
 async function unlockAll(urls: string[], timeoutMs: number, deps: LiveDeps, bucket: LiveResult[]): Promise<void> {
   if (!urls.length || timeoutMs <= 0) return;
-  const results = await Promise.all(urls.map((url) => callLive(() => deps.unlockPage(url, timeoutMs))));
-  bucket.push(...results);
+  await Promise.all(
+    urls.map(async (url) => {
+      const result = await callLive(() => deps.unlockPage(url, timeoutMs));
+      bucket.push(result);
+    }),
+  );
+}
+
+function claimSignature(intel: PersonIntel): string {
+  return [...intel.work, ...intel.education, ...intel.news, ...intel.standout, ...intel.talkingPoints]
+    .map((claim) => claim.text)
+    .join("\n");
 }
 
 function unlockTargetsFromSerp(results: LiveResult[], name: string): string[] {
