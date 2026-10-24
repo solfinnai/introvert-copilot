@@ -1,5 +1,5 @@
 import { HERO_CYPHER, getCatalog, DEFAULT_INTERESTS } from "./catalog";
-import { getDb, graphName } from "./falkor";
+import { getDb, graphName, noteQueryFailure } from "./falkor";
 import type { HopInfo } from "./rank";
 import { personCard, rankPeople } from "./rank";
 import { logBackend, safeError } from "./redact";
@@ -26,6 +26,7 @@ export async function recommend(query: RecommendQuery): Promise<MeetResponse> {
         logBackend("memory", "graph query returned no topic paths");
       }
     } catch (err) {
+      noteQueryFailure(err);
       logBackend("memory", `query failed: ${safeError(err)}`);
     }
   }
@@ -54,6 +55,7 @@ export async function describePerson(
       const queried = await queryHops({ day: "both", metIds: [], limit: 1 });
       if (queried.has(id)) hops = queried;
     } catch (err) {
+      noteQueryFailure(err);
       logBackend("memory", `query failed: ${safeError(err)}`);
     }
   }

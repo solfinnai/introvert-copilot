@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { DEFAULT_INTERESTS, getCatalog, memoryGraphCounts } from "./catalog";
-import { getDb, graphName } from "./falkor";
+import { getDb, graphName, noteQueryFailure } from "./falkor";
 import { logBackend, safeError } from "./redact";
 import type { GraphBackend } from "./types";
 
@@ -315,6 +315,7 @@ export async function liveCounts(): Promise<{ backend: GraphBackend; nodes: numb
         const counts = await falkorCounts(db.selectGraph(graphName()) as unknown as CypherGraph);
         return { backend: "falkordb", ...counts };
       } catch (err) {
+        noteQueryFailure(err);
         logBackend("memory", `count failed: ${safeError(err)}`);
       }
     }
