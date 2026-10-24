@@ -11,7 +11,7 @@ import { describePerson } from "@/lib/graph";
 import { loadPersonBrief } from "@/lib/person-brief";
 import { seedProfiles } from "@/lib/public-links";
 import type { RankedPerson } from "@/lib/types";
-import type { SavedPerson } from "@/components/session";
+import type { SavedDraft } from "@/components/session";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -92,7 +92,7 @@ function seedFor(person: { name: string; linkedinUrl: string | null; twitterHand
   });
 }
 
-function toSaved(person: RankedPerson): SavedPerson {
+function toSaved(person: RankedPerson): SavedDraft {
   return {
     id: person.id,
     name: person.name,
