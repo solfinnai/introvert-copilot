@@ -3,8 +3,10 @@ import { markCached, type PersonIntel } from "./intel";
 import type { ConversationPlan } from "./plan";
 import type { FetchReport } from "./intel";
 
+export const BRIEF_CACHE_VERSION = 2;
+
 export interface CachedBrief {
-  version: 1;
+  version: number;
   savedAt: string;
   intel: PersonIntel;
   plan: ConversationPlan;
@@ -66,7 +68,7 @@ function present(brief: CachedBrief): CachedBrief {
 }
 
 function fresh(brief: CachedBrief | undefined | null): CachedBrief | null {
-  if (!brief || brief.version !== 1 || !brief.intel || !brief.plan || !brief.savedAt) return null;
+  if (!brief || brief.version !== BRIEF_CACHE_VERSION || !brief.intel || !brief.plan || !brief.savedAt) return null;
   if (brief.intel.mode === "snapshot" && brief.plan.mode === "template") return null;
   const saved = Date.parse(brief.savedAt);
   if (Number.isNaN(saved) || Date.now() - saved > TTL_MS) return null;

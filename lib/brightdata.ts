@@ -11,7 +11,7 @@ const DATASET_URL =
 export function searchGoogle(query: string): Promise<LiveResult> {
   const zone = (process.env.BRIGHTDATA_SERP_ZONE || "").trim();
   const url = `https://www.google.com/search?q=${encodeURIComponent(query)}&brd_json=1&gl=us&hl=en`;
-  return postUnlocker(zone, url, 8000);
+  return postUnlocker(zone, url, 15000);
 }
 
 export function unlockPage(pageUrl: string): Promise<LiveResult> {
@@ -19,7 +19,7 @@ export function unlockPage(pageUrl: string): Promise<LiveResult> {
     return Promise.resolve({ ok: false, reason: "no public url" });
   }
   const zone = (process.env.BRIGHTDATA_UNLOCKER_ZONE || "").trim();
-  return postUnlocker(zone, pageUrl, 8000);
+  return postUnlocker(zone, pageUrl, 15000);
 }
 
 export async function scrapeLinkedIn(profileUrl: string): Promise<LiveResult> {
@@ -28,7 +28,7 @@ export async function scrapeLinkedIn(profileUrl: string): Promise<LiveResult> {
   const url = normalizeLinkedIn(profileUrl);
   if (!url) return { ok: false, reason: "no public url" };
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 12000);
+  const timer = setTimeout(() => controller.abort(), 18000);
   try {
     const response = await fetch(DATASET_URL, {
       method: "POST",

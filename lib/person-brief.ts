@@ -2,7 +2,7 @@ import { searchGoogle, scrapeLinkedIn, unlockPage, type LiveResult } from "./bri
 import { getCatalog } from "./catalog";
 import { curatedById } from "./curated";
 import { henryPublic } from "./henry-profile";
-import { readBriefCache, writeBriefCache } from "./intel-cache";
+import { BRIEF_CACHE_VERSION, readBriefCache, writeBriefCache } from "./intel-cache";
 import {
   applyLiveSources,
   buildSnapshotIntel,
@@ -59,7 +59,7 @@ export async function loadPersonBrief(card: RankedPerson): Promise<PersonBrief> 
   report = { ...report, plan: plan.mode };
   if (intel.mode !== "snapshot" || plan.mode === "openai") {
     await writeBriefCache(card.id, {
-      version: 1,
+      version: BRIEF_CACHE_VERSION,
       savedAt: new Date().toISOString(),
       intel,
       plan,
