@@ -45,8 +45,9 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
     topicsRef.current = nextTopics;
     setTopics(nextTopics);
     setMetNote(state.met.length);
+    if (state.met.length === 0) return;
     void reload(day, metRef.current, nextTopics);
-    // Reload once when this browser's saved topics and met list are available.
+    // The cards already draw a lead from saved topics. Reload only to drop people already met.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready]);
 

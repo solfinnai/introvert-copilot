@@ -12,5 +12,5 @@ export default async function AgentPage({
 }) {
   const { person } = await searchParams;
   const id = typeof person === "string" && /^[a-z0-9-]{1,80}$/.test(person) ? person : null;
-  return <AgentChat bundle={pageBundle(id)} />;
+  return <AgentChat key={id ?? "general"} bundle={pageBundle(id)} />;
 }

@@ -119,6 +119,18 @@ export function leadWith(input: LeadInput): string | null {
   return null;
 }
 
+/** A catalog topic name, only when a selected chip's words are in that name. */
+export function supportedCatalogTopic(chips: string[], catalogTopics: string[]): string | null {
+  const selected = new Set(parseTalkTopics(chips));
+  for (const signal of SIGNALS) {
+    if (!selected.has(signal.chip)) continue;
+    for (const topic of catalogTopics) {
+      if (signal.sessionWords.some((word) => hasWord(topic, word))) return topic;
+    }
+  }
+  return null;
+}
+
 function hasWord(text: string, word: string): boolean {
   return new RegExp(`(?:^|[^a-z0-9])${word}(?=$|[^a-z0-9])`, "i").test(text);
 }

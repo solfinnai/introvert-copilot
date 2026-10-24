@@ -16,6 +16,8 @@ import {
   systemPrompt,
   visibleCoachText,
 } from "./agent";
+import type { PersonFacts } from "./coach-types";
+import { demoUser } from "./demo-user";
 
 test("catalog fallback coaches Henry for a real speaker and never invents an email", () => {
   const person = personFacts("mario-rodriguez");
@@ -117,6 +119,57 @@ test("system prompt carries graph facts and the payload stays small", () => {
   assert.equal(bundle.person?.id, "mario-rodriguez");
   assert.equal(bundle.starter.draft?.linkedinUrl, person?.linkedinUrl);
   assert.ok(bundle.suggestions.some((item) => item.includes("Mario")));
+});
+
+test("offline copy keeps the studio separate from a pitch and follows saved topics", () => {
+  const person = personFacts("mario-rodriguez");
+  assert.ok(person);
+  const reply = localCoaching("fallback", person, "Give me an opener");
+  const body = reply.draft?.body ?? "";
+  assert.equal(/I run Unicorn Studios\. I make anime/.test(body), false);
+  assert.equal(/not engineers/i.test(body), false);
+  assert.equal(/Goal:/.test(body), false);
+  assert.match(body, new RegExp(`${demoUser().name}$`));
+  assert.match(reply.message, /Henry Finn runs Unicorn Studios/);
+  assert.equal(/runs Unicorn Studios\. I make anime/.test(reply.message), false);
+
+  const quiet = localCoaching("fallback", person, "Give me an opener", { topics: [] });
+  for (const named of person.topics) {
+    assert.equal(quiet.message.includes(named), false);
+    assert.equal((quiet.draft?.body ?? "").includes(named), false);
+  }
+  assert.equal(/looking for engineers/.test(quiet.message), false);
+  assert.match(quiet.message, /have not marked any topics/);
+
+  const creator: PersonFacts = {
+    id: "ada",
+    name: "Ada Lovelace",
+    title: "Artist",
+    company: "Studio",
+    titleLine: "Artist, Studio",
+    photoUrl: "",
+    bio: "Draws comics.",
+    opener: "",
+    why: "",
+    catchLine: "",
+    topics: ["Design"],
+    sharedTopics: [],
+    sessions: [],
+    pathLine: "",
+    linkedinUrl: null,
+    email: null,
+  };
+  const pitched = localCoaching("fallback", creator, "opener", {
+    topics: ["Anime and comics IP", "Building with AI"],
+  });
+  assert.match(pitched.draft?.body ?? "", /anime and comics worlds/i);
+  assert.equal(/looking for engineers/i.test(pitched.draft?.body ?? ""), false);
+  assert.match(pitched.message, /Henry Finn runs Unicorn Studios/);
+
+  const general = localCoaching("fallback", null, "Draft a follow-up");
+  assert.equal(/Goal:/.test(general.draft?.body ?? ""), false);
+  assert.match(general.message, /Henry Finn runs Unicorn Studios\./);
+  assert.equal(/runs Unicorn Studios\. I make/.test(general.message), false);
 });
 
 test("follow-up block becomes a draft and stream deltas stay plain text", () => {

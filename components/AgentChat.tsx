@@ -6,6 +6,7 @@ import { DraftCard } from "./DraftCard";
 import { PersonPhoto } from "./PersonPhoto";
 import type { AgentBundle, AgentReply } from "@/lib/coach-types";
 import type { FollowupDraft } from "@/lib/draft";
+import { localCoaching } from "@/lib/coach-copy";
 import { cleanOwnWords, leadWith, OWN_WORDS_KEY, readStoredTopics, TALK_TOPICS_KEY } from "@/lib/talk-topics";
 
 interface Bubble {
@@ -27,31 +28,38 @@ export function AgentChat({ bundle }: { bundle: AgentBundle }) {
   const [lead, setLead] = useState<string | null>(null);
   const scroller = useRef<HTMLDivElement>(null);
   const person = bundle.person;
+  const personKey = person?.id ?? "";
+  const seenPerson = useRef<string | null>(null);
   const first = person?.name.split(" ")[0];
 
   useEffect(() => {
-    if (!person) {
-      setLead(null);
-      return;
-    }
-    let topics: string[] = [];
-    try {
-      topics = readStoredTopics(window.localStorage.getItem(TALK_TOPICS_KEY));
-    } catch {
-      topics = readStoredTopics(null);
-    }
-    const line = leadWith({
-      chips: topics,
-      bio: person.bio,
-      sessions: person.sessions.map((session) => ({ title: session.title, topics: session.topics })),
-    });
+    const stored = storedCoachContext();
+    const switched = seenPerson.current !== null && seenPerson.current !== personKey;
+    seenPerson.current = personKey;
+    const line = person
+      ? leadWith({
+          chips: stored.topics,
+          bio: person.bio,
+          sessions: person.sessions.map((session) => ({ title: session.title, topics: session.topics })),
+        })
+      : null;
     setLead(line);
-    if (!line) return;
+    const plan = localCoaching("fallback", person, "", stored);
+    const content = line && !plan.message.includes(line) ? `${plan.message}\n\n${line}` : plan.message;
     setMessages((current) => {
-      if (current.length !== 1 || current[0].role !== "assistant" || current[0].content.includes(line)) return current;
-      return [{ ...current[0], content: `${current[0].content}\n\n${line}` }];
+      const stillStarter = current.length === 1 && current[0]?.role === "assistant";
+      if (!switched && !stillStarter) return current;
+      if (
+        !switched &&
+        current.length === 1 &&
+        current[0].content === content &&
+        current[0].draft?.body === plan.draft?.body
+      ) {
+        return current;
+      }
+      return [{ role: "assistant", content, draft: plan.draft, source: "catalog" }];
     });
-  }, [person]);
+  }, [person, personKey]);
 
   async function ask(raw: string) {
     const content = raw.trim();

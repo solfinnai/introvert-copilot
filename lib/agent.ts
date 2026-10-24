@@ -1,10 +1,19 @@
 import { getCatalog, type SessionNode } from "./catalog";
-import type { AgentReply, AgentSource, ChatTurn, NearbyPerson, PersonFacts } from "./coach-types";
+import type { AgentReply, ChatTurn, NearbyPerson, PersonFacts } from "./coach-types";
+import {
+  BUDGET_NOTE,
+  localCoaching,
+  OFFLINE_NOTE,
+  REVISION_NOTE,
+  type CoachContext,
+} from "./coach-copy";
 import { confirmedBrief, demoUser } from "./demo-user";
 import { attachChannels, isLinkedInUrl, stripDashes, type FollowupDraft } from "./draft";
 import { personCard, rankPeople } from "./rank";
 import { cleanOwnWords, leadWith, parseTalkTopics } from "./talk-topics";
-import { shortTitle } from "./text";
+
+export { BUDGET_NOTE, localCoaching, OFFLINE_NOTE, REVISION_NOTE };
+export type { CoachContext };
 
 export const MAX_MESSAGE_CHARS = 600;
 export const MAX_HISTORY = 8;
@@ -14,15 +23,6 @@ export const AGENT_MODEL_FALLBACK = "gpt-4.1-mini";
 export const LENGTH_MESSAGE = "That question is too long for this demo. Keep it under 600 characters.";
 export const LIMIT_MESSAGE = "Too many questions from this network in a short window. Wait a minute, then try again.";
 export const EMPTY_MESSAGE = "Type a question first. A short one is enough.";
-export const BUDGET_NOTE =
-  "The public demo has used today's coaching budget. This plan is from the speaker catalog, so you can still walk over.";
-export const OFFLINE_NOTE =
-  "The live coach is offline right now. This plan is from the speaker catalog, so you can still walk over.";
-
-export interface CoachContext {
-  topics?: string[];
-  ownWords?: string;
-}
 
 export type AgentDecision =
   | { action: "json"; reply: AgentReply }
@@ -264,26 +264,6 @@ export function classifyAgent(input: {
   };
 }
 
-export const REVISION_NOTE =
-  "The catalog plan cannot rewrite a draft. The card below is the same plan.";
-
-export function localCoaching(
-  source: Extract<AgentSource, "fallback" | "budget">,
-  person: PersonFacts | null,
-  ask: string,
-  context: CoachContext = {},
-): AgentReply {
-  const prefix = source === "budget" ? BUDGET_NOTE : ask ? OFFLINE_NOTE : "";
-  const revision = wantsRevision(ask) ? REVISION_NOTE : "";
-  const message = [prefix, revision, coachingText(person, ask, context)].filter(Boolean).join("\n\n");
-  const draft = person || wantsDraft(ask) ? makeDraft(person) : null;
-  return {
-    source,
-    message: stripDashes(message),
-    draft: attachChannels(draft, { email: person?.email, linkedinUrl: person?.linkedinUrl }),
-  };
-}
-
 export function splitFollowup(text: string, person: PersonFacts | null): { message: string; draft: FollowupDraft | null } {
   const clean = stripDashes(text);
   const at = clean.startsWith("FOLLOWUP") ? 0 : clean.lastIndexOf("\nFOLLOWUP");
@@ -340,100 +320,6 @@ export function readStreamDelta(line: string): string | null {
   } catch {
     return null;
   }
-}
-
-function coachingText(person: PersonFacts | null, ask: string, context: CoachContext): string {
-  const me = demoUser();
-  const topics = context.topics == null ? null : parseTalkTopics(context.topics);
-  const ownWords = cleanOwnWords(context.ownWords ?? "");
-  const asked = ask.trim();
-  const lead = asked ? `You asked: "${asked.slice(0, 140)}".` : "Here is a plan you can say out loud.";
-  const topicLine =
-    topics == null
-      ? ""
-      : topics.length
-        ? `Topics you are happy to talk about: ${topics.join(", ")}.`
-        : "You have not marked any topics you want to talk about.";
-  const ownLine = ownWords ? `In your own words: ${ownWords}` : "";
-  if (!person) {
-    return [
-      lead,
-      "Pick someone from Who to meet and the coach will scope this to that person.",
-      topicLine,
-      ownLine,
-      "10 second intro",
-      me.oneLiners.developers,
-      "What to say about you",
-      `${me.name} runs ${me.company}. ${me.oneLiners.developers} Goal for this event: ${me.goal}.`,
-    ]
-      .filter(Boolean)
-      .join("\n\n");
-  }
-  const first = person.name.split(" ")[0];
-  const session = person.sessions[0];
-  const topic = person.sharedTopics[0] || person.topics[0] || "the work";
-  const mapped =
-    topics == null
-      ? null
-      : leadWith({
-          chips: topics,
-          bio: person.bio,
-          sessions: person.sessions.map((item) => ({ title: item.title, topics: item.topics })),
-        });
-  const opener = person.opener || `I make anime and comics IP with AI. Your session is why I wanted to say hello. How are you thinking about ${topic} for people who are not engineers?`;
-  const q1 = session
-    ? `In "${session.title}", what should someone who is not an engineer actually take away?`
-    : `${first}, what are you hoping people remember from this conversation?`;
-  const q2 = person.company
-    ? `Where does ${person.company} still need a human story around ${topic}?`
-    : `Which part of ${topic} do you wish more visitors asked about?`;
-  return [
-    lead,
-    topicLine,
-    mapped,
-    ownLine,
-    "Opener",
-    opener,
-    "What to say about you",
-    `I run ${me.company}. ${me.oneLiners.developers} The part that may land with ${first} is ${topic}.`,
-    "Two questions",
-    `1. ${q1}`,
-    `2. ${q2}`,
-    "The draft is on the card below. You review and send it yourself.",
-  ]
-    .filter(Boolean)
-    .join("\n\n");
-}
-
-function makeDraft(person: PersonFacts | null): FollowupDraft {
-  const me = demoUser();
-  if (!person) {
-    const body = `Hi. I am ${me.name}. I run ${me.company}. ${me.oneLiners.developers} Goal: ${me.goal} If a short example of that work would be useful, I can send one. ${me.name}`;
-    return { subject: "GitHub Universe", body, linkedinNote: "", linkedinUrl: null, email: null };
-  }
-  const first = person.name.split(" ")[0];
-  const session = person.sessions[0];
-  const topic = person.sharedTopics[0] || person.topics[0] || "the work";
-  const subject = session ? `After ${shortTitle(session.title, 48)}` : `Good to meet you, ${first}`;
-  const open = session
-    ? `Hi ${first}. Your session, ${session.title}, is on the GitHub Universe schedule.`
-    : `Hi ${first}. I saw that you are at GitHub Universe.`;
-  const body = [
-    open,
-    `I run ${me.company}. ${me.oneLiners.developers} I am spending this week on ${topic}.`,
-    "If you are open to it, I would like to send one short example of how we explain this kind of work to people who are not engineers.",
-    "Would a two-line reply be useful, or should I leave it here?",
-    "Henry Finn",
-  ].join(" ");
-  return { subject, body, linkedinNote: "", linkedinUrl: null, email: null };
-}
-
-function wantsRevision(ask: string): boolean {
-  return /\b(shorter|longer|warmer|colder|softer|rewrite|revise|edit|tweak)\b/i.test(ask);
-}
-
-function wantsDraft(ask: string): boolean {
-  return /follow-?up|draft|message|email|linkedin|what to send|write to/i.test(ask);
 }
 
 function cleanPersonId(value: unknown): string | null {
