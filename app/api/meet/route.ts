@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { recommend } from "@/lib/graph";
 import { clientIp, meetLimitKey, rateLimit } from "@/lib/limits";
+import { parseTalkTopics } from "@/lib/talk-topics";
 import type { DayFilter } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -20,6 +21,7 @@ export async function GET(req: Request) {
     const result = await recommend({
       day: parseDay(url.searchParams.get("day")),
       metIds: parseIds(url.searchParams.get("met")),
+      talkTopics: parseTalkTopics((url.searchParams.get("topics") ?? "").slice(0, 400).split("|")),
       limit: 10,
     });
     return NextResponse.json(result, {

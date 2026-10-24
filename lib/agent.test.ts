@@ -96,7 +96,15 @@ test("system prompt carries graph facts and the payload stays small", () => {
   assert.match(prompt, /GitHub/);
   assert.match(prompt, /Humans set direction/);
   assert.match(prompt, /none in the catalog/);
+  assert.match(prompt, /CEO since 2023, with the team since 2022/);
+  assert.match(prompt, /Degree: GAP/);
+  assert.match(prompt, /Anime and comics IP/);
+  assert.equal(prompt.includes("Samsung"), false);
   assert.equal(prompt.includes("\u2014"), false);
+  const picked = systemPrompt(person, { topics: ["Gaming"], ownWords: "I would rather show the work." });
+  assert.match(picked, /happy to talk about: Gaming/);
+  assert.equal(picked.includes("happy to talk about: Anime and comics IP"), false);
+  assert.match(picked, /I would rather show the work/);
   assert.equal(prompt.includes("sk-"), false);
   const payload = buildOpenAiPayload({
     person,

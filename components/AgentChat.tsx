@@ -1,11 +1,12 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { DraftCard } from "./DraftCard";
 import { PersonPhoto } from "./PersonPhoto";
 import type { AgentBundle, AgentReply } from "@/lib/coach-types";
 import type { FollowupDraft } from "@/lib/draft";
+import { cleanOwnWords, leadWith, OWN_WORDS_KEY, readStoredTopics, TALK_TOPICS_KEY } from "@/lib/talk-topics";
 
 interface Bubble {
   role: "user" | "assistant";
@@ -23,9 +24,34 @@ export function AgentChat({ bundle }: { bundle: AgentBundle }) {
   ]);
   const [text, setText] = useState("");
   const [pending, setPending] = useState(false);
+  const [lead, setLead] = useState<string | null>(null);
   const scroller = useRef<HTMLDivElement>(null);
   const person = bundle.person;
   const first = person?.name.split(" ")[0];
+
+  useEffect(() => {
+    if (!person) {
+      setLead(null);
+      return;
+    }
+    let topics: string[] = [];
+    try {
+      topics = readStoredTopics(window.localStorage.getItem(TALK_TOPICS_KEY));
+    } catch {
+      topics = readStoredTopics(null);
+    }
+    const line = leadWith({
+      chips: topics,
+      bio: person.bio,
+      sessions: person.sessions.map((session) => ({ title: session.title, topics: session.topics })),
+    });
+    setLead(line);
+    if (!line) return;
+    setMessages((current) => {
+      if (current.length !== 1 || current[0].role !== "assistant" || current[0].content.includes(line)) return current;
+      return [{ ...current[0], content: `${current[0].content}\n\n${line}` }];
+    });
+  }, [person]);
 
   async function ask(raw: string) {
     const content = raw.trim();
@@ -46,6 +72,7 @@ export function AgentChat({ bundle }: { bundle: AgentBundle }) {
         body: JSON.stringify({
           personId: person?.id ?? null,
           messages: history.slice(0, -1).map((item) => ({ role: item.role, content: historyContent(item) })),
+          ...storedCoachContext(),
         }),
       });
       const reply = await readReply(res, (partial) => {
@@ -99,6 +126,7 @@ export function AgentChat({ bundle }: { bundle: AgentBundle }) {
               {person.sessions[0].room ? `, ${person.sessions[0].room}` : ""}
             </p>
           )}
+          {lead && <p className="mt-3 break-words text-sm leading-6">{lead}</p>}
           {person?.pathLine && <p className="mt-3 break-words font-mono text-[11px] leading-5 text-mute">{person.pathLine}</p>}
           <Link href="/meet" className="mt-4 inline-flex rounded-full border border-line bg-white px-3 py-1.5 text-sm">
             Back to who to meet
@@ -189,6 +217,17 @@ export function AgentChat({ bundle }: { bundle: AgentBundle }) {
       </section>
     </div>
   );
+}
+
+function storedCoachContext(): { topics: string[]; ownWords: string } {
+  try {
+    return {
+      topics: readStoredTopics(window.localStorage.getItem(TALK_TOPICS_KEY)),
+      ownWords: cleanOwnWords(window.localStorage.getItem(OWN_WORDS_KEY) ?? ""),
+    };
+  } catch {
+    return { topics: readStoredTopics(null), ownWords: "" };
+  }
 }
 
 function historyContent(item: Bubble): string {

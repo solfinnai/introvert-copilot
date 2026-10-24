@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { DEFAULT_INTERESTS, getCatalog, memoryGraphCounts } from "./catalog";
+import { demoProfile } from "./demo-user";
 import { getDb, graphName, noteQueryFailure, withTimeout } from "./falkor";
 import { logBackend, safeError } from "./redact";
 import type { GraphBackend } from "./types";
@@ -153,12 +154,12 @@ async function loadCatalog(graph: CypherGraph): Promise<number> {
   );
   await graph.query(
     `MERGE (me:Person {id:'me'})
-     SET me.name = 'Henry Finn'
+     SET me.name = $name
      WITH me
      UNWIND $topics AS name
      MERGE (t:Topic {name: name})
      MERGE (me)-[:INTERESTED_IN]->(t)`,
-    { params: { topics: [...DEFAULT_INTERESTS] } },
+    { params: { topics: [...DEFAULT_INTERESTS], name: demoProfile.name } },
   );
   let failed = 0;
   failed += await unwind(
