@@ -1,0 +1,35 @@
+{
+  "id": "me",
+  "name": "Henry Finn",
+  "linkedin_url": "https://www.linkedin.com/in/henryfinnco/",
+  "headline": "Founder at Unicorn Studios",
+  "city": "San Francisco, California, United States",
+  "about": "Henry Finn builds entertainment companies and intellectual property at the frontier of storytelling and technology. (truncated in public snippet)",
+  "current_company": {"name": "Unicorn Studios", "url": "https://www.unicornstudios.ai", "title": "Founder, director and producer"},
+  "experience": [
+    {"title": "Founder", "company": "Unicorn Studios", "start": "Dec 2025", "end": "Present", "description": "Film and content studio for technology companies: founder-led narrative direction, brand and launch films, content factory. Work lineage includes Salesforce, Spotify x BLACKPINK, Google, Samsung, Kia, Sam's Club.", "source_url": "https://linkedin.com/in/henryfinnco"},
+    {"title": "Co-founder", "company": "Executive Intelligence", "start": "GAP", "end": "GAP", "source_url": "https://luma.com/user/henryfinn"},
+    {"title": "CEO", "company": "0N1 Force", "start": "GAP", "end": "GAP", "source_url": "search snippet of linkedin.com/in/henryfinnco (unconfirmed)"},
+    {"title": "Producer and Host", "company": "Silicon Valley Insider", "start": "GAP", "end": "GAP", "source_url": "https://luma.com/user/henryfinn"}
+  ],
+  "total_experience": "15 years 8 months (per public LinkedIn snippet)",
+  "followers": 38,
+  "education": "GAP",
+  "interests_for_matching": ["AI agents", "Creator tools", "Entertainment tech", "Storytelling and video", "Developer experience (DX)", "AI: Models", "Startups", "anime IP"],
+  "event_goal": "Meet 3 to 5 builders working on AI agents, creator tools and dev storytelling at GitHub Universe 2026",
+  "photo_local": "photo.jpg",
+  "photo_source_url": "https://images.lumacdn.com/uploads/sk/003df4f9-5d6c-4354-a2a7-9d57c4a51279.png",
+  "photo_note": "Public Luma avatar (luma.com/user/henryfinn). LinkedIn avatar not reachable without Bright Data. Swap for the Bright Data avatar URL once scraped.",
+  "sources": [
+    {"url": "https://linkedin.com/in/henryfinnco", "kind": "linkedin", "via": "web search index snippet", "fetched_at": "2026-10-24T11:29:00-07:00"},
+    {"url": "https://luma.com/user/henryfinn", "kind": "luma", "via": "direct curl", "fetched_at": "2026-10-24T11:29:00-07:00"},
+    {"url": "https://www.unicornstudios.ai/about", "kind": "company", "via": "web search index", "fetched_at": "2026-10-24T11:29:00-07:00"}
+  ],
+  "fetch_status": {
+    "linkedin_direct_curl": "HTTP 999 (LinkedIn bot block), 1530 bytes, no profile data",
+    "linkedin_webfetch": "timed out",
+    "brightdata": "not attempted: no BRIGHTDATA_API_KEY on the box. Run on Henry's Mac with the dataset gd_l1viktl72bvl7bjuj0 and overwrite this file, keep this one as fallback."
+  },
+  "fetched_at": "2026-10-24T11:29:00-07:00",
+  "source": "cache-fallback"
+}

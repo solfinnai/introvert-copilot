@@ -7,4 +7,5 @@ node_modules/
 *.log
 cache/
 .env*
+!.env.example
 .venv/
