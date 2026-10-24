@@ -150,13 +150,16 @@ export function parsePlanJson(raw: unknown): ConversationPlan | null {
   return { mode: "openai", why, angles, openers, followUp };
 }
 
-export async function draftPlan(ctx: PlanContext): Promise<ConversationPlan> {
+export const PLAN_TIMEOUT_MS = 8_000;
+
+export async function draftPlan(ctx: PlanContext, timeoutMs = PLAN_TIMEOUT_MS): Promise<ConversationPlan> {
   const fallback = templatePlan(ctx);
   const key = process.env.OPENAI_API_KEY;
   if (!key) return fallback;
   const model = (process.env.OPENAI_MODEL || "gpt-4.1-mini").trim() || "gpt-4.1-mini";
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 8000);
+  const bounded = Number.isFinite(timeoutMs) && timeoutMs > 0 ? timeoutMs : PLAN_TIMEOUT_MS;
+  const timer = setTimeout(() => controller.abort(), bounded);
   try {
     const response = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { parsePlanJson, pathText, templatePlan, type PlanContext } from "./plan";
+import { draftPlan, parsePlanJson, pathText, templatePlan, type PlanContext } from "./plan";
 
 test("template plan has angles, openers, and a follow-up from the graph path", () => {
   const plan = templatePlan(context());
@@ -61,6 +61,37 @@ test("plan parser accepts a full draft and rejects a thin one", () => {
   assert.ok(dashed);
   assert.equal(dashed?.why.includes("\u2014"), false);
   assert.equal(parsePlanJson({ why: "too short", angles: [], openers: [], follow_up: "" }), null);
+});
+
+test("draftPlan returns the prewritten plan when the model does not answer in time", async () => {
+  const previousKey = process.env.OPENAI_API_KEY;
+  const previousFetch = globalThis.fetch;
+  process.env.OPENAI_API_KEY = "test-key";
+  globalThis.fetch = (_url, init) =>
+    new Promise((_resolve, reject) => {
+      const signal = init?.signal;
+      const abort = () => {
+        const error = new Error("aborted");
+        error.name = "AbortError";
+        reject(error);
+      };
+      if (signal?.aborted) {
+        abort();
+        return;
+      }
+      signal?.addEventListener("abort", abort);
+    });
+  try {
+    const started = Date.now();
+    const plan = await draftPlan(context(), 40);
+    assert.equal(plan.mode, "template");
+    assert.match(plan.why, /John Maeda/);
+    assert.ok(Date.now() - started < 1000);
+  } finally {
+    globalThis.fetch = previousFetch;
+    if (previousKey === undefined) delete process.env.OPENAI_API_KEY;
+    else process.env.OPENAI_API_KEY = previousKey;
+  }
 });
 
 function context(): PlanContext {
