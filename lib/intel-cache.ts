@@ -4,7 +4,10 @@ import type { ConversationPlan } from "./plan";
 import type { FetchReport } from "./intel";
 import type { PublicLink, SocialProfile } from "./public-links";
 
-export const BRIEF_CACHE_VERSION = 4;
+export const BRIEF_CACHE_VERSION = 5;
+export const INTEL_CACHE_TTL_MS = 6 * 60 * 60 * 1000;
+export const INTEL_CACHE_SECONDS = INTEL_CACHE_TTL_MS / 1000;
+export const INTEL_CACHE_CONTROL = `public, max-age=${INTEL_CACHE_SECONDS}, s-maxage=${INTEL_CACHE_SECONDS}, stale-while-revalidate=86400`;
 
 export interface CachedBrief {
   version: number;
@@ -16,8 +19,32 @@ export interface CachedBrief {
   links: PublicLink[];
 }
 
-const TTL_MS = 20 * 60 * 1000;
 const memory = new Map<string, CachedBrief>();
+
+/** Keep a finished live attempt, including a timeout that fell back to the snapshot. */
+export function isStoredBrief(brief: CachedBrief | null | undefined): brief is CachedBrief {
+  if (!brief || brief.version !== BRIEF_CACHE_VERSION || !brief.intel || !brief.plan || !brief.report || !brief.savedAt) {
+    return false;
+  }
+  if (!Array.isArray(brief.profiles) || !Array.isArray(brief.links)) return false;
+  if (brief.intel.mode !== "snapshot" || brief.plan.mode !== "template") return true;
+  return liveAttempt(brief.report);
+}
+
+const SKIP_REASONS = new Set(["not configured", "not requested", "no public url", ""]);
+
+function liveAttempt(report: FetchReport): boolean {
+  const rows: [FetchReport["serp"], string][] = [
+    [report.serp, report.serpReason],
+    [report.unlock, report.unlockReason],
+    [report.linkedin, report.linkedinReason],
+  ];
+  return rows.some(([state, reason]) => {
+    if (state === "live") return true;
+    if (state !== "failed") return false;
+    return !SKIP_REASONS.has(reason);
+  });
+}
 
 export async function readBriefCache(id: string): Promise<CachedBrief | null> {
   if (!safeId(id)) return null;
@@ -47,8 +74,7 @@ export async function readBriefCache(id: string): Promise<CachedBrief | null> {
 }
 
 export async function writeBriefCache(id: string, brief: CachedBrief): Promise<void> {
-  if (!safeId(id)) return;
-  if (brief.intel.mode === "snapshot" && brief.plan.mode === "template") return;
+  if (!safeId(id) || !isStoredBrief(brief)) return;
   memory.set(id, brief);
   try {
     const db = await withTimeout(getDb(), 2000, "cache connect timed out");
@@ -71,11 +97,9 @@ function present(brief: CachedBrief): CachedBrief {
 }
 
 function fresh(brief: CachedBrief | undefined | null): CachedBrief | null {
-  if (!brief || brief.version !== BRIEF_CACHE_VERSION || !brief.intel || !brief.plan || !brief.savedAt) return null;
-  if (!Array.isArray(brief.profiles) || !Array.isArray(brief.links)) return null;
-  if (brief.intel.mode === "snapshot" && brief.plan.mode === "template") return null;
+  if (!isStoredBrief(brief)) return null;
   const saved = Date.parse(brief.savedAt);
-  if (Number.isNaN(saved) || Date.now() - saved > TTL_MS) return null;
+  if (Number.isNaN(saved) || Date.now() - saved > INTEL_CACHE_TTL_MS) return null;
   return brief;
 }
 

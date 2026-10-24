@@ -30,6 +30,7 @@ export const SEEDED_ROUTES = [
   "/api/session",
   "/api/agent",
   "/api/people/[id]/report",
+  "/api/people/[id]/live",
 ];
 
 /** Home checks this file with fs, so the server trace has to carry it. */

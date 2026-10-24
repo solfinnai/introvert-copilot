@@ -1,6 +1,6 @@
 import { GraphPath } from "./GraphPath";
+import { PendingNote } from "./BriefSkeleton";
 import { SiteFavicon } from "./SiteFavicon";
-import { HERO_CYPHER, getCatalog } from "@/lib/catalog";
 import {
   describeFetches,
   formatStamp,
@@ -10,6 +10,7 @@ import {
   type Origin,
   type PersonIntel,
 } from "@/lib/intel";
+import type { LivePending } from "@/lib/live-labels";
 import { linkFreshness, type LinkGroup, type PublicLink } from "@/lib/public-links";
 import type { ConversationPlan } from "@/lib/plan";
 import type { GraphBackend, RankedPerson } from "@/lib/types";
@@ -22,6 +23,9 @@ export function PersonDossier({
   links,
   backend,
   ms,
+  cypher,
+  fetchedLabel,
+  pending,
 }: {
   card: RankedPerson;
   intel: PersonIntel;
@@ -30,8 +34,10 @@ export function PersonDossier({
   links: PublicLink[];
   backend: GraphBackend;
   ms: number;
+  cypher: string;
+  fetchedLabel: string;
+  pending?: LivePending | null;
 }) {
-  const fetchedLabel = getCatalog().fetchedLabel;
   return (
     <div
       className="mt-6 space-y-4"
@@ -51,6 +57,7 @@ export function PersonDossier({
             {plan.mode === "openai" ? "Drafted for this conversation" : "Template from your graph path"}
           </p>
         </div>
+        {pending?.plan ? <p className="mt-2 text-sm text-mute" aria-busy="true">{pending.plan}</p> : null}
         <h2 className="mt-3 font-serif text-2xl tracking-tight">Why you should meet</h2>
         <p className="mt-2 text-[15px] leading-7">{plan.why}</p>
         <h2 className="mt-5 font-serif text-2xl tracking-tight">How to talk about yourself</h2>
@@ -82,7 +89,7 @@ export function PersonDossier({
         hops={card.hops}
         ms={ms}
         backend={backend}
-        cypher={HERO_CYPHER}
+        cypher={cypher}
         keywordHits={card.keywordHits}
         fetchedLabel={fetchedLabel}
       />
@@ -92,12 +99,13 @@ export function PersonDossier({
           <p className="text-[11px] uppercase tracking-[0.14em] text-[#b33b12]">Intel</p>
           <p className="text-xs font-semibold">{intel.label}</p>
         </div>
-        <p className="mt-2 text-sm leading-6 text-mute">{describeFetches(report, intel.mode)}</p>
+        <p className="mt-2 text-sm leading-6 text-mute">{pending?.note ?? describeFetches(report, intel.mode)}</p>
         <p className="mt-2 text-xs text-mute">Public sources only. Nothing on this page sends a message.</p>
       </section>
 
       <section className="rounded-3xl border border-line bg-card p-5">
         <h2 className="font-serif text-2xl tracking-tight">Work and education</h2>
+        {pending?.work ? <PendingNote label={pending.work} /> : null}
         <div className="mt-4 space-y-5">
           <ClaimGroup
             title="Work"
@@ -144,11 +152,19 @@ export function PersonDossier({
           gap={null}
           gapOrigin={null}
           note={intel.newsNote}
+          pendingLabel={pending?.news}
         />
-        <IntelSection title="What makes them stand out" mode={intel.mode} claims={intel.standout} gap={null} gapOrigin={null} />
+        <IntelSection
+          title="What makes them stand out"
+          mode={intel.mode}
+          claims={intel.standout}
+          gap={null}
+          gapOrigin={null}
+          pendingLabel={pending?.standout}
+        />
         <IntelSection title="Public talking points" mode={intel.mode} claims={intel.talkingPoints} gap={null} gapOrigin={null} />
       </div>
-      <PublicLinks links={links} mode={intel.mode} />
+      <PublicLinks links={links} mode={intel.mode} pendingLabel={pending?.links} />
     </div>
   );
 }
@@ -159,7 +175,15 @@ const LINK_GROUPS: { id: LinkGroup; title: string }[] = [
   { id: "news", title: "News" },
 ];
 
-function PublicLinks({ links, mode }: { links: PublicLink[]; mode: PersonIntel["mode"] }) {
+function PublicLinks({
+  links,
+  mode,
+  pendingLabel,
+}: {
+  links: PublicLink[];
+  mode: PersonIntel["mode"];
+  pendingLabel?: string;
+}) {
   const liveCount = links.filter((link) => link.origin === "live").length;
   return (
     <section
@@ -174,6 +198,7 @@ function PublicLinks({ links, mode }: { links: PublicLink[]; mode: PersonIntel["
         </p>
       </div>
       <p className="mt-2 text-sm leading-6 text-mute">Open these yourself. Nothing on this page sends a message.</p>
+      {pendingLabel ? <PendingNote label={pendingLabel} /> : null}
       {links.length ? (
         <div className="mt-4 space-y-5">
           {LINK_GROUPS.map((group) => {
@@ -270,6 +295,7 @@ function IntelSection({
   gapOrigin,
   note,
   wide,
+  pendingLabel,
 }: {
   title: string;
   mode: PersonIntel["mode"];
@@ -278,6 +304,7 @@ function IntelSection({
   gapOrigin: Origin | null;
   note?: string | null;
   wide?: boolean;
+  pendingLabel?: string;
 }) {
   const origins = [...claims.map((claim) => claim.origin), gapOrigin];
   return (
@@ -287,6 +314,7 @@ function IntelSection({
         <p className="text-[11px] uppercase tracking-[0.14em] text-mute">{sectionLabel(mode, origins)}</p>
       </div>
       {note ? <p className="mt-2 text-sm leading-6 text-mute">{note}</p> : null}
+      {pendingLabel ? <PendingNote label={pendingLabel} /> : null}
       {gap ? (
         <p className="mt-3 rounded-2xl border border-dashed border-line px-3 py-2 text-sm leading-6">{gap}</p>
       ) : null}
@@ -305,7 +333,7 @@ function IntelSection({
             </li>
           ))}
         </ul>
-      ) : !gap ? (
+      ) : !gap && !pendingLabel ? (
         <p className="mt-3 text-sm leading-6 text-mute">Nothing public in this section.</p>
       ) : null}
     </section>

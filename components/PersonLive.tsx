@@ -1,0 +1,210 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { PersonActions } from "./PersonActions";
+import { PersonDossier } from "./PersonDossier";
+import { PersonPhoto } from "./PersonPhoto";
+import { ReportLinks } from "./ReportLinks";
+import { SocialIcons } from "./SocialIcons";
+import { LIVE_LABELS, type LivePending } from "@/lib/live-labels";
+import type { LiveUpdate } from "@/lib/live-update";
+import type { PersonBrief } from "@/lib/person-brief";
+import type { GraphBackend, RankedPerson } from "@/lib/types";
+import type { SavedDraft } from "./session";
+
+export interface PersonSessionLine {
+  title: string;
+  line: string;
+}
+
+const SAFETY_MS = 22_000;
+
+export function PersonLive({
+  card,
+  seed,
+  sessions,
+  fetchedLabel,
+  cypher,
+  backend,
+  ms,
+  report,
+}: {
+  card: RankedPerson;
+  seed: PersonBrief;
+  sessions: PersonSessionLine[];
+  fetchedLabel: string;
+  cypher: string;
+  backend: GraphBackend;
+  ms: number;
+  report: boolean;
+}) {
+  const [intel, setIntel] = useState(seed.intel);
+  const [plan, setPlan] = useState(seed.plan);
+  const [fetchReport, setFetchReport] = useState(seed.report);
+  const [links, setLinks] = useState(seed.links);
+  const [profiles, setProfiles] = useState(seed.profiles);
+  const [pending, setPending] = useState<LivePending | null>({ ...LIVE_LABELS });
+
+  useEffect(() => {
+    const controller = new AbortController();
+    let cancelled = false;
+    const safety = setTimeout(() => {
+      if (!cancelled) setPending(null);
+    }, SAFETY_MS);
+
+    const applyBrief = (brief: PersonBrief) => {
+      setIntel(brief.intel);
+      setPlan(brief.plan);
+      setFetchReport(brief.report);
+      setLinks(brief.links);
+      setProfiles(brief.profiles);
+      setPending(null);
+    };
+
+    const applyUpdate = (update: LiveUpdate) => {
+      if (update.section === "done") {
+        if (update.brief) applyBrief(update.brief);
+        else setPending(null);
+        return;
+      }
+      if (update.intel) setIntel(update.intel);
+      if (update.plan) setPlan(update.plan);
+      if (update.report) setFetchReport(update.report);
+      if (update.links) setLinks(update.links);
+      if (update.profiles) setProfiles(update.profiles);
+      setPending((current) => {
+        if (!current) return current;
+        const next: LivePending = { ...current };
+        if (update.section === "news") delete next.news;
+        if (update.section === "linkedin") delete next.work;
+        if (update.section === "site") delete next.standout;
+        if (update.section === "links") delete next.links;
+        if (update.section === "plan") delete next.plan;
+        if (!next.news && !next.work && !next.standout && !next.links && !next.plan) return null;
+        return next;
+      });
+    };
+
+    const run = async () => {
+      try {
+        const response = await fetch(`/api/people/${encodeURIComponent(card.id)}/live`, {
+          signal: controller.signal,
+          headers: { accept: "application/x-ndjson" },
+        });
+        if (cancelled) return;
+        if (!response.ok || !response.body) {
+          setPending(null);
+          return;
+        }
+        const type = response.headers.get("content-type") || "";
+        if (type.includes("application/json")) {
+          const body = (await response.json()) as { brief?: PersonBrief };
+          if (!cancelled && body.brief) applyBrief(body.brief);
+          else if (!cancelled) setPending(null);
+          return;
+        }
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+        while (!cancelled) {
+          const chunk = await reader.read();
+          buffer += decoder.decode(chunk.value || new Uint8Array(), { stream: !chunk.done });
+          const lines = buffer.split("\n");
+          buffer = lines.pop() ?? "";
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (!trimmed) continue;
+            try {
+              applyUpdate(JSON.parse(trimmed) as LiveUpdate);
+            } catch {
+              /* Ignore a partial line. */
+            }
+          }
+          if (chunk.done) break;
+        }
+        const tail = buffer.trim();
+        if (tail) {
+          try {
+            applyUpdate(JSON.parse(tail) as LiveUpdate);
+          } catch {
+            /* The stream ended on an incomplete line. */
+          }
+        }
+      } catch (error) {
+        const aborted = error instanceof Error && error.name === "AbortError";
+        if (!cancelled && !aborted) setPending(null);
+      } finally {
+        clearTimeout(safety);
+      }
+    };
+
+    void run();
+    return () => {
+      cancelled = true;
+      clearTimeout(safety);
+      controller.abort();
+    };
+  }, [card.id]);
+
+  return (
+    <>
+      <header className="mt-3">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+          <PersonPhoto src={card.photoUrl} name={card.name} size={72} />
+          <div className="min-w-0">
+            <h1 className="break-words font-serif text-4xl tracking-tight">{card.name}</h1>
+            <p className="text-mute">{card.titleLine}</p>
+            <p className="mt-1 text-sm">Catch them: {card.catchLine}</p>
+          </div>
+        </div>
+        <div className="mt-4">
+          <SocialIcons profiles={profiles} mode={intel.mode} />
+        </div>
+      </header>
+      <div className="no-print mt-4">
+        <PersonActions person={toSaved(card)} />
+        <ReportLinks id={card.id} report={report} />
+      </div>
+      <section className="mt-6 rounded-3xl border border-line bg-card p-5" data-sessions={sessions.length}>
+        <h2 className="font-serif text-2xl tracking-tight">Sessions</h2>
+        {sessions.length ? (
+          <ul className="mt-3 space-y-3">
+            {sessions.map((session) => (
+              <li key={`${session.title}-${session.line}`}>
+                <p className="text-sm font-semibold">{session.title}</p>
+                <p className="text-sm text-mute">{session.line}</p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-3 text-sm leading-6">No public sessions in the cached snapshot.</p>
+        )}
+      </section>
+      <div id="report" data-seed="true">
+        <PersonDossier
+          card={card}
+          intel={intel}
+          plan={plan}
+          report={fetchReport}
+          links={links}
+          backend={backend}
+          ms={ms}
+          cypher={cypher}
+          fetchedLabel={fetchedLabel}
+          pending={pending}
+        />
+      </div>
+    </>
+  );
+}
+
+function toSaved(person: RankedPerson): SavedDraft {
+  return {
+    id: person.id,
+    name: person.name,
+    titleLine: person.titleLine,
+    photoUrl: person.photoUrl,
+    opener: person.opener,
+    catchLine: person.catchLine,
+  };
+}
