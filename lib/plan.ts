@@ -18,6 +18,7 @@ export interface PlanContext {
   henrySite: string;
   henryPosts: string[];
   henryGoal: string;
+  henryTalkingPoints: string[];
   claims: string[];
 }
 
@@ -78,7 +79,12 @@ export function templatePlan(ctx: PlanContext): ConversationPlan {
   angles.push(
     `You build entertainment companies and intellectual property at ${company} in ${city}. With ${first}, connect that to ${sessionBit} in one sentence, then hand them the question.`,
   );
-  if (ctx.sharedTopics.length) {
+  if (ctx.henryTalkingPoints.length) {
+    angles.push(
+      `Points you confirmed, not a LinkedIn job list: ${ctx.henryTalkingPoints.join(" ")} Use the one that touches their work, and do not add other clients.`,
+    );
+  }
+  if (ctx.sharedTopics.length && angles.length < 3) {
     angles.push(
       `You came to meet people working on ${humanList(ctx.sharedTopics.slice(0, 3))}. Name the one you actually touch, and ask what they want someone outside the team to understand.`,
     );
@@ -194,7 +200,8 @@ function userPrompt(ctx: PlanContext): string {
     "Use only these facts.",
     `Henry: ${ctx.henryAbout || "no about text"}`,
     `Henry's company: ${ctx.henryCompany}. City: ${ctx.henryCity}. Company site: ${ctx.henrySite}.`,
-    "Henry's LinkedIn experience and education were empty. Do not invent clients, jobs, or schools.",
+    "Henry's LinkedIn experience and education were empty. Do not invent any other clients, jobs, or schools.",
+    `Talking points Henry confirmed, not LinkedIn fields: ${ctx.henryTalkingPoints.join(" | ") || "none"}.`,
     `Public posts Henry shared: ${ctx.henryPosts.slice(0, 3).join(" | ") || "none"}.`,
     `Demo goal, not a LinkedIn field: ${ctx.henryGoal}`,
     `Person: ${ctx.name}. Title: ${ctx.title}. Company: ${ctx.company}.`,

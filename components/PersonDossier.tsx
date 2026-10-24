@@ -1,4 +1,5 @@
 import { GraphPath } from "./GraphPath";
+import { SiteFavicon } from "./SiteFavicon";
 import { HERO_CYPHER, getCatalog } from "@/lib/catalog";
 import {
   describeFetches,
@@ -9,6 +10,7 @@ import {
   type Origin,
   type PersonIntel,
 } from "@/lib/intel";
+import { linkFreshness, type LinkGroup, type PublicLink } from "@/lib/public-links";
 import type { ConversationPlan } from "@/lib/plan";
 import type { GraphBackend, RankedPerson } from "@/lib/types";
 
@@ -17,6 +19,7 @@ export function PersonDossier({
   intel,
   plan,
   report,
+  links,
   backend,
   ms,
 }: {
@@ -24,6 +27,7 @@ export function PersonDossier({
   intel: PersonIntel;
   plan: ConversationPlan;
   report: FetchReport;
+  links: PublicLink[];
   backend: GraphBackend;
   ms: number;
 }) {
@@ -141,7 +145,72 @@ export function PersonDossier({
         <IntelSection title="What makes them stand out" mode={intel.mode} claims={intel.standout} gap={null} gapOrigin={null} />
         <IntelSection title="Public talking points" mode={intel.mode} claims={intel.talkingPoints} gap={null} gapOrigin={null} />
       </div>
+      <PublicLinks links={links} mode={intel.mode} />
     </div>
+  );
+}
+
+const LINK_GROUPS: { id: LinkGroup; title: string }[] = [
+  { id: "articles", title: "Articles and talks" },
+  { id: "sites", title: "Their sites" },
+  { id: "news", title: "News" },
+];
+
+function PublicLinks({ links, mode }: { links: PublicLink[]; mode: PersonIntel["mode"] }) {
+  const liveCount = links.filter((link) => link.origin === "live").length;
+  return (
+    <section
+      className="rounded-3xl border border-line bg-card p-5"
+      data-links-count={links.length}
+      data-links-live={liveCount}
+    >
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h2 className="font-serif text-2xl tracking-tight">All public links and data</h2>
+        <p className="text-[11px] uppercase tracking-[0.14em] text-mute">
+          {sectionLabel(mode, links.map((link) => link.origin))}
+        </p>
+      </div>
+      <p className="mt-2 text-sm leading-6 text-mute">Open these yourself. Nothing on this page sends a message.</p>
+      {links.length ? (
+        <div className="mt-4 space-y-5">
+          {LINK_GROUPS.map((group) => {
+            const rows = links.filter((link) => link.group === group.id);
+            if (!rows.length) return null;
+            return (
+              <div key={group.id} className="min-w-0">
+                <h3 className="text-sm font-semibold">{group.title}</h3>
+                <ul className="mt-2 space-y-2">
+                  {rows.map((link) => (
+                    <li key={`${group.id}-${link.url}`} className="min-w-0">
+                      <a
+                        href={link.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex min-w-0 items-start gap-3 rounded-2xl px-1 py-1 hover:bg-[#faf7f2]"
+                      >
+                        <span className="mt-1">
+                          <SiteFavicon domain={link.domain} />
+                        </span>
+                        <span className="min-w-0">
+                          <span className="block break-words text-sm leading-6 text-[#b33b12]">{link.title}</span>
+                          <span className="block break-words text-xs leading-5 text-mute">
+                            {link.domain} · {linkFreshness(mode, link.origin)}
+                          </span>
+                        </span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <p className="mt-3 rounded-2xl border border-dashed border-line px-3 py-2 text-sm leading-6">
+          No public articles, sites, or news in the cached snapshot.
+        </p>
+      )}
+    </section>
   );
 }
 

@@ -11,6 +11,9 @@ test("template plan has angles, openers, and a follow-up from the graph path", (
   assert.match(plan.why, /John Maeda/);
   assert.match(plan.why, /graph path/i);
   assert.match(plan.angles.join(" "), /Unicorn Studios/);
+  assert.match(plan.angles.join(" "), /BLACKPINK/);
+  assert.match(plan.angles.join(" "), /Animori/);
+  assert.match(plan.angles.join(" "), /Metacomica/);
   assert.equal(plan.angles.join(" ").includes("Salesforce"), false);
   assert.equal(plan.openers.join(" ").includes("Salesforce"), false);
   const text = `${plan.why} ${plan.angles.join(" ")} ${plan.openers.join(" ")} ${plan.followUp}`;
@@ -77,6 +80,11 @@ function context(): PlanContext {
     henrySite: "https://www.unicornstudios.ai/",
     henryPosts: ["Excited to be producing and hosting for Silicon Valley Insider."],
     henryGoal: "Meet a few builders working on agents.",
+    henryTalkingPoints: [
+      "I personally worked on the BLACKPINK shoot.",
+      "Animori, Chief Innovation Officer. Anime and comics IP built with AI.",
+      "Metacomica, Founder. Anime and comics IP built with AI.",
+    ],
     claims: ["Speaker catalog: CVP Engineering, Microsoft."],
   };
 }

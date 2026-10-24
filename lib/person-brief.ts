@@ -1,8 +1,10 @@
+import { cache } from "react";
 import { searchGoogle, scrapeLinkedIn, unlockPage, type LiveResult } from "./brightdata";
 import { getCatalog } from "./catalog";
 import { curatedById } from "./curated";
 import { henryPublic } from "./henry-profile";
 import { BRIEF_CACHE_VERSION, readBriefCache, writeBriefCache } from "./intel-cache";
+import { buildPublicBundle, pickPagesToOpen, type MinedPage, type PublicHit, type PublicLink, type SocialProfile } from "./public-links";
 import {
   applyLiveSources,
   buildSnapshotIntel,
@@ -27,23 +29,40 @@ export interface PersonBrief {
   plan: ConversationPlan;
   report: FetchReport;
   fromCache: boolean;
+  profiles: SocialProfile[];
+  links: PublicLink[];
 }
 
-export async function loadPersonBrief(card: RankedPerson): Promise<PersonBrief> {
+export const loadPersonBrief = cache(loadPersonBriefInner);
+
+async function loadPersonBriefInner(card: RankedPerson): Promise<PersonBrief> {
   const input = snapshotInput(card);
   const snapshot = buildSnapshotIntel(input);
   const cached = await readBriefCache(card.id).catch(() => null);
   if (cached) {
     console.log(`Person brief ${card.id}: cache hit mode=${cached.intel.mode} plan=${cached.plan.mode}`);
-    return { intel: cached.intel, plan: cached.plan, report: cached.report, fromCache: true };
+    return {
+      intel: cached.intel,
+      plan: cached.plan,
+      report: cached.report,
+      profiles: cached.profiles,
+      links: cached.links,
+      fromCache: true,
+    };
   }
 
   let intel = snapshot;
   let report = emptyReport();
+  let hits: PublicHit[] = [];
+  let pages: MinedPage[] = [];
+  let liveFetchedAt: string | null = null;
   try {
     const gathered = await gather(input, snapshot);
     intel = gathered.intel;
     report = gathered.report;
+    hits = gathered.hits;
+    pages = gathered.pages;
+    liveFetchedAt = gathered.liveFetchedAt;
   } catch {
     intel = snapshot;
     report = {
@@ -55,41 +74,73 @@ export async function loadPersonBrief(card: RankedPerson): Promise<PersonBrief> 
     };
   }
 
+  const person = getCatalog().peopleById.get(card.id);
+  const bundle = buildPublicBundle({
+    name: input.name,
+    company: input.company,
+    linkedinUrl: input.linkedinUrl,
+    twitterHandle: person?.twitterHandle ?? null,
+    sources: input.sources,
+    snapshotFetchedAt: input.fetchedAt,
+    hits,
+    pages,
+    liveFetchedAt,
+  });
   const plan = await draftPlan(planContext(card, input, intel));
   report = { ...report, plan: plan.mode };
-  if (intel.mode !== "snapshot" || plan.mode === "openai") {
+  const discovered = bundle.profiles.some((profile) => profile.origin === "live") || bundle.links.some((link) => link.origin === "live");
+  if (intel.mode !== "snapshot" || plan.mode === "openai" || discovered) {
     await writeBriefCache(card.id, {
       version: BRIEF_CACHE_VERSION,
       savedAt: new Date().toISOString(),
       intel,
       plan,
       report,
+      profiles: bundle.profiles,
+      links: bundle.links,
     }).catch(() => undefined);
   }
   console.log(
-    `Person brief ${card.id}: mode=${intel.mode} serp=${report.serp} unlock=${report.unlock} linkedin=${report.linkedin} plan=${plan.mode}`,
+    `Person brief ${card.id}: mode=${intel.mode} serp=${report.serp} unlock=${report.unlock} linkedin=${report.linkedin} plan=${plan.mode} profiles=${bundle.profiles.length} links=${bundle.links.length}`,
   );
-  return { intel, plan, report, fromCache: false };
+  return { intel, plan, report, profiles: bundle.profiles, links: bundle.links, fromCache: false };
 }
 
 async function gather(
   input: SnapshotInput,
   snapshot: PersonIntel,
-): Promise<{ intel: PersonIntel; report: FetchReport }> {
+): Promise<{ intel: PersonIntel; report: FetchReport; hits: PublicHit[]; pages: MinedPage[]; liveFetchedAt: string | null }> {
   const linkedinUrl = normalizeLinkedIn(input.linkedinUrl);
-  const [serpA, serpB, linkedin] = await Promise.all([
-    searchGoogle(`"${input.name}" ${input.company}`.trim()),
-    searchGoogle(`"${input.name}" news`),
+  const queries = readingQueries(input.name, input.company);
+  const results = await Promise.all([
+    ...queries.map((query) => searchGoogle(query)),
     linkedinUrl ? scrapeLinkedIn(linkedinUrl) : Promise.resolve({ ok: false as const, reason: "no public url" }),
   ]);
-  const hits = [...(serpA.ok ? parseSerp(serpA.body) : []), ...(serpB.ok ? parseSerp(serpB.body) : [])];
-  const serp = combineSerp(serpA, serpB, hits.length > 0);
-  const targets = hits.length ? pickUnlockTargets(hits, input.name, 2) : [];
+  const serpResults = results.slice(0, queries.length);
+  const linkedin = results[results.length - 1];
+  const intelHits = [
+    ...(serpResults[0]?.ok ? parseSerp(serpResults[0].body) : []),
+    ...(serpResults[1]?.ok ? parseSerp(serpResults[1].body) : []),
+  ];
+  const linkHits = serpResults.flatMap((result) =>
+    result.ok ? parseSerp(result.body, { keepSocial: true, limit: 12 }) : [],
+  );
+  const publicHits: PublicHit[] = linkHits.map((hit) => ({
+    url: hit.url,
+    title: hit.title,
+    snippet: hit.snippet,
+    kind: hit.kind,
+  }));
+  const preferred = pickPagesToOpen(publicHits, input.name);
+  const fallback = pickUnlockTargets(intelHits.length ? intelHits : linkHits, input.name, 2);
+  const targets = unique([...preferred, ...fallback]).slice(0, 2);
   const opened = targets.length ? await Promise.all(targets.map((url) => unlockPage(url))) : [];
   const pages: UnlockedPage[] = [];
+  const mined: MinedPage[] = [];
   for (const page of opened) {
     if (!page.ok) continue;
     const parsed = parsePage(page.body, page.url);
+    mined.push({ url: page.url, title: parsed.title, html: page.body.slice(0, 400_000), fetchedAt: page.fetchedAt });
     if (parsed.excerpt.length < 80) continue;
     if (/captcha|access denied|enable javascript|are you a robot/i.test(parsed.excerpt)) continue;
     pages.push({
@@ -103,16 +154,21 @@ async function gather(
   const profile = linkedin.ok ? parseLinkedInPayload(linkedin.body) : null;
   const linkedinState = combineLinkedIn(linkedinUrl, linkedin, Boolean(profile));
   if (profile && linkedinUrl && !profile.url) profile.url = linkedinUrl;
+  const liveAt = new Date().toISOString();
   const live: LivePieces = {
-    fetchedAt: new Date().toISOString(),
+    fetchedAt: liveAt,
     linkedin: profile,
-    serp: hits,
+    serp: intelHits,
     pages,
   };
-  const intel =
-    profile || hits.length || pages.length ? applyLiveSources(snapshot, live, input) : snapshot;
+  const intel = profile || intelHits.length || pages.length ? applyLiveSources(snapshot, live, input) : snapshot;
+  const foundSomething = publicHits.length > 0 || mined.length > 0 || Boolean(profile) || intelHits.length > 0;
+  const serp = combineSerp(serpResults, publicHits.length > 0 || intelHits.length > 0);
   return {
     intel,
+    hits: publicHits,
+    pages: mined,
+    liveFetchedAt: foundSomething ? liveAt : null,
     report: {
       serp: serp.state,
       unlock: unlock.state,
@@ -125,14 +181,21 @@ async function gather(
   };
 }
 
-function combineSerp(
-  a: LiveResult,
-  b: LiveResult,
-  hasHits: boolean,
-): { state: FetchState; reason: string } {
+function readingQueries(name: string, company: string): string[] {
+  const who = `"${name}"`;
+  return [
+    `${who} ${company}`.trim(),
+    `${who} news`,
+    `${who} site:medium.com OR site:dev.to OR site:substack.com`,
+    `${who} site:youtube.com OR site:github.com`,
+    `${who} site:x.com OR site:twitter.com OR site:bsky.app OR site:instagram.com OR site:mastodon.social`,
+  ];
+}
+
+function combineSerp(results: LiveResult[], hasHits: boolean): { state: FetchState; reason: string } {
   if (hasHits) return { state: "live", reason: "" };
-  const reasons = [a, b].filter((item) => !item.ok).map((item) => item.reason);
-  if (reasons.length && reasons.every((reason) => reason === "not configured")) {
+  const reasons = results.filter((item) => !item.ok).map((item) => item.reason);
+  if (results.length && reasons.length === results.length && reasons.every((reason) => reason === "not configured")) {
     return { state: "skipped", reason: "not configured" };
   }
   const reason = reasons.find((item) => item && item !== "not configured") || "no public results";
@@ -218,6 +281,7 @@ function planContext(card: RankedPerson, input: SnapshotInput, intel: PersonInte
     henrySite: henry.companyUrl,
     henryPosts: henry.posts.map((post) => post.title),
     henryGoal: henry.demoGoal,
+    henryTalkingPoints: henry.talkingPoints.filter((point) => point.source === "confirmed").map((point) => point.text),
     claims,
   };
 }

@@ -2,8 +2,9 @@ import { getDb, graphName, withTimeout } from "./falkor";
 import { markCached, type PersonIntel } from "./intel";
 import type { ConversationPlan } from "./plan";
 import type { FetchReport } from "./intel";
+import type { PublicLink, SocialProfile } from "./public-links";
 
-export const BRIEF_CACHE_VERSION = 2;
+export const BRIEF_CACHE_VERSION = 3;
 
 export interface CachedBrief {
   version: number;
@@ -11,6 +12,8 @@ export interface CachedBrief {
   intel: PersonIntel;
   plan: ConversationPlan;
   report: FetchReport;
+  profiles: SocialProfile[];
+  links: PublicLink[];
 }
 
 const TTL_MS = 20 * 60 * 1000;
@@ -69,6 +72,7 @@ function present(brief: CachedBrief): CachedBrief {
 
 function fresh(brief: CachedBrief | undefined | null): CachedBrief | null {
   if (!brief || brief.version !== BRIEF_CACHE_VERSION || !brief.intel || !brief.plan || !brief.savedAt) return null;
+  if (!Array.isArray(brief.profiles) || !Array.isArray(brief.links)) return null;
   if (brief.intel.mode === "snapshot" && brief.plan.mode === "template") return null;
   const saved = Date.parse(brief.savedAt);
   if (Number.isNaN(saved) || Date.now() - saved > TTL_MS) return null;

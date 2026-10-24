@@ -29,6 +29,11 @@ export interface HenryPost {
   url: string;
 }
 
+export interface HenryPoint {
+  text: string;
+  source: "linkedin" | "confirmed";
+}
+
 export interface HenryPublic {
   name: string;
   firstName: string;
@@ -45,6 +50,7 @@ export interface HenryPublic {
   educationGap: boolean;
   posts: HenryPost[];
   demoGoal: string;
+  talkingPoints: HenryPoint[];
 }
 
 const raw = (Array.isArray(snapshot) ? snapshot[0] : snapshot) as RawProfile;
@@ -52,6 +58,13 @@ const raw = (Array.isArray(snapshot) ? snapshot[0] : snapshot) as RawProfile;
 /** Demo event goal Henry set in the product. It is not a LinkedIn field. */
 const DEMO_GOAL =
   "Meet 3 to 5 builders working on AI agents, creator tools, and dev storytelling at GitHub Universe 2026.";
+
+/** Lines Henry confirmed for this demo. They are not LinkedIn fields. */
+const CONFIRMED_POINTS = [
+  "I personally worked on the BLACKPINK shoot.",
+  "Animori, Chief Innovation Officer. Anime and comics IP built with AI.",
+  "Metacomica, Founder. Anime and comics IP built with AI.",
+];
 
 export function henryPublic(): HenryPublic {
   const company = raw.current_company?.name || raw.current_company_name || "";
@@ -85,6 +98,13 @@ export function henryPublic(): HenryPublic {
     educationGap: isEmptyRecord(raw.education),
     posts,
     demoGoal: DEMO_GOAL,
+    talkingPoints: [
+      {
+        text: `I build entertainment companies and intellectual property at ${company || "Unicorn Studios"}.`,
+        source: "linkedin" as const,
+      },
+      ...CONFIRMED_POINTS.map((text) => ({ text, source: "confirmed" as const })),
+    ],
   };
 }
 

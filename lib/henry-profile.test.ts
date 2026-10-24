@@ -12,6 +12,10 @@ test("Henry's public snapshot keeps the live profile and the history gaps", () =
   assert.equal(henry.experienceGap, true);
   assert.equal(henry.educationGap, true);
   assert.match(henry.about, /intellectual property/);
+  assert.ok(henry.talkingPoints.some((point) => point.source === "linkedin" && /Unicorn Studios/.test(point.text)));
+  assert.ok(henry.talkingPoints.some((point) => point.source === "confirmed" && /BLACKPINK/.test(point.text)));
+  assert.ok(henry.talkingPoints.some((point) => point.source === "confirmed" && /Animori/.test(point.text)));
+  assert.ok(henry.talkingPoints.some((point) => point.source === "confirmed" && /Metacomica/.test(point.text)));
   assert.ok(henry.posts.length >= 2);
   assert.ok(henry.posts.every((post) => /henryfinnco_/i.test(post.url)));
   assert.equal(JSON.stringify(henry.posts).includes("Salesforce"), false);

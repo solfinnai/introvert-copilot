@@ -9,6 +9,7 @@ export function BriefSkeleton() {
         <div className="h-40 animate-pulse rounded-3xl border border-line bg-card" />
         <div className="h-40 animate-pulse rounded-3xl border border-line bg-card" />
         <div className="h-40 animate-pulse rounded-3xl border border-line bg-card" />
+        <div className="h-48 animate-pulse rounded-3xl border border-line bg-card md:col-span-2" />
       </div>
     </div>
   );

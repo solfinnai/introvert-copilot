@@ -27,7 +27,8 @@ export default function StoryPage() {
             <span>for the coffee line</span>
           </div>
           <p className="mt-3 border-l-2 border-accent pl-3 font-serif text-xl leading-8">
-            I am Henry. I build entertainment companies and intellectual property at Unicorn Studios.
+            I am Henry. I build entertainment companies and intellectual property at Unicorn Studios, including
+            anime and comics IP built with AI.
           </p>
         </article>
         <article className="mt-4 rounded-3xl border border-line bg-card p-5">
@@ -37,9 +38,24 @@ export default function StoryPage() {
           </div>
           <p className="mt-3 border-l-2 border-accent pl-3 text-[15px] leading-7">
             I am Henry Finn, in {henry.location}. I build entertainment companies and intellectual
-            property at {henry.company}. The public site is unicornstudios.ai. LinkedIn did not list
-            past roles or schools, so I stay with that.
+            property at {henry.company}. I personally worked on the BLACKPINK shoot. I am Chief Innovation
+            Officer at Animori, and I founded Metacomica. Those are anime and comics IP built with AI.
+            LinkedIn did not list past roles or schools, so the shoot and those two companies are points I
+            confirmed, not a LinkedIn history.
           </p>
+        </article>
+        <article className="mt-4 rounded-3xl border border-line bg-card p-5">
+          <p className="text-[11px] uppercase tracking-[0.14em] text-mute">Talking points</p>
+          <ul className="mt-3 space-y-3">
+            {henry.talkingPoints.map((point) => (
+              <li key={point.text} className="text-sm leading-6">
+                <p>{point.text}</p>
+                <p className="text-xs text-mute">
+                  {point.source === "linkedin" ? "LinkedIn snapshot" : "Confirmed by Henry"}
+                </p>
+              </li>
+            ))}
+          </ul>
         </article>
         <article className="mt-4 rounded-3xl border border-line bg-card p-5">
           <p className="text-[11px] uppercase tracking-[0.14em] text-mute">Public about</p>
@@ -90,7 +106,7 @@ export default function StoryPage() {
           <p className="text-[11px] uppercase tracking-[0.14em] text-mute">Work history</p>
           <p className="mt-2 text-sm leading-6">
             Gap. LinkedIn returned no experience entries. Current company on the profile is {henry.company}.
-            Nothing else is filled in.
+            The BLACKPINK shoot, Animori, and Metacomica are confirmed talking points, not LinkedIn jobs.
           </p>
         </article>
         <article className="rounded-3xl border border-dashed border-line bg-card p-5">

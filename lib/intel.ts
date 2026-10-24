@@ -210,17 +210,19 @@ export function isBlockedPublicUrl(url: string): boolean {
   }
 }
 
-export function parseSerp(body: string): SerpHit[] {
+export function parseSerp(body: string, options?: { keepSocial?: boolean; limit?: number }): SerpHit[] {
+  const keepSocial = options?.keepSocial === true;
+  const limit = options?.limit ?? 8;
   const trimmed = body.trim().slice(0, 1_500_000);
   if (!trimmed) return [];
-  if (trimmed.startsWith("<")) return dedupeHits(parseSerpHtml(trimmed));
+  if (trimmed.startsWith("<")) return dedupeHits(parseSerpHtml(trimmed, keepSocial), limit);
   try {
-    const hits = hitsFromJson(JSON.parse(trimmed) as unknown);
-    if (hits.length) return dedupeHits(hits);
+    const hits = hitsFromJson(JSON.parse(trimmed) as unknown, keepSocial);
+    if (hits.length) return dedupeHits(hits, limit);
   } catch {
     /* HTML or plain text falls through */
   }
-  if (trimmed.includes("<a")) return dedupeHits(parseSerpHtml(trimmed));
+  if (trimmed.includes("<a")) return dedupeHits(parseSerpHtml(trimmed, keepSocial), limit);
   return [];
 }
 
@@ -801,30 +803,30 @@ function makeClaim(claim: Claim): Claim {
   return { ...claim, text: sanitizeCopy(claim.text).slice(0, 420) };
 }
 
-function hitsFromJson(value: unknown): SerpHit[] {
+function hitsFromJson(value: unknown, keepSocial = false): SerpHit[] {
   if (typeof value === "string") {
     try {
-      return hitsFromJson(JSON.parse(value) as unknown);
+      return hitsFromJson(JSON.parse(value) as unknown, keepSocial);
     } catch {
       return [];
     }
   }
   if (Array.isArray(value)) {
-    if (value.length && isHitLike(value[0])) return value.flatMap((item) => hitFromItem(item, "organic"));
-    return value.flatMap((item) => hitsFromJson(item));
+    if (value.length && isHitLike(value[0])) return value.flatMap((item) => hitFromItem(item, "organic", keepSocial));
+    return value.flatMap((item) => hitsFromJson(item, keepSocial));
   }
   if (!value || typeof value !== "object") return [];
   const root = value as Record<string, unknown>;
   if (typeof root.error === "string" && root.organic == null && root.news == null) return [];
   const hits: SerpHit[] = [];
-  for (const key of ["organic", "organic_results", "results"]) collectArray(root[key], "organic", hits);
-  for (const key of ["news", "news_results", "top_stories"]) collectArray(root[key], "news", hits);
+  for (const key of ["organic", "organic_results", "results"]) collectArray(root[key], "organic", hits, keepSocial);
+  for (const key of ["news", "news_results", "top_stories"]) collectArray(root[key], "news", hits, keepSocial);
   return hits;
 }
 
-function collectArray(value: unknown, kind: "organic" | "news", hits: SerpHit[]): void {
+function collectArray(value: unknown, kind: "organic" | "news", hits: SerpHit[], keepSocial: boolean): void {
   if (!Array.isArray(value)) return;
-  for (const item of value) hits.push(...hitFromItem(item, kind));
+  for (const item of value) hits.push(...hitFromItem(item, kind, keepSocial));
 }
 
 function isHitLike(value: unknown): boolean {
@@ -833,11 +835,11 @@ function isHitLike(value: unknown): boolean {
   return typeof row.link === "string" || typeof row.url === "string" || typeof row.title === "string";
 }
 
-function hitFromItem(item: unknown, kind: "organic" | "news"): SerpHit[] {
+function hitFromItem(item: unknown, kind: "organic" | "news", keepSocial = false): SerpHit[] {
   if (!item || typeof item !== "object") return [];
   const row = item as Record<string, unknown>;
   const url = stringField(row, ["link", "url", "href"]);
-  if (!url.startsWith("http") || isBlockedPublicUrl(url)) return [];
+  if (!url.startsWith("http") || dropSerpUrl(url, keepSocial)) return [];
   const title = sanitizeCopy(stringField(row, ["title", "name"]) || hostOf(url)).slice(0, 180);
   const snippet = sanitizeCopy(stringField(row, ["description", "snippet", "snippet_text"])).slice(0, 280);
   const date = stringField(row, ["date", "published"]);
@@ -845,13 +847,26 @@ function hitFromItem(item: unknown, kind: "organic" | "news"): SerpHit[] {
   return [{ url, title: title || hostOf(url), snippet, kind, date }];
 }
 
-function parseSerpHtml(html: string): SerpHit[] {
+function dropSerpUrl(url: string, keepSocial: boolean): boolean {
+  if (!keepSocial) return isBlockedPublicUrl(url);
+  try {
+    const host = new URL(url).hostname.replace(/^www\./, "").toLowerCase();
+    if (host === "google.com" || host.endsWith(".google.com")) return true;
+    if (host === "gstatic.com" || host.endsWith(".gstatic.com")) return true;
+    if (host.endsWith("googleusercontent.com")) return true;
+    return false;
+  } catch {
+    return true;
+  }
+}
+
+function parseSerpHtml(html: string, keepSocial: boolean): SerpHit[] {
   const hits: SerpHit[] = [];
   const re = /<a\b[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi;
   let match: RegExpExecArray | null;
-  while ((match = re.exec(html)) && hits.length < 8) {
+  while ((match = re.exec(html)) && hits.length < 12) {
     const url = cleanHref(match[1]);
-    if (!url || isBlockedPublicUrl(url)) continue;
+    if (!url || dropSerpUrl(url, keepSocial)) continue;
     const title = sanitizeCopy(stripTags(match[2])).slice(0, 180);
     if (title.length < 8) continue;
     hits.push({ url, title, snippet: "", kind: "organic", date: "" });
@@ -874,15 +889,16 @@ function cleanHref(href: string): string | null {
   return value.split("#")[0];
 }
 
-function dedupeHits(hits: SerpHit[]): SerpHit[] {
+function dedupeHits(hits: SerpHit[], limit: number): SerpHit[] {
   const seen = new Set<string>();
   const out: SerpHit[] = [];
   for (const hit of hits) {
     if (seen.has(hit.url)) continue;
     seen.add(hit.url);
     out.push(hit);
+    if (out.length >= limit) break;
   }
-  return out.slice(0, 8);
+  return out;
 }
 
 function firstProfile(value: unknown): Record<string, unknown> | null {

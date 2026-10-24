@@ -5,9 +5,11 @@ import { BriefSkeleton } from "@/components/BriefSkeleton";
 import { PersonActions } from "@/components/PersonActions";
 import { PersonDossier } from "@/components/PersonDossier";
 import { PersonPhoto } from "@/components/PersonPhoto";
+import { SocialIcons } from "@/components/SocialIcons";
 import { getCatalog } from "@/lib/catalog";
 import { describePerson } from "@/lib/graph";
 import { loadPersonBrief } from "@/lib/person-brief";
+import { seedProfiles } from "@/lib/public-links";
 import type { RankedPerson } from "@/lib/types";
 import type { SavedPerson } from "@/components/session";
 
@@ -26,12 +28,19 @@ export default async function PersonPage({ params }: { params: Promise<{ id: str
       <Link href="/meet" className="text-sm text-mute">
         Back to who to meet
       </Link>
-      <header className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-start">
-        <PersonPhoto src={card.photoUrl} name={card.name} size={72} />
-        <div className="min-w-0">
-          <h1 className="break-words font-serif text-4xl tracking-tight">{card.name}</h1>
-          <p className="text-mute">{card.titleLine}</p>
-          <p className="mt-1 text-sm">Catch them: {card.catchLine}</p>
+      <header className="mt-3">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+          <PersonPhoto src={card.photoUrl} name={card.name} size={72} />
+          <div className="min-w-0">
+            <h1 className="break-words font-serif text-4xl tracking-tight">{card.name}</h1>
+            <p className="text-mute">{card.titleLine}</p>
+            <p className="mt-1 text-sm">Catch them: {card.catchLine}</p>
+          </div>
+        </div>
+        <div className="mt-4">
+          <Suspense fallback={<SocialIcons profiles={seedFor(person)} mode="snapshot" />}>
+            <HeaderProfiles card={card} />
+          </Suspense>
         </div>
       </header>
       <div className="mt-4">
@@ -60,10 +69,27 @@ async function BriefBlock({
       intel={brief.intel}
       plan={brief.plan}
       report={brief.report}
+      links={brief.links}
       backend={backend}
       ms={ms}
     />
   );
+}
+
+async function HeaderProfiles({ card }: { card: RankedPerson }) {
+  const brief = await loadPersonBrief(card);
+  return <SocialIcons profiles={brief.profiles} mode={brief.intel.mode} />;
+}
+
+function seedFor(person: { name: string; linkedinUrl: string | null; twitterHandle: string | null; articles: { url: string; label: string }[] }) {
+  const catalog = getCatalog();
+  return seedProfiles({
+    name: person.name,
+    linkedinUrl: person.linkedinUrl,
+    twitterHandle: person.twitterHandle,
+    sources: person.articles.map((article) => ({ url: article.url, title: article.label })),
+    snapshotFetchedAt: catalog.fetchedAt,
+  });
 }
 
 function toSaved(person: RankedPerson): SavedPerson {

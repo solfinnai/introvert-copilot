@@ -9,6 +9,11 @@ export default function PersonLoading() {
           <div className="h-4 w-64 max-w-full animate-pulse rounded bg-[#efe8dc]" />
         </div>
       </div>
+      <div className="mt-4 flex flex-wrap gap-2">
+        <div className="h-11 w-11 animate-pulse rounded-full bg-[#e7e0d4]" />
+        <div className="h-11 w-11 animate-pulse rounded-full bg-[#e7e0d4]" />
+        <div className="h-11 w-11 animate-pulse rounded-full bg-[#e7e0d4]" />
+      </div>
       <div className="mt-4 h-10 w-40 animate-pulse rounded-full bg-[#e7e0d4]" />
       <div className="mt-6 space-y-4">
         <div className="h-72 animate-pulse rounded-3xl border border-line bg-card" />
