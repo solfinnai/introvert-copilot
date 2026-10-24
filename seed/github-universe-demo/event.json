@@ -1,0 +1,43 @@
+{
+  "id": "github-universe-2026",
+  "name": "GitHub Universe 2026",
+  "dates": {
+    "start": "2026-10-28",
+    "end": "2026-10-29",
+    "tz": "America/Los_Angeles"
+  },
+  "venue": "Fort Mason Center, San Francisco, CA",
+  "format": "in-person (sold out) and virtual (free)",
+  "url": "https://githubuniverse.com/",
+  "speakers_url": "https://reg.githubuniverse.com/flow/github/universe26/attendee-portal/page/speakers",
+  "sessions_url": "https://reg.githubuniverse.com/flow/github/universe26/attendee-portal/page/sessioncatalog",
+  "speaker_count_published": 183,
+  "session_count_published": 157,
+  "keynotes": [
+    {
+      "title": "Opening Keynote",
+      "date": "2026-10-28",
+      "start": "09:00 AM",
+      "room": "Main Stage @ Festival Pavilion"
+    },
+    {
+      "title": "Closing Keynote",
+      "date": "2026-10-29",
+      "start": "02:00 PM",
+      "room": "Main Stage @ Festival Pavilion"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://githubuniverse.com/",
+      "title": "GitHub Universe 2026 homepage",
+      "date": "2026-10-24"
+    },
+    {
+      "url": "https://events.githubuniverse.com/api/search",
+      "title": "RainFocus public catalog API (type=speaker / type=session)",
+      "date": "2026-10-24"
+    }
+  ],
+  "fetched_at": "2026-10-24T10:45:03-07:00"
+}
