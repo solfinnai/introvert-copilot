@@ -8,6 +8,7 @@ import {
   explainMatch,
   humanEdgeLabel,
   humanNoteLabel,
+  introRelationLabel,
   visibleIntroPath,
   visiblePath,
 } from "./path-explain";
@@ -22,13 +23,14 @@ test("john maeda reads as two plain sentences from the same path", () => {
   const text = explainMatch({
     name: maeda.name,
     sessionTitle: maeda.sessionTitle,
+    sessionType: maeda.sessionType,
     path: maeda.path,
     introName: maeda.introVia?.name ?? null,
     keywordHits: maeda.keywordHits,
   });
   assert.equal(
     text,
-    "You like open source. John's talk, Sketching with code in the age of AI, is about it, and Qianqian Ye is on John's panel and could introduce you.",
+    "You like open source. John's talk, Sketching with code in the age of AI, is about it, and Qianqian Ye is speaking with John and could introduce you.",
   );
   assert.equal(sentenceCount(text), 2);
   assert.equal(text.includes("INTERESTED_IN"), false);
@@ -49,8 +51,8 @@ test("john maeda reads as two plain sentences from the same path", () => {
     ],
   );
   assert.deepEqual(
-    visibleIntroPath(maeda.introPath).map((chip) => chip.text),
-    ["Qianqian Ye", "Also on the panel", "John Maeda"],
+    visibleIntroPath(maeda.introPath, maeda.sessionType).map((chip) => chip.text),
+    ["Qianqian Ye", "Speaking with", "John Maeda"],
   );
 });
 
@@ -102,19 +104,68 @@ test("a keyword match stays in plain english and the chips read left to right", 
   });
   assert.equal(
     text,
-    "John's public bio mentions design, media and AI. John is presenting Sketching with code in the age of AI, and Qianqian Ye is on John's panel and could introduce you.",
+    "John's bio or title mentions design, media and AI. John is presenting Sketching with code in the age of AI, and Qianqian Ye is speaking with John and could introduce you.",
   );
   assert.equal(sentenceCount(text), 2);
   assert.deepEqual(
     visiblePath(path, "Sketching with code in the age of AI").map((chip) => chip.text),
     [
-      "Public bio mentions design",
+      "Bio or title mentions design",
       "Sketching with code...",
       "Presented by",
       "John Maeda",
     ],
   );
-  assert.equal(humanNoteLabel("Keyword match"), "Public bio mention");
+  assert.equal(humanNoteLabel("Keyword match"), "Bio or title mention");
+});
+
+test("a catalog talk that ends with a question mark stays one clean sentence", () => {
+  const title = "What's worth building when AI can build anything?";
+  assert.ok(getCatalog().sessions.some((session) => session.title === title));
+  const text = explainMatch({
+    name: "Kent C. Dodds",
+    sessionTitle: title ?? "",
+    sessionType: "Main Stage",
+    path: interestPath("Open source", "Kent C. Dodds"),
+    introName: "Someone Else",
+    keywordHits: [],
+  });
+  assert.equal(
+    text,
+    "You like open source. Kent's talk, What's worth building when AI can build anything, is about it, and Someone Else is speaking with Kent and could introduce you.",
+  );
+  assert.equal(text.includes("?,"), false);
+  assert.equal(text.includes("?."), false);
+  const keywordPath: PathChip[] = [
+    { kind: "note", text: "Keyword match: design", tone: "plain" },
+    { kind: "node", text: "Kent C. Dodds", tone: "solid" },
+    { kind: "edge", text: "PRESENTS", tone: "plain" },
+    { kind: "node", text: "What's worth building...", tone: "plain" },
+  ];
+  const keyword = explainMatch({
+    name: "Kent C. Dodds",
+    sessionTitle: title,
+    sessionType: "Main Stage",
+    path: keywordPath,
+    introName: null,
+    keywordHits: ["design"],
+  });
+  assert.equal(
+    keyword,
+    "Kent's bio or title mentions design. Kent is presenting What's worth building when AI can build anything.",
+  );
+});
+
+test("a panel introduction keeps the panel wording", () => {
+  const text = explainMatch({
+    name: "Angie Jones",
+    sessionTitle: "Still open: How AI reshaped open source",
+    sessionType: "Panel Discussion",
+    path: interestPath("Open source", "Angie Jones"),
+    introName: "Ashley Wolf",
+    keywordHits: [],
+  });
+  assert.match(text, /Ashley Wolf is on Angie's panel and could introduce you\./);
 });
 
 test("a dashed talk title is punctuated without an em dash", () => {
@@ -134,8 +185,21 @@ test("human labels cover the relationship names on the path", () => {
   assert.equal(humanEdgeLabel("INTERESTED_IN"), "You like");
   assert.equal(humanEdgeLabel("ABOUT"), "Talk about");
   assert.equal(humanEdgeLabel("PRESENTS"), "Presented by");
-  assert.equal(humanEdgeLabel("CO_PRESENTS"), "Also on the panel");
+  assert.equal(humanEdgeLabel("CO_PRESENTS"), "Speaking with");
   assert.equal(humanEdgeLabel("DESCRIBES"), "describes");
+  assert.equal(introRelationLabel("Main Stage"), "Speaking with");
+  assert.equal(introRelationLabel("Panel Discussion"), "Also on the panel");
+  assert.deepEqual(
+    visibleIntroPath(
+      [
+        { kind: "node", text: "Ashley Wolf", tone: "plain" },
+        { kind: "edge", text: "CO_PRESENTS", tone: "plain" },
+        { kind: "node", text: "Angie Jones", tone: "solid" },
+      ],
+      "Panel Discussion",
+    ).map((chip) => chip.text),
+    ["Ashley Wolf", "Also on the panel", "Angie Jones"],
+  );
 });
 
 test("falkordb stays named, and a memory answer does not claim the database ran", () => {
@@ -144,7 +208,7 @@ test("falkordb stays named, and a memory answer does not claim the database ran"
     toggle: "How FalkorDB found this",
   });
   assert.equal(discoveryLabel("memory").found, "Found with the in-memory graph");
-  assert.equal(discoveryLabel("memory").toggle, "How FalkorDB found this");
+  assert.equal(discoveryLabel("memory").toggle, "How the graph found this");
 });
 
 test("the graph panel leads with the explanation and hides the query", () => {

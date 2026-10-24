@@ -75,6 +75,7 @@ export function PersonDossier({
       <GraphPath
         name={card.name}
         sessionTitle={card.sessionTitle}
+        sessionType={card.sessionType}
         path={card.path}
         introPath={card.introPath}
         introName={card.introVia?.name ?? null}

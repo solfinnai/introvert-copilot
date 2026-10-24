@@ -16,6 +16,7 @@ export function backendLabel(backend: GraphBackend): string {
 export function GraphPath({
   name,
   sessionTitle,
+  sessionType,
   path,
   introPath,
   introName,
@@ -28,6 +29,7 @@ export function GraphPath({
 }: {
   name: string;
   sessionTitle: string | null;
+  sessionType: string | null;
   path: PathChip[];
   introPath: PathChip[];
   introName: string | null;
@@ -40,9 +42,9 @@ export function GraphPath({
 }) {
   const [copied, setCopied] = useState(false);
   const labels = discoveryLabel(backend);
-  const summary = explainMatch({ name, sessionTitle, path, introName, keywordHits });
+  const summary = explainMatch({ name, sessionTitle, sessionType, path, introName, keywordHits });
   const shownPath = visiblePath(path, sessionTitle);
-  const shownIntro = visibleIntroPath(introPath);
+  const shownIntro = visibleIntroPath(introPath, sessionType);
   const hopWord = hops === 1 ? "hop" : "hops";
 
   return (

@@ -31,6 +31,7 @@ export interface RankedPerson {
   opener: string;
   catchLine: string;
   sessionTitle: string | null;
+  sessionType: string | null;
   roomShort: string;
   dayKey: "wed" | "thu" | "other";
   dayLabel: string;

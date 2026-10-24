@@ -6,7 +6,7 @@ const EDGE_LABELS: Record<string, string> = {
   INTERESTED_IN: "You like",
   ABOUT: "Talk about",
   PRESENTS: "Presented by",
-  CO_PRESENTS: "Also on the panel",
+  CO_PRESENTS: "Speaking with",
 };
 
 export function humanEdgeLabel(text: string): string {
@@ -19,26 +19,31 @@ export function humanNoteLabel(text: string): string {
   const match = /^Keyword match:?\s*(.*)$/i.exec(text.trim());
   if (!match) return text;
   const term = phraseHit(match[1] ?? "");
-  return term ? `Public bio mentions ${term}` : "Public bio mention";
+  return term ? `Bio or title mentions ${term}` : "Bio or title mention";
+}
+
+export function introRelationLabel(sessionType: string | null | undefined): string {
+  return isPanel(sessionType) ? "Also on the panel" : "Speaking with";
 }
 
 export function discoveryLabel(backend: GraphBackend): { found: string; toggle: string } {
   return {
     found: backend === "falkordb" ? "Found with FalkorDB" : "Found with the in-memory graph",
-    toggle: "How FalkorDB found this",
+    toggle: backend === "falkordb" ? "How FalkorDB found this" : "How the graph found this",
   };
 }
 
 export function explainMatch(input: {
   name: string;
   sessionTitle: string | null;
+  sessionType?: string | null;
   path: Pick<PathChip, "kind" | "text">[];
   introName: string | null;
   keywordHits: string[];
 }): string {
   const name = input.name.replace(/\s+/g, " ").trim() || "This person";
   const first = name.split(" ")[0] || name;
-  const session = (input.sessionTitle ?? "").replace(/\s+/g, " ").trim();
+  const session = embedTitle((input.sessionTitle ?? "").replace(/\s+/g, " ").trim());
   const intro = input.introName?.replace(/\s+/g, " ").trim() || null;
   const topic = topicAfterInterest(input.path);
   const sentences: string[] = [];
@@ -54,13 +59,13 @@ export function explainMatch(input: {
     const hits = mentionedHits(input);
     sentences.push(
       hits.length
-        ? `${possessive(first)} public bio mentions ${humanList(hits)}.`
+        ? `${possessive(first)} bio or title mentions ${humanList(hits)}.`
         : `${name} is on your list from the speaker catalog.`,
     );
     if (session) sentences.push(`${first} is presenting ${session}.`);
   }
 
-  return sanitizeCopy(attachIntro(sentences, intro, first));
+  return sanitizeCopy(attachIntro(sentences, intro, first, input.sessionType ?? null));
 }
 
 export function visiblePath(path: PathChip[], sessionTitle: string | null): PathChip[] {
@@ -70,10 +75,12 @@ export function visiblePath(path: PathChip[], sessionTitle: string | null): Path
   );
 }
 
-export function visibleIntroPath(path: PathChip[]): PathChip[] {
-  return path.map((chip) =>
-    chip.kind === "edge" ? { ...chip, text: humanEdgeLabel(chip.text) } : chip,
-  );
+export function visibleIntroPath(path: PathChip[], sessionType: string | null = null): PathChip[] {
+  return path.map((chip) => {
+    if (chip.kind !== "edge") return chip;
+    const text = chip.text === "CO_PRESENTS" ? introRelationLabel(sessionType) : humanEdgeLabel(chip.text);
+    return { ...chip, text };
+  });
 }
 
 function visibleKeywordPath(path: PathChip[], sessionTitle: string | null): PathChip[] {
@@ -153,10 +160,26 @@ function possessive(name: string): string {
   return `${name}'s`;
 }
 
-function attachIntro(sentences: string[], intro: string | null, first: string): string {
+function isPanel(sessionType: string | null | undefined): boolean {
+  return /panel/i.test(sessionType ?? "");
+}
+
+function embedTitle(title: string): string {
+  const stripped = title.replace(/[.?!…]+$/g, "").trim();
+  return stripped || title.trim();
+}
+
+function attachIntro(
+  sentences: string[],
+  intro: string | null,
+  first: string,
+  sessionType: string | null,
+): string {
   const kept = sentences.filter(Boolean).slice(0, 2);
   if (!intro) return kept.join(" ");
-  const clause = `${intro} is on ${possessive(first)} panel and could introduce you.`;
+  const clause = isPanel(sessionType)
+    ? `${intro} is on ${possessive(first)} panel and could introduce you.`
+    : `${intro} is speaking with ${first} and could introduce you.`;
   if (kept.length === 0) return clause;
   if (kept.length === 1) return `${kept[0]} ${clause}`;
   const last = kept[1].replace(/[.?!]$/, "");

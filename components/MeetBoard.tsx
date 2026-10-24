@@ -248,6 +248,7 @@ function PathBlock({ person, response }: { person: RankedPerson; response: MeetR
     <GraphPath
       name={person.name}
       sessionTitle={person.sessionTitle}
+      sessionType={person.sessionType}
       path={person.path}
       introPath={person.introPath}
       introName={person.introVia?.name ?? null}
