@@ -5,6 +5,7 @@ import {
   localCoaching,
   readStreamDelta,
   splitFollowup,
+  starterFallback,
   visibleCoachText,
   type AgentDecision,
 } from "@/lib/agent";
@@ -199,8 +200,8 @@ function upstreamSignal(req: Request): AbortSignal {
 
 function fallback(decision: Extract<AgentDecision, { action: "openai" }>) {
   const ask = decision.messages.filter((turn) => turn.role === "user").at(-1)?.content ?? "";
-  return localCoaching("fallback", decision.person, ask || "Help me prepare", {
-    topics: decision.topics,
-    ownWords: decision.ownWords,
-  });
+  const context = { topics: decision.topics, ownWords: decision.ownWords };
+  const starter = starterFallback("fallback", decision.person, ask || "Help me prepare", context);
+  if (starter) return starter;
+  return localCoaching("fallback", decision.person, ask || "Help me prepare", context);
 }
