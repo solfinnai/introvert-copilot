@@ -4,22 +4,22 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { DEMO_PHOTO_SRC, demoPhotoFallbacks } from "@/lib/demo-user";
+import { Icon } from "./Icons";
 import { PersonPhoto } from "./PersonPhoto";
 import { PoweredBy } from "./PoweredBy";
 import { SessionProvider, useSession } from "./session";
 
 const NAV = [
-  { href: "/", label: "Home", n: "01" },
-  { href: "/me", label: "Your story", n: "02" },
-  { href: "/meet", label: "Who to meet", n: "03" },
-  { href: "/speakers", label: "Speakers", n: "04" },
-  { href: "/saved", label: "Saved", n: "05" },
-  { href: "/agent", label: "Agent chat", n: "06" },
+  { href: "/", label: "Home", icon: "home" as const },
+  { href: "/me", label: "Your story", icon: "user" as const },
+  { href: "/meet", label: "Who to meet", icon: "users" as const },
+  { href: "/speakers", label: "Speakers", icon: "list" as const },
+  { href: "/saved", label: "Saved", icon: "bookmark" as const },
+  { href: "/agent", label: "Agent chat", icon: "message" as const },
 ];
 
 export function AppShell({
   children,
-  fetchedLabel,
   henryAvatar,
   henryName,
 }: {
@@ -30,12 +30,17 @@ export function AppShell({
 }) {
   return (
     <SessionProvider>
-      <div className="app-shell min-h-screen md:grid md:grid-cols-[220px_1fr]">
+      <div className="app-shell min-h-screen bg-bg text-ink md:grid md:grid-cols-[220px_1fr]">
         <Sidebar />
         <div className="flex min-h-screen min-w-0 flex-col">
-          <TopBar fetchedLabel={fetchedLabel} henryAvatar={henryAvatar} henryName={henryName} />
-          <MobileNav />
-          <main className="flex-1 px-5 py-6 md:px-10 md:py-8">{children}</main>
+          <div className="sticky top-0 z-20 bg-bg">
+            <TopBar henryAvatar={henryAvatar} henryName={henryName} />
+            <MobileNav />
+          </div>
+          <main className="flex-1 px-4 py-4 md:px-6 md:py-5">{children}</main>
+          <div className="no-print px-4 pb-2 md:hidden">
+            <ResetDemo />
+          </div>
           <PoweredBy />
         </div>
       </div>
@@ -45,20 +50,20 @@ export function AppShell({
 
 function Sidebar() {
   return (
-    <aside className="hidden border-r border-[#e3d9cb] bg-side md:flex md:min-h-screen md:flex-col md:px-3 md:py-4">
+    <aside className="sticky top-0 hidden h-screen w-[220px] flex-col border-r border-line bg-bg md:flex">
       <Brand />
       <NavList />
+      <div className="mt-auto px-2 pb-3">
+        <ResetDemo />
+      </div>
     </aside>
   );
 }
 
 function Brand() {
   return (
-    <Link href="/" className="mb-6 flex items-center gap-2 px-2">
-      <span className="grid h-7 w-7 place-items-center rounded-lg bg-ink">
-        <span className="h-2.5 w-2.5 rounded-full bg-accent" />
-      </span>
-      <span className="text-sm font-semibold tracking-tight">Introvert Co-pilot</span>
+    <Link href="/" className="flex h-11 items-center px-3 text-[13px] font-medium tracking-tight">
+      Introvert Co-pilot
     </Link>
   );
 }
@@ -67,24 +72,22 @@ function NavList() {
   const pathname = usePathname();
   const { state, ready } = useSession();
   return (
-    <nav className="flex flex-col gap-1">
+    <nav className="flex flex-col gap-0.5 px-2">
       {NAV.map((item) => {
-        const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+        const active = isActive(pathname, item.href);
+        const count = item.href === "/saved" && ready ? state.saved.length : 0;
         return (
           <Link
             key={item.href}
             href={item.href}
-            className={`flex items-center gap-3 rounded-xl px-3 py-2 text-sm ${
-              active ? "bg-white shadow-card" : "text-[#3f3a34] hover:bg-white/60"
+            aria-current={active ? "page" : undefined}
+            className={`flex h-8 items-center gap-2 rounded-control px-2 text-[13px] transition-colors duration-ui ${
+              active ? "bg-fill text-ink" : "text-mute hover:bg-fill hover:text-ink"
             }`}
           >
-            <span className="w-6 font-mono text-[11px] text-[#b33b12]">{item.n}</span>
-            <span>{item.label}</span>
-            {item.href === "/saved" && ready && state.saved.length > 0 && (
-              <span className="ml-auto grid h-5 min-w-5 place-items-center rounded-full bg-accent px-1 text-[11px] font-semibold text-white">
-                {state.saved.length}
-              </span>
-            )}
+            <Icon name={item.icon} />
+            <span className="min-w-0 truncate">{item.label}</span>
+            {count > 0 && <span className="ml-auto text-meta text-faint">{count}</span>}
           </Link>
         );
       })}
@@ -95,14 +98,17 @@ function NavList() {
 function MobileNav() {
   const pathname = usePathname();
   return (
-    <div className="no-print flex gap-2 overflow-x-auto border-b border-line bg-side px-4 py-2 md:hidden">
+    <div className="no-print flex flex-wrap gap-1 border-b border-line px-3 py-1.5 md:hidden">
       {NAV.map((item) => {
-        const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+        const active = isActive(pathname, item.href);
         return (
           <Link
             key={item.href}
             href={item.href}
-            className={`shrink-0 rounded-full px-3 py-1 text-sm ${active ? "bg-white" : ""}`}
+            aria-current={active ? "page" : undefined}
+            className={`flex h-8 shrink-0 items-center rounded-control px-2 text-[13px] ${
+              active ? "bg-fill text-ink" : "text-mute"
+            }`}
           >
             {item.label}
           </Link>
@@ -112,47 +118,57 @@ function MobileNav() {
   );
 }
 
-function TopBar({
-  fetchedLabel,
-  henryAvatar,
-  henryName,
-}: {
-  fetchedLabel: string;
-  henryAvatar: string;
-  henryName: string;
-}) {
+function TopBar({ henryAvatar, henryName }: { henryAvatar: string; henryName: string }) {
+  const pathname = usePathname();
   return (
-    <header className="flex flex-wrap items-center gap-3 border-b border-line bg-[#f7f4ee] px-5 py-3 md:px-8">
-      <div className="mr-auto flex items-baseline gap-3">
-        <p className="text-sm font-semibold">GitHub Universe 2026</p>
-        <p className="hidden text-sm text-mute sm:block">Oct 28 to 29, Fort Mason, SF</p>
+    <header className="flex h-11 items-center gap-3 border-b border-line bg-bg px-4 md:px-5">
+      <div className="flex min-w-0 flex-1 items-baseline gap-3">
+        <p className="truncate text-[13px] font-medium">{titleFor(pathname)}</p>
+        <p className="hidden truncate text-meta text-faint lg:block">GitHub Universe 2026</p>
       </div>
-      <span className="inline-flex items-center gap-2 rounded-full border border-line bg-white px-3 py-1 text-xs text-[#3f3a34]">
-        <span className="h-1.5 w-1.5 rounded-full bg-[#b5812a]" />
-        Cached snapshot, {fetchedLabel}
-      </span>
-      <Link href="/me" className="inline-flex max-w-full items-center gap-2 rounded-full border border-line bg-white py-1 pl-1 pr-3 text-xs font-medium">
+      <Link
+        href="/me"
+        className="inline-flex h-7 max-w-[46%] items-center gap-2 rounded-control px-1.5 text-meta text-mute transition-colors duration-ui hover:bg-fill hover:text-ink"
+      >
         <PersonPhoto
           src={DEMO_PHOTO_SRC}
           fallbackSrc={henryAvatar}
           fallbacks={demoPhotoFallbacks()}
           name={henryName}
-          size={24}
+          size={18}
         />
-        <span className="truncate">Signed in as {henryName}</span>
+        <span className="truncate">{henryName}</span>
       </Link>
-      <ResetButton />
     </header>
   );
 }
 
-function ResetButton() {
+function matches(pathname: string, base: string) {
+  return pathname === base || pathname.startsWith(`${base}/`);
+}
+
+function isActive(pathname: string, href: string) {
+  return href === "/" ? pathname === "/" : matches(pathname, href);
+}
+
+function titleFor(pathname: string) {
+  if (pathname === "/") return "Home";
+  if (matches(pathname, "/me") || matches(pathname, "/story")) return "Your story";
+  if (matches(pathname, "/meet")) return "Who to meet";
+  if (matches(pathname, "/speakers")) return "Speakers";
+  if (matches(pathname, "/saved")) return "Saved";
+  if (matches(pathname, "/agent") || matches(pathname, "/chat")) return "Agent chat";
+  if (matches(pathname, "/people")) return "Person";
+  return "Introvert Co-pilot";
+}
+
+function ResetDemo() {
   const { resetLocal } = useSession();
   const router = useRouter();
   return (
     <button
       type="button"
-      className="rounded-full border border-line bg-white px-3 py-1.5 text-xs font-medium hover:bg-[#fff]"
+      className="btn btn-quiet"
       onClick={() => {
         resetLocal();
         void fetch("/api/reset", { method: "POST" }).finally(() => {

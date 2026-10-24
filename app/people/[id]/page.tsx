@@ -31,12 +31,12 @@ export default async function PersonPage({
     line: formatSessionLine(session),
   }));
   return (
-    <div className="mx-auto max-w-4xl">
+    <div className="mx-auto max-w-3xl">
       <div className="no-print flex flex-wrap gap-x-4 gap-y-1">
-        <Link href="/meet" className="text-sm text-mute">
+        <Link href="/meet" className="text-meta text-accent hover:underline">
           Back to who to meet
         </Link>
-        <Link href="/speakers" className="text-sm text-mute">
+        <Link href="/speakers" className="text-meta text-accent hover:underline">
           All speakers
         </Link>
       </div>

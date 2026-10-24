@@ -48,58 +48,47 @@ export function GraphPath({
   const hopWord = hops === 1 ? "hop" : "hops";
 
   return (
-    <section
-      aria-label="How we found this match"
-      className="mt-4 min-w-0 max-w-full overflow-hidden rounded-2xl border border-line bg-[#faf7f2] px-4 py-3"
-    >
-      <p className="max-w-full break-words text-[15px] leading-7 text-[#2c2824]">{summary}</p>
-      <div className="mt-3 flex min-w-0 max-w-full flex-wrap items-center gap-x-2 gap-y-1.5">
+    <section aria-label="How we found this match" className="panel mt-3 min-w-0 max-w-full px-3 py-3">
+      <p className="measure max-w-full break-words text-body leading-5 text-ink">{summary}</p>
+      <div className="mt-2 flex min-w-0 max-w-full flex-wrap items-baseline gap-x-2 gap-y-1">
         {shownPath.map((chip, index) => (
           <Chip key={`${chip.kind}-${chip.text}-${index}`} chip={chip} />
         ))}
       </div>
       {introName && shownIntro.length > 0 && (
-        <div className="mt-3 flex min-w-0 max-w-full flex-wrap items-center gap-x-2 gap-y-1.5 border-t border-dashed border-[#ddd4c6] pt-3">
+        <div className="mt-2 flex min-w-0 max-w-full flex-wrap items-baseline gap-x-2 gap-y-1 border-t border-line pt-2">
           {shownIntro.map((chip, index) => (
             <Chip key={`intro-${chip.text}-${index}`} chip={chip} />
           ))}
         </div>
       )}
-      <p className="mt-3 text-xs leading-5 text-mute">{labels.found}</p>
-      <details className="group mt-3 min-w-0 max-w-full border-t border-dashed border-[#ddd4c6] pt-3">
-        <summary className="flex w-full min-w-0 cursor-pointer list-none items-start gap-2 rounded-md text-left text-sm font-semibold text-[#3f3a34] [&::-webkit-details-marker]:hidden">
-          <span aria-hidden="true" className="mt-0.5 w-3 shrink-0 font-mono text-mute group-open:hidden">
+      <p className="mt-2 text-meta text-mute">{labels.found}</p>
+      <details className="group mt-2 min-w-0 max-w-full border-t border-line pt-2">
+        <summary className="flex w-full min-w-0 cursor-pointer list-none items-start gap-2 rounded-control text-left text-body font-medium text-ink [&::-webkit-details-marker]:hidden">
+          <span aria-hidden="true" className="mt-0.5 w-3 shrink-0 font-mono text-meta text-faint group-open:hidden">
             +
           </span>
-          <span
-            aria-hidden="true"
-            className="mt-0.5 hidden w-3 shrink-0 font-mono text-mute group-open:inline"
-          >
+          <span aria-hidden="true" className="mt-0.5 hidden w-3 shrink-0 font-mono text-meta text-faint group-open:inline">
             -
           </span>
           <span className="min-w-0 flex-1 break-words">{labels.toggle}</span>
         </summary>
-        <div className="mt-3 min-w-0 max-w-full space-y-2">
-          <p className="break-words font-mono text-[11px] leading-5 text-[#3f3a34]">{chain(path)}</p>
+        <div className="mt-2 min-w-0 max-w-full space-y-2">
+          <p className="break-words font-mono text-meta leading-4 text-mute">{chain(path)}</p>
           {introPath.length > 0 && (
-            <p className="break-words font-mono text-[11px] leading-5 text-[#3f3a34]">
-              Intro: {chain(introPath)}
-            </p>
+            <p className="break-words font-mono text-meta leading-4 text-mute">Intro: {chain(introPath)}</p>
           )}
-          <p className="break-words font-mono text-[11px] leading-5 text-mute">
+          <p className="break-words font-mono text-meta leading-4 text-faint">
             {backendLabel(backend)}, {hops} {hopWord}, {ms} ms
             {keywordHits.length > 0 ? `. Bio hits: ${keywordHits.join(", ")}` : ""}
           </p>
-          <p className="break-words text-xs leading-5 text-mute">
-            Source: GitHub Universe speaker catalog, fetched {fetchedLabel}. Whole-word matches use the
-            public bio and job title.
+          <p className="measure break-words text-meta leading-4 text-faint">
+            Source: GitHub Universe speaker catalog, fetched {fetchedLabel}. Whole-word matches use the public bio and job title.
           </p>
-          <pre className="max-w-full whitespace-pre-wrap break-words font-mono text-[11px] leading-5 text-[#3f3a34]">
-            {cypher}
-          </pre>
+          <pre className="max-w-full whitespace-pre-wrap break-words font-mono text-meta leading-4 text-mute">{cypher}</pre>
           <button
             type="button"
-            className="text-xs font-semibold text-[#b33b12] underline-offset-2 hover:underline"
+            className="text-meta font-medium text-accent hover:underline"
             onClick={() => {
               void navigator.clipboard.writeText(cypher).then(
                 () => setCopied(true),
@@ -116,22 +105,16 @@ export function GraphPath({
 }
 
 function chain(chips: PathChip[]): string {
-  return chips.map((chip) => chip.text).join(" · ");
+  return chips.map((chip) => chip.text).join(" / ");
 }
 
 function Chip({ chip }: { chip: PathChip }) {
   if (chip.kind === "edge") {
-    return <span className="max-w-full text-xs leading-5 text-mute">{chip.text}</span>;
+    return <span className="max-w-full text-meta leading-4 text-faint">{chip.text}</span>;
   }
   const solid = chip.kind === "node" && chip.tone === "solid";
   return (
-    <span
-      className={
-        solid
-          ? "max-w-full break-words rounded-2xl bg-ink px-2.5 py-1 text-left text-xs font-medium leading-5 text-white"
-          : "max-w-full break-words rounded-2xl border border-line bg-white px-2.5 py-1 text-left text-xs leading-5 text-ink"
-      }
-    >
+    <span className={solid ? "max-w-full break-words text-meta font-medium leading-4 text-ink" : "max-w-full break-words text-meta leading-4 text-mute"}>
       {chip.text}
     </span>
   );

@@ -10,7 +10,7 @@ export function PersonActions({ person }: { person: SavedDraft }) {
   const [full, setFull] = useState(false);
   const saved = ready && isSaved(person.id);
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className="flex flex-wrap items-center gap-2">
       <button
         type="button"
         disabled={!ready}
@@ -24,14 +24,12 @@ export function PersonActions({ person }: { person: SavedDraft }) {
           setFull(false);
           toggleSaved(person);
         }}
-        className={`rounded-full px-4 py-2 text-sm font-semibold ${
-          saved ? "bg-accent text-white" : "border border-line bg-white text-ink"
-        } disabled:opacity-60`}
+        className={`btn ${saved ? "btn-selected" : "btn-quiet"}`}
       >
         {saved ? "Saved" : "Save"}
       </button>
-      {full && <span className="text-sm text-mute">List is full. Remove someone first.</span>}
-      <Link href={`/agent?person=${person.id}`} className="rounded-full bg-ink px-4 py-2 text-sm text-white">
+      {full && <span className="text-meta text-faint">List is full. Remove someone first.</span>}
+      <Link href={`/agent?person=${person.id}`} className="btn btn-primary">
         Ask the agent
       </Link>
     </div>

@@ -173,35 +173,35 @@ export function PersonLive({
   return (
     <>
       <header className="mt-3">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-          <PersonPhoto src={shown.photoUrl} name={shown.name} size={72} />
+        <div className="flex items-start gap-3">
+          <PersonPhoto src={shown.photoUrl} name={shown.name} size={40} />
           <div className="min-w-0">
-            <h1 className="break-words font-serif text-4xl tracking-tight">{shown.name}</h1>
-            <p className="text-mute">{shown.titleLine}</p>
-            <p className="mt-1 text-sm">Catch them: {shown.catchLine}</p>
+            <h1 className="type-display break-words text-[22px] leading-7">{shown.name}</h1>
+            <p className="text-body text-mute">{shown.titleLine}</p>
+            <p className="mt-1 text-meta text-faint">Catch them: {shown.catchLine}</p>
           </div>
         </div>
         <div className="mt-4">
           <SocialIcons profiles={profiles} mode={intel.mode} />
         </div>
       </header>
-      <div className="no-print mt-4">
+      <div className="no-print mt-3">
         <PersonActions person={toSaved(shown)} />
         <ReportLinks id={card.id} report={report} />
       </div>
-      <section className="mt-6 rounded-3xl border border-line bg-card p-5" data-sessions={sessions.length}>
-        <h2 className="font-serif text-2xl tracking-tight">Sessions</h2>
+      <section className="panel mt-3 p-3" data-sessions={sessions.length}>
+        <h2 className="type-display text-[18px] leading-6">Sessions</h2>
         {sessions.length ? (
-          <ul className="mt-3 space-y-3">
+          <ul className="mt-2 divide-y divide-line border-t border-line">
             {sessions.map((session) => (
-              <li key={`${session.title}-${session.line}`}>
-                <p className="text-sm font-semibold">{session.title}</p>
-                <p className="text-sm text-mute">{session.line}</p>
+              <li key={`${session.title}-${session.line}`} className="py-2">
+                <p className="text-body font-medium">{session.title}</p>
+                <p className="text-meta text-faint">{session.line}</p>
               </li>
             ))}
           </ul>
         ) : (
-          <p className="mt-3 text-sm leading-6">No public sessions in the cached snapshot.</p>
+          <p className="measure mt-2 text-body leading-5 text-mute">No public sessions in the cached snapshot.</p>
         )}
       </section>
       <div id="report" data-seed="true">

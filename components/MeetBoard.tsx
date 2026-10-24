@@ -88,28 +88,24 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
   const [hero, ...rest] = visible;
 
   return (
-    <div>
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div className="max-w-2xl">
-          <h1 className="font-serif text-4xl tracking-tight text-ink md:text-5xl">
-            3 people worth your energy
-          </h1>
-          <p className="mt-3 max-w-xl text-base leading-7 text-[#4a453e]">
-            Picked from {data.speakerCount} speakers for who you are, not just shared tags. Star the
-            ones you want to talk to.
+    <div className="mx-auto max-w-3xl">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="type-display text-[22px] leading-7 text-ink">3 people worth your energy</h1>
+          <p className="measure mt-1 text-body leading-5 text-mute">
+            Picked from {data.speakerCount} speakers for who you are, not just shared tags. Star the ones you want to talk to.
           </p>
-          <Link href="/speakers" className="mt-3 inline-flex text-sm font-semibold text-[#b33b12]">
+          <Link href="/speakers" className="mt-2 inline-flex text-body text-accent hover:underline">
             Browse all speakers
           </Link>
         </div>
-        <div className="inline-flex rounded-full border border-line bg-white p-1">
+        <div className="inline-flex flex-wrap gap-1" role="group" aria-label="Day">
           {DAYS.map((item) => (
             <button
               key={item.id}
               type="button"
-              className={`rounded-full px-3 py-1.5 text-sm ${
-                day === item.id ? "bg-ink text-white" : "text-[#3f3a34]"
-              }`}
+              aria-pressed={day === item.id}
+              className={`btn ${day === item.id ? "btn-primary" : "btn-quiet"}`}
               onClick={() => {
                 setDay(item.id);
                 setShowAll(false);
@@ -123,33 +119,31 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
         </div>
       </div>
 
-      <p className="mt-4 max-w-3xl text-xs leading-5 text-mute">
-        {backendLabel(data.backend)} walked you to a topic, then a session, then a speaker. People you
-        mark as met stay out of this list until you reset the demo.
+      <p className="measure mt-3 text-meta leading-4 text-faint">
+        {backendLabel(data.backend)} walked you to a topic, then a session, then a speaker. People you mark as met stay out of this list.
         {metNote > 0 ? ` You have marked ${metNote} so far.` : ""}
       </p>
-      {error && <p className="mt-3 text-sm text-[#9a3412]">{error}</p>}
+      {error && (
+        <p className="mt-2 text-body text-ink" role="alert">
+          {error}
+        </p>
+      )}
 
-      <div className={loading ? "mt-6 opacity-60" : "mt-6"}>
+      <div className={loading ? "mt-3 opacity-60 transition-opacity duration-ui" : "mt-3"} aria-busy={loading}>
+        {loading && <p className="mb-2 text-meta text-faint">Refreshing the list.</p>}
         {hero ? (
-          <HeroCard
-            person={hero}
-            response={data}
-            topics={topics}
-            open={openId === hero.id}
-            locked={!ready}
-            onTogglePath={() => setOpenId(openId === hero.id ? null : hero.id)}
-            onMet={() => meetPerson(hero.id)}
-          />
-        ) : (
-          <p className="rounded-2xl border border-line bg-white p-6 text-sm">
-            Nobody on this day cleared the bar. Try both days.
-          </p>
-        )}
-        {rest.length > 0 && (
-          <div className="mt-4 grid gap-4 lg:grid-cols-2">
+          <div className="panel divide-y divide-line">
+            <MatchRow
+              person={hero}
+              response={data}
+              topics={topics}
+              open={openId === hero.id}
+              locked={!ready}
+              onTogglePath={() => setOpenId(openId === hero.id ? null : hero.id)}
+              onMet={() => meetPerson(hero.id)}
+            />
             {rest.map((person) => (
-              <SmallCard
+              <MatchRow
                 key={person.id}
                 person={person}
                 response={data}
@@ -161,15 +155,13 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
               />
             ))}
           </div>
+        ) : (
+          <p className="panel px-3 py-4 text-body text-mute">Nobody on this day cleared the bar. Try both days.</p>
         )}
       </div>
 
       {!showAll && extra > 0 && (
-        <button
-          type="button"
-          className="mt-5 text-sm font-semibold text-[#b33b12]"
-          onClick={() => setShowAll(true)}
-        >
+        <button type="button" className="btn btn-quiet mt-3" onClick={() => setShowAll(true)}>
           {extra} more {extra === 1 ? "match" : "matches"}. Show more
         </button>
       )}
@@ -177,85 +169,37 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
   );
 }
 
-function HeroCard({ person, response, topics, open, locked, onTogglePath, onMet }: CardProps) {
+function MatchRow({ person, response, topics, open, locked, onTogglePath, onMet }: CardProps) {
+  const topicsLine = [...new Set([...person.sharedTopics, ...person.sessionTopics])].filter(Boolean);
+  const when = [person.dayLabel, person.startLabel, person.roomShort].filter(Boolean).join(", ");
   return (
-    <article className="min-w-0 rounded-3xl border border-line bg-card p-5 shadow-card md:p-6">
-      <header className="flex items-start gap-4">
-        <PersonPhoto src={person.photoUrl} name={person.name} size={56} />
-        <div className="min-w-0 flex-1">
-          <h2 className="text-xl font-semibold tracking-tight">{person.name}</h2>
-          <p className="text-sm text-mute">{person.titleLine}</p>
-        </div>
-        <SaveButton person={toSaved(person)} />
-      </header>
-      <WhyCopy person={person} topics={topics} bodyClass="mt-4 max-w-3xl text-[15px] leading-7 text-[#2c2824]" />
-      <p className="mt-3 text-sm text-mute">Catch them: {person.catchLine}</p>
-      <div className="mt-4 flex flex-wrap items-center gap-2">
-        <Link href={`/agent?person=${person.id}`} className="rounded-full border border-line bg-white px-4 py-2 text-sm">
-          Ask agent about {person.name.split(" ")[0]}
-        </Link>
-        <Link href={`/people/${person.id}`} className="rounded-full bg-ink px-4 py-2 text-sm text-white">
-          Conversation plan
-        </Link>
-        <button
-          type="button"
-          className="px-2 text-sm text-mute underline-offset-2 hover:underline disabled:cursor-not-allowed disabled:no-underline disabled:opacity-40"
-          disabled={locked}
-          onClick={onMet}
-        >
-          Mark as met
-        </button>
-      </div>
-      <button
-        type="button"
-        className="mt-3 block max-w-full text-left text-sm text-[#3f3a34]"
-        aria-expanded={open}
-        onClick={onTogglePath}
-      >
-        {open ? "Hide how we found this" : "How we found this"}
-      </button>
-      {open && <PathBlock person={person} response={response} />}
-    </article>
-  );
-}
-
-function SmallCard({ person, response, topics, open, locked, onTogglePath, onMet }: CardProps) {
-  return (
-    <article className="min-w-0 rounded-3xl border border-line bg-card p-5 shadow-card">
+    <article className="min-w-0 px-3 py-3">
       <header className="flex items-start gap-3">
-        <PersonPhoto src={person.photoUrl} name={person.name} size={44} />
+        <PersonPhoto src={person.photoUrl} name={person.name} size={32} />
         <div className="min-w-0 flex-1">
-          <h2 className="font-semibold tracking-tight">{person.name}</h2>
-          <p className="text-sm text-mute">{person.titleLine}</p>
+          <h2 className="break-words text-body font-medium">{person.name}</h2>
+          <p className="break-words text-meta text-mute">{person.titleLine}</p>
+          {when && <p className="mt-0.5 break-words text-meta text-faint">{when}</p>}
+          {topicsLine.length > 0 && <p className="mt-0.5 break-words text-meta text-faint">{topicsLine.join(", ")}</p>}
         </div>
         <SaveButton person={toSaved(person)} />
       </header>
-      <WhyCopy person={person} topics={topics} bodyClass="mt-3 line-clamp-4 text-sm leading-6 text-[#2c2824]" />
-      <p className="mt-3 text-sm text-mute">Catch them: {person.catchLine}</p>
-      <div className="mt-4 flex flex-wrap items-center gap-2">
-        <Link href={`/agent?person=${person.id}`} className="rounded-full border border-line bg-white px-3 py-1.5 text-sm">
+      <WhyCopy person={person} topics={topics} bodyClass="measure mt-2 text-body leading-5 text-ink" />
+      <p className="mt-1 text-meta text-faint">Catch them: {person.catchLine}</p>
+      <div className="mt-2 flex flex-wrap items-center gap-1.5">
+        <Link href={`/agent?person=${person.id}`} className="btn">
           Ask agent
         </Link>
-        <Link href={`/people/${person.id}`} className="rounded-full bg-ink px-3 py-1.5 text-sm text-white">
+        <Link href={`/people/${person.id}`} className="btn btn-primary">
           Conversation plan
         </Link>
-        <button
-          type="button"
-          className="text-sm text-mute underline-offset-2 hover:underline disabled:cursor-not-allowed disabled:no-underline disabled:opacity-40"
-          disabled={locked}
-          onClick={onMet}
-        >
+        <button type="button" className="btn btn-quiet" disabled={locked} onClick={onMet}>
           Mark as met
         </button>
+        <button type="button" className="btn btn-quiet" aria-expanded={open} onClick={onTogglePath}>
+          {open ? "Hide how we found this" : "How we found this"}
+        </button>
       </div>
-      <button
-        type="button"
-        className="mt-3 block max-w-full text-left text-sm text-[#3f3a34]"
-        aria-expanded={open}
-        onClick={onTogglePath}
-      >
-        {open ? "Hide how we found this" : "How we found this"}
-      </button>
       {open && <PathBlock person={person} response={response} />}
     </article>
   );
@@ -316,7 +260,7 @@ function WhyCopy({
   return (
     <>
       <p className={bodyClass}>{parts.body}</p>
-      {preview && <p className="mt-3 break-words text-sm leading-6 text-[#3f3a34]">{preview}</p>}
+      {preview && <p className="measure mt-2 break-words text-body leading-5 text-mute">{preview}</p>}
     </>
   );
 }

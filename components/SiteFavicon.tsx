@@ -5,7 +5,7 @@ import { useState } from "react";
 export function SiteFavicon({ domain }: { domain: string }) {
   const [failed, setFailed] = useState(false);
   if (!domain || failed) {
-    return <span className="inline-block h-4 w-4 shrink-0 rounded-sm bg-[#e7e0d4]" aria-hidden="true" />;
+    return <span className="inline-block h-4 w-4 shrink-0 rounded-sm bg-fill" aria-hidden="true" />;
   }
   return (
     <img

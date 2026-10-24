@@ -72,34 +72,29 @@ export function YourStory() {
 
   return (
     <div className="mx-auto w-full max-w-2xl">
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-start">
-        <PersonPhoto src={DEMO_PHOTO_SRC} fallbacks={demoPhotoFallbacks()} name={me.name} size={88} />
+      <header className="flex items-start gap-3">
+        <PersonPhoto src={DEMO_PHOTO_SRC} fallbacks={demoPhotoFallbacks()} name={me.name} size={40} />
         <div className="min-w-0">
-          <p className="text-[11px] uppercase tracking-[0.14em] text-mute">Your story</p>
-          <h1 className="break-words font-serif text-4xl tracking-tight">{me.name}</h1>
-          <p className="mt-1 text-sm text-mute">{me.city}</p>
-          <p className="mt-3 text-lg leading-8">{displayHonestLine()}</p>
+          <h1 className="type-display break-words text-[22px] leading-7">{me.name}</h1>
+          <p className="mt-0.5 text-meta text-mute">{me.city}</p>
+          <p className="measure mt-2 text-body leading-5">{displayHonestLine()}</p>
         </div>
       </header>
 
-      <section className="mt-10">
-        <h2 className="font-serif text-2xl tracking-tight">How to explain what you do</h2>
-        <p className="mt-2 text-sm leading-6 text-mute">
+      <section className="mt-6 border-t border-line pt-4">
+        <h2 className="type-display text-[18px] leading-6">How to explain what you do</h2>
+        <p className="measure mt-1 text-body leading-5 text-mute">
           {me.openers[1] ?? "Pick one thread that fits the person in front of you."}
         </p>
-        <ul className="mt-4 space-y-3">
+        <ul className="panel mt-3 divide-y divide-line">
           {AUDIENCES.map((audience) => (
-            <li key={audience.id} className="rounded-3xl border border-line bg-card p-4">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <li key={audience.id} className="px-3 py-3">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                 <div className="min-w-0">
-                  <p className="text-[11px] uppercase tracking-[0.14em] text-mute">{audience.label}</p>
-                  <p className="mt-2 break-words text-[15px] leading-7">{me.oneLiners[audience.id]}</p>
+                  <p className="text-meta text-faint">{audience.label}</p>
+                  <p className="measure mt-1 break-words text-body leading-5">{me.oneLiners[audience.id]}</p>
                 </div>
-                <button
-                  type="button"
-                  className="shrink-0 self-start rounded-full border border-line bg-white px-3 py-1.5 text-sm"
-                  onClick={() => void copyLine(audience.id, me.oneLiners[audience.id])}
-                >
+                <button type="button" className="btn shrink-0 self-start" onClick={() => void copyLine(audience.id, me.oneLiners[audience.id])}>
                   {copied === audience.id ? "Copied" : "Copy"}
                 </button>
               </div>
@@ -108,12 +103,12 @@ export function YourStory() {
         </ul>
       </section>
 
-      <section className="mt-10">
-        <h2 className="font-serif text-2xl tracking-tight">Topics you are happy to talk about</h2>
-        <p className="mt-2 text-sm leading-6 text-mute">
+      <section className="mt-6 border-t border-line pt-4">
+        <h2 className="type-display text-[18px] leading-6">Topics you are happy to talk about</h2>
+        <p className="measure mt-1 text-body leading-5 text-mute">
           Tap a topic to keep it in. The coach and the match reasons use only the ones you leave on.
         </p>
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-3 flex flex-wrap gap-1.5">
           {me.chips.map((chip) => {
             const on = topics.includes(chip);
             return (
@@ -121,9 +116,7 @@ export function YourStory() {
                 key={chip}
                 type="button"
                 aria-pressed={on}
-                className={`max-w-full break-words rounded-full border px-3 py-1.5 text-left text-sm ${
-                  on ? "border-ink bg-ink text-white" : "border-line bg-white text-[#3f3a34]"
-                }`}
+                className={`btn h-auto max-w-full py-1 text-left ${on ? "btn-selected" : "btn-quiet"}`}
                 onClick={() => toggle(chip)}
               >
                 {chip}
@@ -133,26 +126,19 @@ export function YourStory() {
         </div>
       </section>
 
-      <section className="mt-10">
-        <h2 className="font-serif text-2xl tracking-tight">Proof points</h2>
-        <ul className="mt-4 space-y-3">
+      <section className="mt-6 border-t border-line pt-4">
+        <h2 className="type-display text-[18px] leading-6">Proof points</h2>
+        <ul className="mt-3 space-y-2">
           {me.proof.map((point) => (
-            <li key={point} className="break-words border-l-2 border-accent pl-3 text-[15px] leading-7">
+            <li key={point} className="measure break-words border-l border-accent pl-3 text-body leading-5">
               {point}
             </li>
           ))}
         </ul>
-        <div className="mt-4 space-y-2 text-sm leading-6 text-[#4a453e]">
+        <div className="measure mt-3 space-y-2 text-body leading-5 text-mute">
           {edu && (
             <p className="break-words">
-              {edu.field} at {edu.school}, {edu.start} to {edu.end}. Degree{" "}
-              {edu.degree ? (
-                edu.degree
-              ) : (
-                <span className="inline-block rounded-md border border-dashed border-[#c4a574] px-1.5 align-middle text-[10px] uppercase tracking-wide text-[#8a5a12]">
-                  GAP
-                </span>
-              )}
+              {edu.field} at {edu.school}, {edu.start} to {edu.end}. Degree {edu.degree ? edu.degree : <span className="text-faint">(gap)</span>}
             </p>
           )}
           {force?.display && <p>0N1 Force: {force.display}.</p>}
@@ -166,32 +152,29 @@ export function YourStory() {
         </div>
       </section>
 
-      <section className="mt-10">
-        <h2 className="font-serif text-2xl tracking-tight">In your own words</h2>
-        <p className="mt-2 text-sm leading-6 text-mute">
+      <section className="mt-6 border-t border-line pt-4">
+        <h2 className="type-display text-[18px] leading-6">In your own words</h2>
+        <p className="measure mt-1 text-body leading-5 text-mute">
           A sentence you would actually say. Leave it blank if the lines above are enough. The coach can use it, and it stays in this browser.
         </p>
-        <textarea
-          value={note}
-          maxLength={OWN_WORDS_MAX}
-          rows={4}
-          placeholder="One sentence, in your words."
-          className="mt-3 w-full min-w-0 resize-y rounded-2xl border border-line bg-white px-3 py-2 text-sm leading-6"
-          onChange={(event) => saveNote(event.target.value)}
-        />
+        <label className="mt-3 block text-meta text-mute">
+          Your sentence
+          <textarea
+            value={note}
+            maxLength={OWN_WORDS_MAX}
+            rows={4}
+            className="field mt-1 resize-y"
+            onChange={(event) => saveNote(event.target.value)}
+          />
+        </label>
       </section>
 
-      <section className="mt-10">
-        <h2 className="font-serif text-2xl tracking-tight">Your public links</h2>
-        <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-2">
+      <section className="mt-6 border-t border-line pt-4">
+        <h2 className="type-display text-[18px] leading-6">Your public links</h2>
+        <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
           {publicProfileLinks().map((link) => (
             <li key={link.href}>
-              <a
-                href={link.href}
-                className="text-sm text-[#b33b12] underline-offset-2 hover:underline"
-                target="_blank"
-                rel="noreferrer"
-              >
+              <a href={link.href} className="text-body text-accent hover:underline" target="_blank" rel="noreferrer">
                 {link.label}
               </a>
             </li>

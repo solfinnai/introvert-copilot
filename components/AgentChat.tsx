@@ -100,56 +100,48 @@ export function AgentChat({ bundle }: { bundle: AgentBundle }) {
   }
 
   return (
-    <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
-      <aside className="order-1 min-w-0 space-y-4 lg:order-2">
-        <section className="rounded-3xl border border-line bg-card p-4">
-          <p className="text-[11px] uppercase tracking-[0.14em] text-mute">Scoped to</p>
+    <div className="mx-auto grid max-w-5xl gap-4 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-start">
+      <aside className="order-1 min-w-0 space-y-3 lg:order-2">
+        <section className="panel p-3">
+          <p className="text-meta text-faint">Scoped to</p>
           {person ? (
-            <div className="mt-3 flex items-start gap-3">
-              <PersonPhoto src={person.photoUrl} name={person.name} size={44} />
+            <div className="mt-2 flex items-start gap-3">
+              <PersonPhoto src={person.photoUrl} name={person.name} size={32} />
               <div className="min-w-0">
-                <p className="break-words font-semibold">{person.name}</p>
-                <p className="break-words text-sm text-mute">{person.titleLine}</p>
+                <p className="break-words text-body font-medium">{person.name}</p>
+                <p className="break-words text-meta text-mute">{person.titleLine}</p>
               </div>
             </div>
           ) : (
-            <p className="mt-2 text-sm leading-6">
-              Open Ask agent from a person card, or pick someone below.
-            </p>
+            <p className="measure mt-2 text-body leading-5">Open Ask agent from a person row, or pick someone below.</p>
           )}
-          {person?.catchLine && <p className="mt-3 break-words text-sm text-mute">Catch them: {person.catchLine}</p>}
+          {person?.catchLine && <p className="mt-2 break-words text-meta text-faint">Catch them: {person.catchLine}</p>}
           {person && person.topics.length > 0 && (
-            <div className="mt-3 flex flex-wrap gap-2">
-              {person.topics.map((topic) => (
-                <span key={topic} className="rounded-full border border-line bg-white px-2 py-1 text-xs">
-                  {topic}
-                </span>
-              ))}
-            </div>
+            <p className="mt-2 break-words text-meta text-faint">{person.topics.join(", ")}</p>
           )}
           {person?.sessions[0] && (
-            <p className="mt-3 break-words text-sm leading-6">
+            <p className="mt-2 break-words text-meta leading-4 text-mute">
               {person.sessions[0].title}
               {person.sessions[0].when ? `, ${person.sessions[0].when}` : ""}
               {person.sessions[0].room ? `, ${person.sessions[0].room}` : ""}
             </p>
           )}
-          {lead && <p className="mt-3 break-words text-sm leading-6">{lead}</p>}
-          {person?.pathLine && <p className="mt-3 break-words font-mono text-[11px] leading-5 text-mute">{person.pathLine}</p>}
-          <Link href="/meet" className="mt-4 inline-flex rounded-full border border-line bg-white px-3 py-1.5 text-sm">
+          {lead && <p className="measure mt-2 break-words text-body leading-5">{lead}</p>}
+          {person?.pathLine && <p className="mt-2 break-words font-mono text-meta leading-4 text-faint">{person.pathLine}</p>}
+          <Link href="/meet" className="btn mt-3">
             Back to who to meet
           </Link>
         </section>
         {!person && bundle.nearby.length > 0 && (
-          <section className="rounded-3xl border border-line bg-card p-4">
-            <p className="text-[11px] uppercase tracking-[0.14em] text-mute">From the graph</p>
-            <ul className="mt-3 space-y-2">
+          <section className="panel p-3">
+            <p className="text-meta text-faint">From the graph</p>
+            <ul className="mt-2 divide-y divide-line border-t border-line">
               {bundle.nearby.map((item) => (
-                <li key={item.id}>
-                  <Link href={`/agent?person=${item.id}`} className="block break-words text-sm font-semibold">
+                <li key={item.id} className="py-2">
+                  <Link href={`/agent?person=${item.id}`} className="block break-words text-body font-medium text-accent hover:underline">
                     {item.name}
                   </Link>
-                  <p className="break-words text-xs text-mute">{item.titleLine}</p>
+                  <p className="break-words text-meta text-faint">{item.titleLine}</p>
                 </li>
               ))}
             </ul>
@@ -158,37 +150,26 @@ export function AgentChat({ bundle }: { bundle: AgentBundle }) {
       </aside>
 
       <section className="order-2 min-w-0 lg:order-1">
-        <h1 className="break-words font-serif text-3xl tracking-tight md:text-4xl">
-          {first ? `Talking about ${first}` : "Ask the agent"}
-        </h1>
-        <p className="mt-2 max-w-2xl text-sm leading-6 text-mute">
-          Coaching for how you introduce yourself. The draft stays on this page until you open it in your own email,
-          copy it, or share it.
+        <h1 className="type-display break-words text-[22px] leading-7">{first ? `Talking about ${first}` : "Ask the agent"}</h1>
+        <p className="measure mt-1 text-body leading-5 text-mute">
+          Coaching for how you introduce yourself. The draft stays on this page until you open it in your own email, copy it, or share it.
         </p>
-        <div ref={scroller} className="mt-5 max-h-[min(62vh,560px)] space-y-3 overflow-y-auto pr-1" aria-live="polite">
+        <div ref={scroller} className="panel mt-4 max-h-[min(62vh,560px)] divide-y divide-line overflow-y-auto" aria-live="polite">
           {messages.map((item, index) => (
-            <div key={`${item.role}-${index}`} className={item.role === "user" ? "flex justify-end" : ""}>
-              <div
-                className={`max-w-full break-words rounded-2xl px-4 py-3 text-sm leading-6 sm:max-w-[40rem] ${
-                  item.role === "user" ? "bg-ink text-white" : "border border-line bg-white"
-                }`}
-              >
-                {item.role === "assistant" && item.source && (
-                  <p className="mb-2 text-[11px] uppercase tracking-[0.14em] text-mute">{sourceLabel(item.source)}</p>
-                )}
-                <p className="whitespace-pre-wrap">{item.content}</p>
-                {item.draft && <DraftCard draft={item.draft} />}
-              </div>
+            <div key={`${item.role}-${index}`} className="px-3 py-3">
+              <p className="text-meta text-faint">{item.role === "user" ? "You" : sourceLabel(item.source) || "Agent"}</p>
+              <p className="measure mt-1 whitespace-pre-wrap break-words text-body leading-5">{item.content}</p>
+              {item.draft && <DraftCard draft={item.draft} />}
             </div>
           ))}
         </div>
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-3 flex flex-wrap gap-1.5">
           {bundle.suggestions.map((prompt) => (
             <button
               key={prompt}
               type="button"
               disabled={pending}
-              className="max-w-full rounded-full border border-line bg-white px-3 py-1.5 text-left text-sm leading-5 disabled:opacity-50"
+              className="btn h-auto max-w-full py-1 text-left"
               onClick={() => void ask(prompt)}
             >
               {prompt}
@@ -202,23 +183,19 @@ export function AgentChat({ bundle }: { bundle: AgentBundle }) {
             void ask(text);
           }}
         >
-          <label className="min-w-0 flex-1">
-            <span className="sr-only">Ask the agent</span>
+          <label className="min-w-0 flex-1 text-meta text-mute">
+            Message
             <textarea
               value={text}
               maxLength={600}
               rows={2}
               disabled={pending}
-              placeholder={first ? `Ask anything about talking to ${first}` : "Ask how to introduce yourself"}
-              className="w-full min-w-0 resize-y rounded-2xl border border-line bg-white px-4 py-3 text-sm leading-6"
+              aria-label={first ? `Ask anything about talking to ${first}` : "Ask how to introduce yourself"}
+              className="field mt-1 resize-y"
               onChange={(event) => setText(event.target.value)}
             />
           </label>
-          <button
-            type="submit"
-            disabled={pending || text.trim().length === 0}
-            className="shrink-0 rounded-full bg-ink px-4 py-3 text-sm text-white disabled:opacity-40"
-          >
+          <button type="submit" disabled={pending || text.trim().length === 0} className="btn btn-primary shrink-0">
             Ask
           </button>
         </form>

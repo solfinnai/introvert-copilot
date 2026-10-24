@@ -1,20 +1,15 @@
 import type { Metadata } from "next";
-import { Fraunces, IBM_Plex_Mono, Source_Sans_3 } from "next/font/google";
+import { IBM_Plex_Mono, Inter } from "next/font/google";
 import { AppShell } from "@/components/AppShell";
 import { getCatalog } from "@/lib/catalog";
 import { demoProfile } from "@/lib/demo-user";
 import "./globals.css";
 
-const sans = Source_Sans_3({
+const sans = Inter({
   subsets: ["latin"],
+  display: "swap",
   variable: "--font-sans",
-  display: "swap",
-});
-
-const serif = Fraunces({
-  subsets: ["latin"],
-  variable: "--font-serif",
-  display: "swap",
+  axes: ["opsz"],
 });
 
 const mono = IBM_Plex_Mono({
@@ -35,7 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const fetchedLabel = getCatalog().fetchedLabel;
   return (
     <html lang="en">
-      <body className={`${sans.variable} ${serif.variable} ${mono.variable} font-sans antialiased`}>
+      <body className={`${sans.variable} ${mono.variable} bg-bg font-sans text-ink antialiased`}>
         <AppShell
           fetchedLabel={fetchedLabel}
           henryAvatar={demoProfile.photo.linkedin_avatar_url}

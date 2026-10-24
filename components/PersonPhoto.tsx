@@ -28,7 +28,7 @@ export function PersonPhoto({
     return (
       <span
         style={style}
-        className="inline-flex shrink-0 items-center justify-center rounded-full bg-[#f6d7cb] text-sm font-semibold text-[#b33b12]"
+        className="inline-flex shrink-0 items-center justify-center rounded-full bg-fill text-meta font-medium text-mute"
       >
         {initials}
       </span>
@@ -41,7 +41,7 @@ export function PersonPhoto({
       width={size}
       height={size}
       style={style}
-      className="shrink-0 rounded-full object-cover bg-[#f6d7cb]"
+      className="shrink-0 rounded-full bg-fill object-cover"
       onError={() => setIndex((value) => value + 1)}
     />
   );

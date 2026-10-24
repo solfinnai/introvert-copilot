@@ -76,21 +76,18 @@ export function PoweredBy() {
   const falkorDetail = size ?? (failed ? "size unavailable" : "checking the graph");
 
   return (
-    <footer className="px-5 pb-6 md:px-10">
-      <div className="border-t border-line pt-4">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-mute">Powered by</p>
-        <ul className="mt-2 flex flex-wrap gap-x-5 gap-y-2">
+    <footer className="px-4 pb-5 md:px-6">
+      <div className="border-t border-line pt-3">
+        <p className="text-meta text-faint">Powered by</p>
+        <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
           {SPONSORS.map((sponsor) => {
             const detail = sponsor.name === "FalkorDB" ? falkorDetail : sponsor.role;
             return (
-              <li key={sponsor.href} className="max-w-full text-xs leading-5">
-                <a
-                  href={sponsor.href}
-                  className="inline-flex max-w-full flex-wrap items-baseline gap-x-1.5 font-medium text-ink underline decoration-[#e3dcd0] underline-offset-4 hover:decoration-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-                >
-                  <span>{sponsor.name}</span>
-                  <span className="font-normal text-mute no-underline">{detail}</span>
+              <li key={sponsor.href} className="max-w-full text-meta leading-4">
+                <a href={sponsor.href} className="text-accent hover:underline">
+                  {sponsor.name}
                 </a>
+                <span className="text-faint"> {detail}</span>
               </li>
             );
           })}

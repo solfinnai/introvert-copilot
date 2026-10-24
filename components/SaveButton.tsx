@@ -15,9 +15,7 @@ export function SaveButton({ person }: { person: SavedDraft }) {
         aria-pressed={on}
         aria-label={on ? `Remove ${person.name} from who I want to talk to` : `Save ${person.name}`}
         disabled={!ready}
-        className={`inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border border-line bg-white px-2.5 text-sm disabled:cursor-not-allowed disabled:opacity-40 ${
-          on ? "text-accent" : "text-mute"
-        }`}
+        className={`btn ${on ? "btn-selected" : "btn-quiet"}`}
         onClick={() => {
           if (!ready) return;
           if (!on && state.saved.length >= SAVED_CAP) {
@@ -29,21 +27,21 @@ export function SaveButton({ person }: { person: SavedDraft }) {
         }}
       >
         <Heart filled={on} />
-        <span className="hidden sm:inline">{on ? "Saved" : "Save"}</span>
+        <span className="ml-1">{on ? "Saved" : "Save"}</span>
       </button>
-      {full && <span className="max-w-[11rem] text-right text-[11px] leading-4 text-mute">List is full. Remove someone first.</span>}
+      {full && <span className="max-w-[11rem] text-right text-meta text-faint">List is full. Remove someone first.</span>}
     </span>
   );
 }
 
 function Heart({ filled }: { filled: boolean }) {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+    <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" className="shrink-0">
       <path
-        d="M12 20s-7-4.4-7-9.1C5 8 6.8 6.2 9.1 6.2c1.3 0 2.4.6 2.9 1.6.5-1 1.6-1.6 2.9-1.6C17.2 6.2 19 8 19 10.9 19 15.6 12 20 12 20z"
+        d="M8 13.2S2.8 9.8 2.8 6.6C2.8 4.9 4.1 3.7 5.7 3.7c.9 0 1.6.4 2.3 1.3.7-.9 1.4-1.3 2.3-1.3 1.6 0 2.9 1.2 2.9 2.9C13.2 9.8 8 13.2 8 13.2z"
         fill={filled ? "currentColor" : "none"}
         stroke="currentColor"
-        strokeWidth="1.6"
+        strokeWidth="1.5"
         strokeLinejoin="round"
       />
     </svg>
