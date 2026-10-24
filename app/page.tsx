@@ -14,29 +14,21 @@ export default async function HomePage() {
   const people = await loadWhyLines();
   const demo = loadDemoCard();
   return (
-    <div className="mx-auto w-full max-w-5xl">
-      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#b33b12]">
-        For introverts at the conference
-      </p>
-      <h1 className="mt-3 max-w-3xl font-serif text-3xl leading-snug tracking-tight text-ink sm:text-4xl sm:leading-tight lg:text-5xl">
-        {HOME_LINE}
-      </h1>
+    <div className="mx-auto w-full max-w-3xl">
+      <p className="text-meta text-mute">For introverts at the conference</p>
+      <h1 className="type-display measure mt-2 text-[28px] leading-8 text-ink">{HOME_LINE}</h1>
 
-      <article className="mt-8 flex items-start gap-4 rounded-3xl border border-line bg-card p-5 shadow-card">
-        <PersonPhoto src={demo.photo} name={demo.name} size={64} />
+      <article className="panel mt-6 flex items-start gap-3 p-3">
+        <PersonPhoto src={demo.photo} name={demo.name} size={36} />
         <div className="min-w-0 flex-1">
-          <p className="text-[11px] uppercase tracking-[0.14em] text-mute">Demo user</p>
-          <h2 className="mt-1 break-words font-serif text-2xl tracking-tight">{demo.name}</h2>
-          {demo.headline ? (
-            <p className="mt-1 break-words text-sm leading-6 text-mute">{demo.headline}</p>
-          ) : null}
-          {demo.story ? (
-            <p className="mt-2 max-w-xl break-words text-[15px] leading-7 text-[#3f3a34]">{demo.story}</p>
-          ) : null}
+          <p className="text-meta text-faint">Demo user</p>
+          <h2 className="type-display mt-0.5 break-words text-[18px] leading-6">{demo.name}</h2>
+          {demo.headline ? <p className="mt-1 break-words text-body text-mute">{demo.headline}</p> : null}
+          {demo.story ? <p className="measure mt-2 break-words text-body leading-5 text-ink">{demo.story}</p> : null}
           {demo.linkedin ? (
             <a
               href={demo.linkedin}
-              className="mt-2 inline-block break-all text-sm text-[#b33b12] underline decoration-[#f6d2c2] underline-offset-4 hover:decoration-[#b33b12] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+              className="mt-2 inline-block break-all text-body text-accent underline-offset-2 hover:underline"
             >
               Public LinkedIn profile
             </a>
@@ -44,49 +36,41 @@ export default async function HomePage() {
         </div>
       </article>
 
-      <nav aria-label="Start here" className="mt-4">
-        <ul className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+      <nav aria-label="Start here" className="panel mt-3">
+        <ul className="divide-y divide-line">
           {HOME_ENTRIES.map((entry) => (
-            <li key={entry.href} className="min-w-0">
-              <Link
-                href={entry.href}
-                className="flex h-full min-w-0 flex-col rounded-3xl border border-line bg-card p-5 shadow-card hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-              >
-                <span className="break-words font-serif text-xl tracking-tight">{entry.title}</span>
-                <span className="mt-2 break-words text-sm leading-6 text-[#4a453e]">{entry.body}</span>
+            <li key={entry.href}>
+              <Link href={entry.href} className="flex min-w-0 flex-col gap-0.5 px-3 py-2.5 transition-colors duration-ui hover:bg-fill sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
+                <span className="text-body font-medium">{entry.title}</span>
+                <span className="text-meta text-mute sm:text-right">{entry.body}</span>
               </Link>
             </li>
           ))}
         </ul>
       </nav>
 
-      <section className="mt-10" aria-labelledby="why-heading">
-        <h2 id="why-heading" className="font-serif text-2xl tracking-tight">
+      <section className="mt-8" aria-labelledby="why-heading">
+        <h2 id="why-heading" className="type-display text-[18px] leading-6">
           Why you should meet
         </h2>
-        <p className="mt-2 max-w-2xl text-sm leading-6 text-mute">
+        <p className="measure mt-1 text-meta text-mute">
           Three lines from the ranking for this demo, taken from the GitHub Universe graph.
         </p>
         {people.length === 0 ? (
-          <p className="mt-4 rounded-3xl border border-dashed border-line bg-card px-5 py-6 text-sm leading-6 text-mute">
+          <p className="panel mt-3 px-3 py-4 text-body text-mute">
             The ranking is quiet right now. Who to meet will try the list again.
           </p>
         ) : (
-          <ol className="mt-4 space-y-3">
+          <ol className="panel mt-3 divide-y divide-line">
             {people.map((person) => (
               <li key={person.id}>
-                <Link
-                  href={`/people/${person.id}`}
-                  className="block rounded-3xl border border-line bg-card p-5 shadow-card hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-                >
-                  <div className="flex items-start gap-3">
-                    <PersonPhoto src={person.photoUrl} name={person.name} size={44} />
-                    <div className="min-w-0 flex-1">
-                      <p className="break-words font-semibold tracking-tight">{person.name}</p>
-                      <p className="break-words text-sm text-mute">{person.titleLine}</p>
-                      <p className="mt-2 break-words text-sm leading-6 text-[#2c2824]">{person.why}</p>
-                    </div>
-                  </div>
+                <Link href={`/people/${person.id}`} className="flex items-start gap-3 px-3 py-2.5 transition-colors duration-ui hover:bg-fill">
+                  <PersonPhoto src={person.photoUrl} name={person.name} size={28} />
+                  <span className="min-w-0 flex-1">
+                    <span className="block break-words text-body font-medium">{person.name}</span>
+                    <span className="block break-words text-meta text-mute">{person.titleLine}</span>
+                    <span className="measure mt-1 block break-words text-body leading-5 text-ink">{person.why}</span>
+                  </span>
                 </Link>
               </li>
             ))}

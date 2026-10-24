@@ -3,10 +3,8 @@
 import { useState } from "react";
 import { deliverShare, emailText, mailtoHref, type FollowupDraft, type ShareResult } from "@/lib/draft";
 
-const buttonClass =
-  "inline-flex w-full items-center justify-center rounded-full border px-3 py-2 text-center text-sm sm:w-auto";
-const quietClass = `${buttonClass} border-line bg-white text-ink`;
-const solidClass = `${buttonClass} border-ink bg-ink text-white`;
+const quietClass = "btn w-full sm:w-auto";
+const solidClass = "btn btn-primary w-full sm:w-auto";
 
 export function DraftCard({ draft }: { draft: FollowupDraft }) {
   const [status, setStatus] = useState("");
@@ -32,12 +30,10 @@ export function DraftCard({ draft }: { draft: FollowupDraft }) {
   }
 
   return (
-    <article className="mt-3 max-w-full rounded-2xl border border-line bg-[#fff7f3] p-4">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#b33b12]">
-        You review and send it yourself
-      </p>
-      <p className="mt-2 break-words text-sm font-semibold">{draft.subject}</p>
-      <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-6">{draft.body}</p>
+    <article className="mt-3 max-w-full rounded-panel border border-line bg-raised p-3">
+      <p className="text-meta text-faint">You review and send it yourself</p>
+      <p className="mt-2 break-words text-body font-medium">{draft.subject}</p>
+      <p className="measure mt-2 whitespace-pre-wrap break-words text-body leading-5">{draft.body}</p>
       <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
         <a href={mailtoHref(draft)} className={solidClass}>
           Open in my email
@@ -61,7 +57,7 @@ export function DraftCard({ draft }: { draft: FollowupDraft }) {
           Send anywhere
         </button>
       </div>
-      {status && <p className="mt-2 text-xs text-mute">{status}</p>}
+      {status && <p className="mt-2 text-meta text-faint">{status}</p>}
     </article>
   );
 }

@@ -19,7 +19,7 @@ export function SocialIcons({ profiles, mode }: { profiles: SocialProfile[]; mod
               rel="noreferrer"
               aria-label={profile.label}
               title={profile.label}
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-line bg-white text-ink hover:border-ink"
+              className="inline-flex h-7 w-7 items-center justify-center rounded-control border border-line bg-surface text-ink transition-colors duration-ui hover:bg-fill"
             >
               <PlatformIcon platform={profile.platform} />
             </a>
@@ -35,7 +35,7 @@ function PlatformIcon({ platform }: { platform: SocialProfile["platform"] }) {
   const common = {
     viewBox: "0 0 24 24",
     "aria-hidden": true as const,
-    className: "h-5 w-5",
+    className: "h-4 w-4",
     fill: "currentColor",
   };
   if (platform === "linkedin") {
@@ -68,7 +68,7 @@ function PlatformIcon({ platform }: { platform: SocialProfile["platform"] }) {
   }
   if (platform === "website") {
     return (
-      <svg {...common} fill="none" stroke="currentColor" strokeWidth="1.8">
+      <svg {...common} fill="none" stroke="currentColor" strokeWidth="1.5">
         <circle cx="12" cy="12" r="8.2" />
         <path d="M3.8 12h16.4M12 3.8c2.2 2.4 3.4 5.2 3.4 8.2s-1.2 5.8-3.4 8.2c-2.2-2.4-3.4-5.2-3.4-8.2s1.2-5.8 3.4-8.2z" />
       </svg>
@@ -76,7 +76,7 @@ function PlatformIcon({ platform }: { platform: SocialProfile["platform"] }) {
   }
   if (platform === "instagram") {
     return (
-      <svg {...common} fill="none" stroke="currentColor" strokeWidth="1.8">
+      <svg {...common} fill="none" stroke="currentColor" strokeWidth="1.5">
         <rect x="4" y="4" width="16" height="16" rx="5" />
         <circle cx="12" cy="12" r="3.4" />
         <circle cx="17.2" cy="6.8" r="0.8" fill="currentColor" stroke="none" />

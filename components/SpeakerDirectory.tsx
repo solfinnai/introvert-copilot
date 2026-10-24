@@ -53,38 +53,35 @@ export function SpeakerDirectory({ speakers, topics }: { speakers: DirectorySpea
   }
 
   return (
-    <div className="mx-auto max-w-5xl">
-      <div className="max-w-2xl">
-        <h1 className="font-serif text-4xl tracking-tight">All speakers</h1>
-        <p className="mt-3 text-base leading-7 text-[#4a453e]">
-          {speakers.length} people from the GitHub Universe catalog. Search by name, company, or topic, then
-          filter by day. Photos, times, and rooms come from that list.
-        </p>
-      </div>
+    <div className="mx-auto max-w-4xl">
+      <h1 className="type-display text-[22px] leading-7">All speakers</h1>
+      <p className="measure mt-1 text-body leading-5 text-mute">
+        {speakers.length} people from the GitHub Universe catalog. Search by name, company, or topic, then filter by day. Photos, times, and rooms come from that list.
+      </p>
 
-      <div className="mt-5 flex flex-col gap-3">
+      <div className="mt-4 flex flex-col gap-3">
         <label className="block min-w-0">
-          <span className="sr-only">Search speakers</span>
+          <span className="mb-1 block text-meta text-mute">Search</span>
           <input
             type="search"
             value={q}
-            placeholder="Search name, company, or topic"
+            aria-label="Search speakers"
             autoComplete="off"
-            className="w-full min-w-0 rounded-2xl border border-line bg-white px-4 py-2.5 text-sm"
+            className="field"
             onChange={(event) => {
               setQ(event.target.value);
               resetPage();
             }}
           />
         </label>
-        <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-          <div className="inline-flex max-w-full flex-wrap rounded-full border border-line bg-white p-1">
+        <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
+          <div className="inline-flex max-w-full flex-wrap gap-1" role="group" aria-label="Day">
             {DAYS.map((item) => (
               <button
                 key={item.id}
                 type="button"
                 aria-pressed={day === item.id}
-                className={`rounded-full px-3 py-1.5 text-sm ${day === item.id ? "bg-ink text-white" : "text-[#3f3a34]"}`}
+                className={`btn ${day === item.id ? "btn-primary" : "btn-quiet"}`}
                 onClick={() => {
                   setDay(item.id);
                   resetPage();
@@ -94,11 +91,11 @@ export function SpeakerDirectory({ speakers, topics }: { speakers: DirectorySpea
               </button>
             ))}
           </div>
-          <label className="min-w-0 text-sm text-mute">
-            <span className="sr-only">Topic</span>
+          <label className="min-w-0 text-meta text-mute">
+            <span className="mb-1 block">Topic</span>
             <select
               value={topic}
-              className="w-full min-w-0 rounded-full border border-line bg-white px-3 py-2 text-sm text-ink sm:max-w-[16rem]"
+              className="field sm:max-w-[16rem]"
               onChange={(event) => {
                 setTopic(event.target.value);
                 resetPage();
@@ -112,11 +109,11 @@ export function SpeakerDirectory({ speakers, topics }: { speakers: DirectorySpea
               ))}
             </select>
           </label>
-          <label className="min-w-0 text-sm text-mute">
-            <span className="sr-only">Sort</span>
+          <label className="min-w-0 text-meta text-mute">
+            <span className="mb-1 block">Sort</span>
             <select
               value={sort}
-              className="w-full min-w-0 rounded-full border border-line bg-white px-3 py-2 text-sm text-ink sm:w-auto"
+              className="field sm:w-auto"
               onChange={(event) => {
                 setSort(event.target.value as SpeakerSort);
                 resetPage();
@@ -124,7 +121,7 @@ export function SpeakerDirectory({ speakers, topics }: { speakers: DirectorySpea
             >
               {SORTS.map((item) => (
                 <option key={item.id} value={item.id}>
-                  Sort: {item.label}
+                  {item.label}
                 </option>
               ))}
             </select>
@@ -132,7 +129,7 @@ export function SpeakerDirectory({ speakers, topics }: { speakers: DirectorySpea
           {filteredView && (
             <button
               type="button"
-              className="self-start text-sm font-semibold text-[#b33b12]"
+              className="btn btn-quiet self-start sm:self-end"
               onClick={() => {
                 setQ("");
                 setDay("all");
@@ -147,44 +144,36 @@ export function SpeakerDirectory({ speakers, topics }: { speakers: DirectorySpea
         </div>
       </div>
 
-      <p className="mt-4 text-sm text-mute" aria-live="polite">
-        {view.total === 0
-          ? "No speakers match that search."
-          : `Showing ${view.start} to ${view.end} of ${view.total}.`}
+      <p className="mt-3 text-meta text-faint" aria-live="polite">
+        {view.total === 0 ? "No speakers match that search." : `Showing ${view.start} to ${view.end} of ${view.total}.`}
       </p>
 
-      <div ref={listRef} className="mt-4 space-y-3">
+      <div ref={listRef} className="mt-2">
         {view.total === 0 ? (
-          <div className="rounded-3xl border border-dashed border-line bg-card px-6 py-10 text-center">
-            <h2 className="font-serif text-2xl tracking-tight">No matching speakers</h2>
-            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-mute">
+          <div className="panel px-3 py-6">
+            <h2 className="type-display text-[18px] leading-6">No matching speakers</h2>
+            <p className="measure mt-1 text-body leading-5 text-mute">
               Try another name, company, or topic. Clear the day filter if you want the full catalog.
             </p>
           </div>
         ) : (
-          view.rows.map((speaker) => <SpeakerCard key={speaker.id} speaker={speaker} day={day} />)
+          <div className="panel divide-y divide-line">
+            {view.rows.map((speaker) => (
+              <SpeakerCard key={speaker.id} speaker={speaker} day={day} />
+            ))}
+          </div>
         )}
       </div>
 
       {view.pages > 1 && (
-        <nav className="mt-6 flex flex-wrap items-center justify-between gap-3" aria-label="Speaker pages">
-          <button
-            type="button"
-            className="rounded-full border border-line bg-white px-4 py-2 text-sm disabled:opacity-40"
-            disabled={view.page <= 1}
-            onClick={() => goTo(view.page - 1)}
-          >
+        <nav className="mt-3 flex flex-wrap items-center justify-between gap-2" aria-label="Speaker pages">
+          <button type="button" className="btn" disabled={view.page <= 1} onClick={() => goTo(view.page - 1)}>
             Previous
           </button>
-          <p className="text-sm text-mute">
+          <p className="text-meta text-faint">
             Page {view.page} of {view.pages}
           </p>
-          <button
-            type="button"
-            className="rounded-full border border-line bg-white px-4 py-2 text-sm disabled:opacity-40"
-            disabled={view.page >= view.pages}
-            onClick={() => goTo(view.page + 1)}
-          >
+          <button type="button" className="btn" disabled={view.page >= view.pages} onClick={() => goTo(view.page + 1)}>
             Next
           </button>
         </nav>
@@ -197,71 +186,58 @@ function SpeakerCard({ speaker, day }: { speaker: DirectorySpeaker; day: Speaker
   const sessions = sessionsOnDay(speaker, day);
   const topics = [...new Set(sessions.flatMap((session) => session.topics))];
   return (
-    <article className="min-w-0 rounded-3xl border border-line bg-card p-4 sm:p-5" data-speaker-id={speaker.id}>
+    <article className="min-w-0 px-3 py-3" data-speaker-id={speaker.id}>
       <div className="flex items-start gap-3">
-        <PersonPhoto src={speaker.photoUrl} name={speaker.name} size={48} />
+        <PersonPhoto src={speaker.photoUrl} name={speaker.name} size={32} />
         <div className="min-w-0 flex-1">
-          <h2 className="break-words text-lg font-semibold tracking-tight">
-            <Link href={personHref(speaker.id)} className="hover:underline">
-              {speaker.name}
+          <div className="flex items-start justify-between gap-2">
+            <div className="min-w-0">
+              <h2 className="break-words text-body font-medium">
+                <Link href={personHref(speaker.id)} className="hover:text-accent hover:underline">
+                  {speaker.name}
+                </Link>
+              </h2>
+              <p className="break-words text-meta text-mute">{speaker.titleLine || "Title and company not listed"}</p>
+            </div>
+            <SaveButton
+              person={{
+                id: speaker.id,
+                name: speaker.name,
+                titleLine: speaker.titleLine,
+                photoUrl: speaker.photoUrl,
+                opener: directoryOpener(speaker),
+                catchLine: directoryCatchLine(speaker),
+              }}
+            />
+          </div>
+          <ul className="mt-1 space-y-1">
+            {sessions.length === 0 ? (
+              <li className="text-meta text-faint">No session is listed in the catalog.</li>
+            ) : (
+              sessions.map((session, index) => (
+                <li key={`${speaker.id}-${session.dayKey}-${index}`} className="min-w-0">
+                  <p className="break-words text-meta text-ink">{session.title || "Session title not listed"}</p>
+                  <p className="break-words text-meta text-faint">
+                    {formatSessionLine(session)}
+                    {session.type ? `, ${session.type}` : ""}
+                  </p>
+                </li>
+              ))
+            )}
+          </ul>
+          {topics.length > 0 && <p className="mt-1 break-words text-meta text-faint">{topics.join(", ")}</p>}
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            <Link href={agentHref(speaker.id)} className="btn">
+              Ask agent
             </Link>
-          </h2>
-          <p className="break-words text-sm text-mute">{speaker.titleLine || "Title and company not listed"}</p>
+            <Link href={personHref(speaker.id)} className="btn">
+              Person page
+            </Link>
+            <Link href={reportHref(speaker.id)} className="btn btn-primary">
+              Get full report
+            </Link>
+          </div>
         </div>
-        <SaveButton
-          person={{
-            id: speaker.id,
-            name: speaker.name,
-            titleLine: speaker.titleLine,
-            photoUrl: speaker.photoUrl,
-            opener: directoryOpener(speaker),
-            catchLine: directoryCatchLine(speaker),
-          }}
-        />
-      </div>
-      <ul className="mt-3 space-y-2">
-        {sessions.length === 0 ? (
-          <li className="rounded-2xl border border-dashed border-line px-3 py-2 text-sm leading-6">
-            No session is listed in the catalog.
-          </li>
-        ) : (
-          sessions.map((session, index) => (
-            <li key={`${speaker.id}-${session.dayKey}-${index}`} className="min-w-0 rounded-2xl bg-[#faf7f2] px-3 py-2">
-              <p className="break-words text-sm font-medium">{session.title || "Session title not listed"}</p>
-              <p className="break-words text-sm leading-6 text-mute">{formatSessionLine(session)}</p>
-              {session.type ? <p className="text-xs text-mute">{session.type}</p> : null}
-            </li>
-          ))
-        )}
-      </ul>
-      {topics.length > 0 && (
-        <ul className="mt-3 flex flex-wrap gap-1.5">
-          {topics.map((item) => (
-            <li key={item} className="max-w-full break-words rounded-full bg-[#f6efe4] px-2.5 py-1 text-xs text-[#3f3a34]">
-              {item}
-            </li>
-          ))}
-        </ul>
-      )}
-      <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-        <Link
-          href={agentHref(speaker.id)}
-          className="inline-flex items-center justify-center rounded-full border border-line bg-white px-3 py-1.5 text-sm"
-        >
-          Ask agent
-        </Link>
-        <Link
-          href={personHref(speaker.id)}
-          className="inline-flex items-center justify-center rounded-full border border-line bg-white px-3 py-1.5 text-sm"
-        >
-          Person page
-        </Link>
-        <Link
-          href={reportHref(speaker.id)}
-          className="inline-flex items-center justify-center rounded-full bg-ink px-3 py-1.5 text-sm text-white"
-        >
-          Get full report
-        </Link>
       </div>
     </article>
   );

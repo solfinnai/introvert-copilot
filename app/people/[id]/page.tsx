@@ -33,22 +33,22 @@ export default async function PersonPage({
   if (!described || !person) notFound();
   const card = described.card;
   return (
-    <div className="mx-auto max-w-4xl">
+    <div className="mx-auto max-w-3xl">
       <div className="no-print flex flex-wrap gap-x-4 gap-y-1">
-        <Link href="/meet" className="text-sm text-mute">
+        <Link href="/meet" className="text-meta text-accent hover:underline">
           Back to who to meet
         </Link>
-        <Link href="/speakers" className="text-sm text-mute">
+        <Link href="/speakers" className="text-meta text-accent hover:underline">
           All speakers
         </Link>
       </div>
       <header className="mt-3">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-          <PersonPhoto src={card.photoUrl} name={card.name} size={72} />
+        <div className="flex items-start gap-3">
+          <PersonPhoto src={card.photoUrl} name={card.name} size={40} />
           <div className="min-w-0">
-            <h1 className="break-words font-serif text-4xl tracking-tight">{card.name}</h1>
-            <p className="text-mute">{card.titleLine}</p>
-            <p className="mt-1 text-sm">Catch them: {card.catchLine}</p>
+            <h1 className="type-display break-words text-[22px] leading-7">{card.name}</h1>
+            <p className="text-body text-mute">{card.titleLine}</p>
+            <p className="mt-1 text-meta text-faint">Catch them: {card.catchLine}</p>
           </div>
         </div>
         <div className="mt-4">
@@ -57,7 +57,7 @@ export default async function PersonPage({
           </Suspense>
         </div>
       </header>
-      <div className="no-print mt-4">
+      <div className="no-print mt-3">
         <PersonActions person={toSaved(card)} />
         <ReportLinks id={card.id} report={report} />
       </div>

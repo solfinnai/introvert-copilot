@@ -30,37 +30,45 @@ export function SavedBoard({ speakers }: { speakers: DirectorySpeaker[] }) {
   );
 
   return (
-    <div className="mx-auto max-w-5xl">
+    <div className="mx-auto max-w-3xl">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0">
-          <h1 className="break-words font-serif text-4xl tracking-tight">Who I want to talk to</h1>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-mute">
+          <h1 className="type-display break-words text-[22px] leading-7">Who I want to talk to</h1>
+          <p className="measure mt-1 text-body leading-5 text-mute">
             Saved on this browser only. Add a note and a next step so you remember why you walked over.
           </p>
         </div>
-        <div className="flex shrink-0 flex-wrap gap-2 self-start">
-          <Link href="/speakers" className="rounded-full border border-line bg-white px-4 py-2 text-sm">
+        <div className="flex shrink-0 flex-wrap gap-1.5 self-start">
+          <Link href="/speakers" className="btn">
             Browse all speakers
           </Link>
-          <Link href="/meet" className="rounded-full border border-line bg-white px-4 py-2 text-sm">
+          <Link href="/meet" className="btn btn-quiet">
             Back to who to meet
           </Link>
         </div>
       </div>
 
       {!ready ? (
-        <p className="mt-8 text-sm text-mute">Loading this browser&apos;s list.</p>
+        <section className="panel mt-4 p-3" aria-busy="true" aria-label="Loading saved people">
+          <p className="text-meta font-medium text-mute">Saved people</p>
+          <p className="mt-1 text-meta text-faint">Loading this browser&apos;s list.</p>
+          <div className="mt-3 space-y-2" aria-hidden="true">
+            <div className="skel h-3 w-2/3" />
+            <div className="skel h-3 w-full" />
+            <div className="skel h-3 w-5/6" />
+          </div>
+        </section>
       ) : state.saved.length === 0 ? (
-        <div className="mt-8 rounded-3xl border border-dashed border-line bg-card px-6 py-10 text-center">
-          <h2 className="font-serif text-2xl tracking-tight">Nobody on your list yet</h2>
-          <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-mute">
+        <div className="panel mt-4 px-3 py-6">
+          <h2 className="type-display text-[18px] leading-6">Nobody on your list yet</h2>
+          <p className="measure mt-1 text-body leading-5 text-mute">
             Save people from Who to meet when you want a plan for the walk-over. Notes stay on this browser.
           </p>
-          <div className="mt-5 flex flex-col items-center justify-center gap-2 sm:flex-row">
-            <Link href="/meet" className="inline-flex rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-white">
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            <Link href="/meet" className="btn btn-primary">
               Find people to talk to
             </Link>
-            <Link href="/speakers" className="inline-flex rounded-full border border-line bg-white px-5 py-2.5 text-sm">
+            <Link href="/speakers" className="btn">
               Browse all speakers
             </Link>
           </div>
@@ -68,31 +76,31 @@ export function SavedBoard({ speakers }: { speakers: DirectorySpeaker[] }) {
       ) : (
         <>
           <Schedule days={schedule.days} missing={schedule.missing} />
-          <div className="mt-6 grid gap-4 md:grid-cols-2">
+          <div className="panel mt-3 divide-y divide-line">
             {state.saved.map((person) => {
               const met = state.met.includes(person.id);
               return (
-                <article key={person.id} className="min-w-0 rounded-3xl border border-line bg-card p-5">
+                <article key={person.id} className="min-w-0 px-3 py-3">
                   <div className="flex items-start gap-3">
-                    <PersonPhoto src={person.photoUrl} name={person.name} size={44} />
+                    <PersonPhoto src={person.photoUrl} name={person.name} size={32} />
                     <div className="min-w-0 flex-1">
-                      <h2 className="break-words font-semibold">{person.name}</h2>
-                      <p className="break-words text-sm text-mute">{person.titleLine}</p>
+                      <h2 className="break-words text-body font-medium">{person.name}</h2>
+                      <p className="break-words text-meta text-mute">{person.titleLine}</p>
                     </div>
                     <div className="flex shrink-0 items-center gap-2">
-                      {met && <span className="text-xs font-semibold text-[#b33b12]">Met</span>}
+                      {met && <span className="text-meta text-accent">Met</span>}
                       <SaveButton person={person} />
                     </div>
                   </div>
                   {person.opener && (
-                    <p className="mt-3 break-words border-l-2 border-accent pl-3 text-sm leading-6">{person.opener}</p>
+                    <p className="measure mt-2 break-words border-l border-accent pl-3 text-body leading-5">{person.opener}</p>
                   )}
-                  {person.catchLine && <p className="mt-3 break-words text-sm text-mute">{person.catchLine}</p>}
-                  <label className="mt-4 block text-xs font-semibold uppercase tracking-[0.12em] text-mute">
+                  {person.catchLine && <p className="mt-2 break-words text-meta text-faint">{person.catchLine}</p>}
+                  <label className="mt-3 block text-meta text-mute">
                     Next step
                     <select
                       value={person.nextStep}
-                      className="mt-1 block w-full min-w-0 rounded-xl border border-line bg-white px-3 py-2 text-sm font-normal normal-case tracking-normal text-ink"
+                      className="field mt-1"
                       onChange={(event) => updateSaved(person.id, { nextStep: event.target.value })}
                     >
                       {NEXT_STEPS.map((step) => (
@@ -102,34 +110,25 @@ export function SavedBoard({ speakers }: { speakers: DirectorySpeaker[] }) {
                       ))}
                     </select>
                   </label>
-                  <label className="mt-3 block text-xs font-semibold uppercase tracking-[0.12em] text-mute">
+                  <label className="mt-3 block text-meta text-mute">
                     Note, only on this browser
                     <textarea
                       value={person.note}
                       maxLength={280}
                       rows={3}
-                      placeholder="Ask about their talk after the session"
-                      className="mt-1 block w-full min-w-0 resize-y rounded-xl border border-line bg-white px-3 py-2 text-sm font-normal normal-case leading-6 tracking-normal text-ink"
+                      aria-label={`Note for ${person.name}`}
+                      className="field mt-1 resize-y"
                       onChange={(event) => updateSaved(person.id, { note: event.target.value })}
                     />
                   </label>
-                  <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-                    <Link
-                      href={agentHref(person.id)}
-                      className="inline-flex items-center justify-center rounded-full border border-line px-3 py-1.5 text-sm"
-                    >
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    <Link href={agentHref(person.id)} className="btn">
                       Ask agent
                     </Link>
-                    <Link
-                      href={personHref(person.id)}
-                      className="inline-flex items-center justify-center rounded-full border border-line px-3 py-1.5 text-sm"
-                    >
+                    <Link href={personHref(person.id)} className="btn">
                       Person page
                     </Link>
-                    <Link
-                      href={reportHref(person.id)}
-                      className="inline-flex items-center justify-center rounded-full bg-ink px-3 py-1.5 text-sm text-white"
-                    >
+                    <Link href={reportHref(person.id)} className="btn btn-primary">
                       Get full report
                     </Link>
                   </div>
@@ -141,8 +140,8 @@ export function SavedBoard({ speakers }: { speakers: DirectorySpeaker[] }) {
       )}
 
       {clashes.map(([when, names]) => (
-        <p key={when} className="mt-4 break-words rounded-2xl border border-[#f0d2c4] bg-[#fff7f3] px-4 py-3 text-sm leading-6">
-          <span className="font-semibold uppercase tracking-[0.12em] text-[#b33b12]">Heads up. </span>
+        <p key={when} className="panel mt-3 break-words px-3 py-2 text-body leading-5">
+          <span className="font-medium">Heads up. </span>
           {names.join(" and ")} are both at {when}. Pick one so you are not in two places.
         </p>
       ))}
@@ -159,36 +158,30 @@ function Schedule({
 }) {
   if (!days.length && !missing.length) return null;
   return (
-    <section className="mt-6 min-w-0 rounded-3xl border border-line bg-card p-5">
-      <h2 className="font-serif text-2xl tracking-tight">Where to find them</h2>
-      <p className="mt-2 text-sm leading-6 text-mute">
-        Day by day from the catalog, with the room and venue when the list has them. A clash means two people
-        you saved start at the same time.
+    <section className="panel mt-4 min-w-0 p-3">
+      <h2 className="type-display text-[18px] leading-6">Where to find them</h2>
+      <p className="measure mt-1 text-body leading-5 text-mute">
+        Day by day from the catalog, with the room and venue when the list has them. A clash means two people you saved start at the same time.
       </p>
-      <div className="mt-4 space-y-5">
+      <div className="mt-3 space-y-4">
         {days.map((day) => (
           <div key={day.dayKey} className="min-w-0">
-            <h3 className="text-sm font-semibold">{day.label}</h3>
-            <ul className="mt-2 space-y-2">
+            <h3 className="text-body font-medium">{day.label}</h3>
+            <ul className="mt-1 divide-y divide-line border-t border-line">
               {day.stops.map((stop, index) => (
-                <li
-                  key={`${stop.personId}-${stop.dayKey}-${index}`}
-                  className={`min-w-0 rounded-2xl border px-3 py-2 ${
-                    stop.conflict ? "border-[#f0d2c4] bg-[#fff7f3]" : "border-line bg-[#faf7f2]"
-                  }`}
-                >
-                  <div className="flex min-w-0 flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-3">
-                    <Link href={personHref(stop.personId)} className="min-w-0 break-words text-sm font-semibold hover:underline">
+                <li key={`${stop.personId}-${stop.dayKey}-${index}`} className={`min-w-0 py-2 ${stop.conflict ? "bg-raised" : ""}`}>
+                  <div className="flex min-w-0 flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-3">
+                    <Link href={personHref(stop.personId)} className="min-w-0 break-words text-body font-medium text-accent hover:underline">
                       {stop.name}
                     </Link>
-                    <p className="min-w-0 break-words text-sm text-mute sm:text-right">{formatTimePlace(stop)}</p>
+                    <p className="min-w-0 break-words text-meta text-faint sm:text-right">{formatTimePlace(stop)}</p>
                   </div>
-                  <p className="mt-1 break-words text-sm leading-6">{stop.sessionTitle}</p>
+                  <p className="mt-0.5 break-words text-meta text-mute">{stop.sessionTitle}</p>
                 </li>
               ))}
             </ul>
             {day.conflicts.map((conflict) => (
-              <p key={conflict.note} className="mt-2 break-words text-sm leading-6 text-[#9a3412]">
+              <p key={conflict.note} className="mt-1 break-words text-meta leading-4 text-ink">
                 {conflict.note}
               </p>
             ))}
@@ -196,7 +189,7 @@ function Schedule({
         ))}
       </div>
       {missing.map((person) => (
-        <p key={person.id} className="mt-3 break-words text-sm leading-6 text-mute">
+        <p key={person.id} className="mt-2 break-words text-meta leading-4 text-faint">
           No catalog session for {person.name}. Their card is still on this list.
         </p>
       ))}
