@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GraphPath, backendLabel } from "./GraphPath";
 import { PersonPhoto } from "./PersonPhoto";
 import { useSession, type SavedPerson } from "./session";
+import { accumulateMet, isLatestRequest, nextRequestId } from "@/lib/latest-request";
 import type { DayFilter, MeetResponse, RankedPerson } from "@/lib/types";
 
 const DAYS: { id: DayFilter; label: string }[] = [
@@ -22,6 +23,12 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [metNote, setMetNote] = useState(0);
+  const latestRequest = useRef(0);
+  const metRef = useRef<string[]>([]);
+
+  useEffect(() => {
+    metRef.current = state.met;
+  }, [state.met]);
 
   useEffect(() => {
     if (!ready || state.met.length === 0) return;
@@ -32,20 +39,39 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
   }, [ready]);
 
   async function reload(nextDay: DayFilter, met: string[]) {
+    const requestId = nextRequestId(latestRequest.current);
+    latestRequest.current = requestId;
     setLoading(true);
     setError("");
     try {
       const params = new URLSearchParams({ day: nextDay });
       if (met.length) params.set("met", met.join(","));
       const res = await fetch(`/api/meet?${params.toString()}`, { cache: "no-store" });
+      if (!isLatestRequest(latestRequest.current, requestId)) return;
       if (!res.ok) throw new Error("refresh failed");
       const body = (await res.json()) as MeetResponse;
+      if (!isLatestRequest(latestRequest.current, requestId)) return;
       setData(body);
     } catch {
+      if (!isLatestRequest(latestRequest.current, requestId)) return;
       setError("The list did not refresh. Showing the last ranking we had.");
     } finally {
-      setLoading(false);
+      if (isLatestRequest(latestRequest.current, requestId)) setLoading(false);
     }
+  }
+
+  function savePerson(person: RankedPerson) {
+    if (!ready) return;
+    toggleSaved(toSaved(person));
+  }
+
+  function meetPerson(id: string) {
+    if (!ready) return;
+    const met = accumulateMet(metRef.current, id);
+    metRef.current = met;
+    markMet(id);
+    setMetNote(met.length);
+    void reload(day, met);
   }
 
   const visible = showAll ? data.people : data.people.slice(0, 3);
@@ -76,7 +102,7 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
                 setDay(item.id);
                 setShowAll(false);
                 setOpenId(null);
-                void reload(item.id, state.met);
+                void reload(item.id, metRef.current);
               }}
             >
               {item.label}
@@ -100,14 +126,10 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
             response={data}
             open={openId === hero.id}
             saved={ready && isSaved(hero.id)}
+            locked={!ready}
             onTogglePath={() => setOpenId(openId === hero.id ? null : hero.id)}
-            onSave={() => toggleSaved(toSaved(hero))}
-            onMet={() => {
-              const met = state.met.includes(hero.id) ? state.met : [...state.met, hero.id];
-              markMet(hero.id);
-              setMetNote(met.length);
-              void reload(day, met);
-            }}
+            onSave={() => savePerson(hero)}
+            onMet={() => meetPerson(hero.id)}
           />
         ) : (
           <p className="rounded-2xl border border-line bg-white p-6 text-sm">
@@ -123,14 +145,10 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
                 response={data}
                 open={openId === person.id}
                 saved={ready && isSaved(person.id)}
+                locked={!ready}
                 onTogglePath={() => setOpenId(openId === person.id ? null : person.id)}
-                onSave={() => toggleSaved(toSaved(person))}
-                onMet={() => {
-                  const met = state.met.includes(person.id) ? state.met : [...state.met, person.id];
-                  markMet(person.id);
-                  setMetNote(met.length);
-                  void reload(day, met);
-                }}
+                onSave={() => savePerson(person)}
+                onMet={() => meetPerson(person.id)}
               />
             ))}
           </div>
@@ -155,6 +173,7 @@ function HeroCard({
   response,
   open,
   saved,
+  locked,
   onTogglePath,
   onSave,
   onMet,
@@ -167,7 +186,7 @@ function HeroCard({
           <h2 className="text-xl font-semibold tracking-tight">{person.name}</h2>
           <p className="text-sm text-mute">{person.titleLine}</p>
         </div>
-        <StarButton saved={saved} name={person.name} onClick={onSave} />
+        <StarButton saved={saved} locked={locked} name={person.name} onClick={onSave} />
       </header>
       <p className="mt-4 max-w-3xl text-[15px] leading-7 text-[#2c2824]">{person.why}</p>
       <p className="mt-3 text-sm text-mute">Catch them: {person.catchLine}</p>
@@ -178,7 +197,12 @@ function HeroCard({
         <Link href={`/people/${person.id}`} className="rounded-full bg-ink px-4 py-2 text-sm text-white">
           Conversation plan
         </Link>
-        <button type="button" className="px-2 text-sm text-mute underline-offset-2 hover:underline" onClick={onMet}>
+        <button
+          type="button"
+          className="px-2 text-sm text-mute underline-offset-2 hover:underline disabled:cursor-not-allowed disabled:no-underline disabled:opacity-40"
+          disabled={locked}
+          onClick={onMet}
+        >
           Mark as met
         </button>
         <button
@@ -203,6 +227,7 @@ function SmallCard({
   response,
   open,
   saved,
+  locked,
   onTogglePath,
   onSave,
   onMet,
@@ -215,7 +240,7 @@ function SmallCard({
           <h2 className="font-semibold tracking-tight">{person.name}</h2>
           <p className="text-sm text-mute">{person.titleLine}</p>
         </div>
-        <StarButton saved={saved} name={person.name} onClick={onSave} />
+        <StarButton saved={saved} locked={locked} name={person.name} onClick={onSave} />
       </header>
       <p className="mt-3 line-clamp-4 text-sm leading-6 text-[#2c2824]">{person.why}</p>
       <p className="mt-3 text-sm text-mute">Catch them: {person.catchLine}</p>
@@ -226,7 +251,12 @@ function SmallCard({
         <Link href={`/people/${person.id}`} className="rounded-full bg-ink px-3 py-1.5 text-sm text-white">
           Conversation plan
         </Link>
-        <button type="button" className="text-sm text-mute underline-offset-2 hover:underline" onClick={onMet}>
+        <button
+          type="button"
+          className="text-sm text-mute underline-offset-2 hover:underline disabled:cursor-not-allowed disabled:no-underline disabled:opacity-40"
+          disabled={locked}
+          onClick={onMet}
+        >
           Mark as met
         </button>
       </div>
@@ -257,13 +287,24 @@ function PathBlock({ person, response }: { person: RankedPerson; response: MeetR
   );
 }
 
-function StarButton({ saved, name, onClick }: { saved: boolean; name: string; onClick: () => void }) {
+function StarButton({
+  saved,
+  locked,
+  name,
+  onClick,
+}: {
+  saved: boolean;
+  locked: boolean;
+  name: string;
+  onClick: () => void;
+}) {
   return (
     <button
       type="button"
       aria-pressed={saved}
       aria-label={saved ? `Remove ${name} from saved` : `Save ${name}`}
-      className={`grid h-9 w-9 place-items-center rounded-full ${saved ? "text-accent" : "text-[#c3b8aa]"}`}
+      className={`grid h-9 w-9 place-items-center rounded-full disabled:cursor-not-allowed disabled:opacity-40 ${saved ? "text-accent" : "text-[#c3b8aa]"}`}
+      disabled={locked}
       onClick={onClick}
     >
       <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
@@ -295,6 +336,7 @@ interface CardProps {
   response: MeetResponse;
   open: boolean;
   saved: boolean;
+  locked: boolean;
   onTogglePath: () => void;
   onSave: () => void;
   onMet: () => void;
