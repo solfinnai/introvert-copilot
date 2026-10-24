@@ -151,6 +151,23 @@ export function formatSessionLine(session: Pick<DirectorySession, "dayLabel" | "
   return `${day}, ${time}, ${room}`;
 }
 
+/** Day, time, room, and session type. Skip a type the room name already states. */
+export function formatSessionDetail(
+  session: Pick<DirectorySession, "dayLabel" | "timeLabel" | "roomLabel" | "type">,
+): string {
+  const line = formatSessionLine(session);
+  const type = session.type.trim();
+  if (!type || typeRepeatsRoom(type, session.roomLabel)) return line;
+  return `${line}, ${type}`;
+}
+
+function typeRepeatsRoom(type: string, roomLabel: string): boolean {
+  const room = roomLabel.split(" @ ")[0].trim().toLowerCase();
+  const kind = type.trim().toLowerCase();
+  if (!room || !kind) return false;
+  return room === kind || room === `${kind}s` || kind === `${room}s`;
+}
+
 export function formatTimePlace(session: Pick<DirectorySession, "timeLabel" | "roomLabel">): string {
   const time = session.timeLabel.trim() || "time not listed";
   const room = session.roomLabel.trim() || "room not listed";

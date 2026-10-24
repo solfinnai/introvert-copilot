@@ -2,7 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PersonLive } from "@/components/PersonLive";
 import { HERO_CYPHER, getCatalog } from "@/lib/catalog";
-import { buildSeedBrief } from "@/lib/person-brief";
+import { readIntelSnapshot } from "@/lib/intel-cache";
+import { savedIntelLine } from "@/lib/intel-snapshots";
+import { briefFromStored, buildSeedBrief } from "@/lib/person-brief";
 import { personCard } from "@/lib/rank";
 import { formatSessionLine, sessionsForPerson } from "@/lib/speakers";
 
@@ -25,7 +27,8 @@ export default async function PersonPage({
   const card = personCard(catalog, id, null, { day: "both", metIds: [], limit: 1 });
   if (!card) notFound();
   const ms = Math.max(1, Math.round(performance.now() - started));
-  const seed = buildSeedBrief(card);
+  const stored = readIntelSnapshot(id);
+  const seed = stored ? briefFromStored(stored) : buildSeedBrief(card);
   const sessions = sessionsForPerson(catalog, id).map((session) => ({
     title: session.title || "Session title not listed",
     line: formatSessionLine(session),
@@ -50,6 +53,8 @@ export default async function PersonPage({
         backend="memory"
         ms={ms}
         report={report}
+        settled={Boolean(stored)}
+        savedLabel={stored ? savedIntelLine(stored.savedAt) : null}
       />
     </div>
   );

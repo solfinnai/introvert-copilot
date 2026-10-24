@@ -1,3 +1,5 @@
+export const MET_CONFIRMATION = "Marked as met. They will drop off your list.";
+
 export const SAVED_STORAGE_KEY = "ic-demo-v1";
 export const SAVED_CAP = 24;
 export const NOTE_MAX = 280;

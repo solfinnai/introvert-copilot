@@ -6,7 +6,7 @@ import { GraphPath, backendLabel } from "./GraphPath";
 import { PersonPhoto } from "./PersonPhoto";
 import { SaveButton } from "./SaveButton";
 import { useSession, type SavedPerson } from "./session";
-import { accumulateMet, isLatestRequest, nextRequestId } from "@/lib/latest-request";
+import { isLatestRequest, nextRequestId } from "@/lib/latest-request";
 import { leadWith, readStoredTopics, TALK_TOPICS_KEY } from "@/lib/talk-topics";
 import type { DayFilter, MeetResponse, RankedPerson } from "@/lib/types";
 
@@ -29,10 +29,10 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
   const latestRequest = useRef(0);
   const metRef = useRef<string[]>([]);
   const topicsRef = useRef<string[]>([]);
-
-  useEffect(() => {
-    metRef.current = state.met;
-  }, [state.met]);
+  const dayRef = useRef<DayFilter>("both");
+  const bootedMet = useRef(false);
+  dayRef.current = day;
+  metRef.current = state.met;
 
   useEffect(() => {
     if (!ready) return;
@@ -44,12 +44,20 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
     }
     topicsRef.current = nextTopics;
     setTopics(nextTopics);
-    setMetNote(state.met.length);
-    if (state.met.length === 0) return;
-    void reload(day, metRef.current, nextTopics);
-    // The cards already draw a lead from saved topics. Reload only to drop people already met.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready]);
+
+  const metKey = state.met.join(",");
+  useEffect(() => {
+    if (!ready) return;
+    setMetNote(state.met.length);
+    if (!bootedMet.current) {
+      bootedMet.current = true;
+      if (state.met.length === 0) return;
+    }
+    void reload(dayRef.current, state.met, topicsRef.current);
+    // Cards already draw a lead from saved topics. Reload when the met list changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, metKey]);
 
   async function reload(nextDay: DayFilter, met: string[], talkTopics = topicsRef.current) {
     const requestId = nextRequestId(latestRequest.current);
@@ -76,15 +84,16 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
 
   function meetPerson(id: string) {
     if (!ready) return;
-    const met = accumulateMet(metRef.current, id);
-    metRef.current = met;
+    setData((current) => ({
+      ...current,
+      people: current.people.filter((person) => person.id !== id),
+    }));
     markMet(id);
-    setMetNote(met.length);
-    void reload(day, met);
   }
 
-  const visible = showAll ? data.people : data.people.slice(0, 3);
-  const extra = Math.max(0, data.people.length - 3);
+  const ranked = data.people.filter((person) => !state.met.includes(person.id));
+  const visible = showAll ? ranked : ranked.slice(0, 3);
+  const extra = Math.max(0, ranked.length - 3);
   const [hero, ...rest] = visible;
 
   return (
@@ -130,7 +139,6 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
       )}
 
       <div className={loading ? "mt-3 opacity-60 transition-opacity duration-ui" : "mt-3"} aria-busy={loading}>
-        {loading && <p className="mb-2 text-meta text-faint">Refreshing the list.</p>}
         {hero ? (
           <div className="panel divide-y divide-line">
             <MatchRow
@@ -155,6 +163,8 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
               />
             ))}
           </div>
+        ) : loading ? (
+          <p className="panel px-3 py-4 text-body text-mute">Refreshing the list.</p>
         ) : (
           <p className="panel px-3 py-4 text-body text-mute">Nobody on this day cleared the bar. Try both days.</p>
         )}

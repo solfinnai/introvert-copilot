@@ -1,5 +1,6 @@
 import { getDb, graphName, withTimeout } from "./falkor";
 import { markCached, type PersonIntel } from "./intel";
+import { readSnapshotJson } from "./intel-snapshots";
 import type { ConversationPlan } from "./plan";
 import type { FetchReport } from "./intel";
 import type { PublicLink, SocialProfile } from "./public-links";
@@ -36,6 +37,29 @@ export interface CachedBrief {
 
 const memory = new Map<string, CachedBrief>();
 
+/** A graph hit has to beat a committed snapshot by this much, or the file wins. */
+const SNAPSHOT_GRAPH_RACE_MS = 40;
+
+/**
+ * A committed snapshot. No six-hour expiry.
+ * Owner files store intel, plan, report, profiles, links, and savedAt.
+ * A missing version is the current cache version. A different version is ignored.
+ */
+export function readIntelSnapshot(id: string): CachedBrief | null {
+  const parsed = readSnapshotJson(id);
+  if (!parsed || typeof parsed !== "object") return null;
+  const record = parsed as CachedBrief;
+  const brief = record.version == null ? { ...record, version: BRIEF_CACHE_VERSION } : record;
+  if (!isStoredBrief(brief)) return null;
+  if (Number.isNaN(Date.parse(brief.savedAt))) return null;
+  return brief;
+}
+
+export function resetBriefCacheForTests(): void {
+  memory.clear();
+  writes.clear();
+}
+
 /** Keep a finished live attempt, including a timeout that fell back to the snapshot. */
 export function isStoredBrief(brief: CachedBrief | null | undefined): brief is CachedBrief {
   if (!brief || brief.version !== BRIEF_CACHE_VERSION || !brief.intel || !brief.plan || !brief.report || !brief.savedAt) {
@@ -65,6 +89,26 @@ export async function readBriefCache(id: string): Promise<CachedBrief | null> {
   if (!safeId(id)) return null;
   const local = fresh(memory.get(id));
   if (local) return present(local);
+
+  // The file is local and never expires. Don't make a saved speaker wait on the graph.
+  const snapshot = readIntelSnapshot(id);
+  const durablePromise = readDurableBrief(id);
+  if (snapshot) {
+    const durable = await raceBrief(durablePromise, SNAPSHOT_GRAPH_RACE_MS);
+    if (durable) {
+      memory.set(id, durable);
+      return present(durable);
+    }
+    return present(snapshot);
+  }
+
+  const durable = await durablePromise;
+  if (!durable) return null;
+  memory.set(id, durable);
+  return present(durable);
+}
+
+async function readDurableBrief(id: string): Promise<CachedBrief | null> {
   try {
     const db = await withTimeout(getDb(), 2000, "cache connect timed out");
     if (!db) return null;
@@ -79,13 +123,27 @@ export async function readBriefCache(id: string): Promise<CachedBrief | null> {
     const raw = reply.data?.[0]?.brief;
     if (typeof raw !== "string" || !raw) return null;
     const parsed = JSON.parse(raw) as CachedBrief;
-    const hit = fresh(parsed);
-    if (!hit) return null;
-    memory.set(id, hit);
-    return present(hit);
+    return fresh(parsed);
   } catch {
     return null;
   }
+}
+
+function raceBrief(promise: Promise<CachedBrief | null>, ms: number): Promise<CachedBrief | null> {
+  return new Promise((resolve) => {
+    const timer = setTimeout(() => resolve(null), ms);
+    timer.unref?.();
+    promise.then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      () => {
+        clearTimeout(timer);
+        resolve(null);
+      },
+    );
+  });
 }
 
 export async function writeBriefCache(id: string, brief: CachedBrief): Promise<"durable" | "memory" | "skipped"> {

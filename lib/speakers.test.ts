@@ -11,6 +11,7 @@ import {
   directoryCatchLine,
   directoryFromCatalog,
   directoryOpener,
+  formatSessionDetail,
   formatSessionLine,
   paginate,
   personHref,
@@ -99,6 +100,33 @@ test("unknown day, time, and room stay honest", () => {
     "Day not listed, time not listed, room not listed",
   );
   assert.equal(DASH.test(formatSessionLine({ dayLabel: "Wednesday, Oct 28", timeLabel: "1:30 PM", roomLabel: "Main Stage" })), false);
+  assert.equal(
+    formatSessionDetail({
+      dayLabel: "Wednesday, Oct 28",
+      timeLabel: "4:10 PM",
+      roomLabel: "Main Stage @ Festival Pavilion",
+      type: "Main Stage",
+    }),
+    "Wednesday, Oct 28, 4:10 PM, Main Stage @ Festival Pavilion",
+  );
+  assert.equal(
+    formatSessionDetail({
+      dayLabel: "Wednesday, Oct 28",
+      timeLabel: "4:10 PM",
+      roomLabel: "Workshops @ Gateway Pavilion, Level 1",
+      type: "Workshop",
+    }),
+    "Wednesday, Oct 28, 4:10 PM, Workshops @ Gateway Pavilion, Level 1",
+  );
+  assert.equal(
+    formatSessionDetail({
+      dayLabel: "Thursday, Oct 29",
+      timeLabel: "1:05 PM",
+      roomLabel: "Main Stage @ Festival Pavilion",
+      type: "Keynote",
+    }),
+    "Thursday, Oct 29, 1:05 PM, Main Stage @ Festival Pavilion, Keynote",
+  );
 });
 
 test("saved schedule groups days and flags same-time clashes only", () => {

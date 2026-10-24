@@ -6,9 +6,10 @@ import { SAVED_CAP, type SavedDraft } from "@/lib/saved";
 import { useSession } from "./session";
 
 export function PersonActions({ person }: { person: SavedDraft }) {
-  const { state, ready, isSaved, toggleSaved } = useSession();
+  const { state, ready, isSaved, toggleSaved, markMet } = useSession();
   const [full, setFull] = useState(false);
   const saved = ready && isSaved(person.id);
+  const met = ready && state.met.includes(person.id);
   return (
     <div className="flex flex-wrap items-center gap-2">
       <button
@@ -27,6 +28,14 @@ export function PersonActions({ person }: { person: SavedDraft }) {
         className={`btn ${saved ? "btn-selected" : "btn-quiet"}`}
       >
         {saved ? "Saved" : "Save"}
+      </button>
+      <button
+        type="button"
+        className={`btn ${met ? "btn-selected" : "btn-quiet"}`}
+        disabled={!ready || met}
+        onClick={() => markMet(person.id)}
+      >
+        {met ? "Met" : "Mark as met"}
       </button>
       {full && <span className="text-meta text-faint">List is full. Remove someone first.</span>}
       <Link href={`/agent?person=${person.id}`} className="btn btn-primary">

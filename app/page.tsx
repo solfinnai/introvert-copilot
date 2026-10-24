@@ -1,18 +1,17 @@
 import Link from "next/link";
 import { PersonPhoto } from "@/components/PersonPhoto";
 import { loadDemoCard } from "@/lib/demo-card";
-import { recommend } from "@/lib/graph";
+import { recommendFromMemory } from "@/lib/graph";
 import { HOME_ENTRIES, HOME_LINE, sampleWhyLines } from "@/lib/home";
-import { logBackend, safeError } from "@/lib/redact";
-import type { RankedPerson } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
-export const maxDuration = 60;
 
-export default async function HomePage() {
-  const people = await loadWhyLines();
-  const demo = loadDemoCard();
+const demo = loadDemoCard();
+const whyPeople = sampleWhyLines(recommendFromMemory({ day: "both", metIds: [], limit: 3 }).people);
+
+export default function HomePage() {
+  const people = whyPeople;
   return (
     <div className="mx-auto w-full max-w-3xl">
       <p className="text-meta text-mute">For introverts at the conference</p>
@@ -79,14 +78,4 @@ export default async function HomePage() {
       </section>
     </div>
   );
-}
-
-async function loadWhyLines(): Promise<RankedPerson[]> {
-  try {
-    const meet = await recommend({ day: "both", metIds: [], limit: 3 });
-    return sampleWhyLines(meet.people);
-  } catch (err) {
-    logBackend("memory", `home ranking failed: ${safeError(err)}`);
-    return [];
-  }
 }

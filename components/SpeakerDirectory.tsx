@@ -9,7 +9,7 @@ import {
   agentHref,
   directoryCatchLine,
   directoryOpener,
-  formatSessionLine,
+  formatSessionDetail,
   paginate,
   personHref,
   querySpeakers,
@@ -217,10 +217,7 @@ function SpeakerCard({ speaker, day }: { speaker: DirectorySpeaker; day: Speaker
               sessions.map((session, index) => (
                 <li key={`${speaker.id}-${session.dayKey}-${index}`} className="min-w-0">
                   <p className="break-words text-meta text-ink">{session.title || "Session title not listed"}</p>
-                  <p className="break-words text-meta text-faint">
-                    {formatSessionLine(session)}
-                    {session.type ? `, ${session.type}` : ""}
-                  </p>
+                  <p className="break-words text-meta text-faint">{formatSessionDetail(session)}</p>
                 </li>
               ))
             )}

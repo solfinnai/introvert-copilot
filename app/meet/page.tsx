@@ -1,14 +1,16 @@
 import { after } from "next/server";
 import { MeetBoard } from "@/components/MeetBoard";
-import { recommend } from "@/lib/graph";
+import { recommendFromMemory } from "@/lib/graph";
 import { scheduleTopSpeakerWarm } from "@/lib/warm";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
-export const maxDuration = 60;
 
-export default async function MeetPage() {
-  const initial = await recommend({ day: "both", metIds: [], limit: 10 });
-  after(() => scheduleTopSpeakerWarm(initial.people.map((person) => person.id)));
-  return <MeetBoard initial={initial} />;
+const initialMeet = recommendFromMemory({ day: "both", metIds: [], limit: 10 });
+
+export default function MeetPage() {
+  after(() => {
+    void scheduleTopSpeakerWarm(initialMeet.people.map((person) => person.id));
+  });
+  return <MeetBoard initial={initialMeet} />;
 }

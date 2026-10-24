@@ -28,6 +28,8 @@ export function PersonLive({
   backend,
   ms,
   report,
+  settled = false,
+  savedLabel = null,
 }: {
   card: RankedPerson;
   seed: PersonBrief;
@@ -37,6 +39,9 @@ export function PersonLive({
   backend: GraphBackend;
   ms: number;
   report: boolean;
+  /** A committed snapshot is already the full brief. Don't open the live stream. */
+  settled?: boolean;
+  savedLabel?: string | null;
 }) {
   const [shown, setShown] = useState(card);
   const [graphBackend, setGraphBackend] = useState(backend);
@@ -46,9 +51,10 @@ export function PersonLive({
   const [fetchReport, setFetchReport] = useState(seed.report);
   const [links, setLinks] = useState(seed.links);
   const [profiles, setProfiles] = useState(seed.profiles);
-  const [pending, setPending] = useState<LivePending | null>({ ...LIVE_LABELS });
+  const [pending, setPending] = useState<LivePending | null>(settled ? null : { ...LIVE_LABELS });
 
   useEffect(() => {
+    if (settled) return;
     const controller = new AbortController();
     const run = async () => {
       try {
@@ -67,9 +73,10 @@ export function PersonLive({
     };
     void run();
     return () => controller.abort();
-  }, [card.id]);
+  }, [card.id, settled]);
 
   useEffect(() => {
+    if (settled) return;
     const controller = new AbortController();
     let cancelled = false;
     const safety = setTimeout(() => {
@@ -168,7 +175,7 @@ export function PersonLive({
       clearTimeout(safety);
       controller.abort();
     };
-  }, [card.id]);
+  }, [card.id, settled]);
 
   return (
     <>
@@ -204,7 +211,7 @@ export function PersonLive({
           <p className="measure mt-2 text-body leading-5 text-mute">No public sessions in the cached snapshot.</p>
         )}
       </section>
-      <div id="report" data-seed="true">
+      <div id="report" data-seed={settled ? "snapshot" : "live"}>
         <PersonDossier
           card={shown}
           intel={intel}
@@ -216,6 +223,7 @@ export function PersonLive({
           cypher={cypher}
           fetchedLabel={fetchedLabel}
           pending={pending}
+          savedLabel={savedLabel}
         />
       </div>
     </>
