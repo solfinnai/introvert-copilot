@@ -20,8 +20,8 @@ const mono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Introvert Co-pilot",
-  description: "Walk into every conversation knowing what to say about yourself and what to ask them.",
+  title: "CUE: your conference co-pilot",
+  description: "Your conference co-pilot for introverts.",
 };
 
 export const dynamic = "force-dynamic";

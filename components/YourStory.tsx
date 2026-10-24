@@ -1,6 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
+import { STORY_CHAT_HREF, STORY_CHAT_LABEL } from "@/lib/agent-starters";
 import {
   DEMO_PHOTO_SRC,
   confirmedBrief,
@@ -11,8 +13,8 @@ import {
   experienceByCompany,
   publicProfileLinks,
 } from "@/lib/demo-user";
+import { TALK_TOPICS_KEY, readStoredTopics } from "@/lib/talk-topics";
 import { PersonPhoto } from "./PersonPhoto";
-import { OWN_WORDS_KEY, OWN_WORDS_MAX, TALK_TOPICS_KEY, cleanOwnWords, readStoredTopics } from "@/lib/talk-topics";
 
 const AUDIENCES = [
   { id: "developers", label: "Developers" },
@@ -25,13 +27,11 @@ export function YourStory() {
   const edu = demoProfile.education[0];
   const force = experienceByCompany("0N1 Force");
   const [topics, setTopics] = useState<string[]>(me.chips);
-  const [note, setNote] = useState("");
   const [copied, setCopied] = useState("");
 
   useEffect(() => {
     try {
       setTopics(readStoredTopics(window.localStorage.getItem(TALK_TOPICS_KEY)));
-      setNote(cleanOwnWords(window.localStorage.getItem(OWN_WORDS_KEY) ?? ""));
     } catch {
       setTopics(readStoredTopics(null));
     }
@@ -48,16 +48,6 @@ export function YourStory() {
       }
       return ordered;
     });
-  }
-
-  function saveNote(value: string) {
-    const next = value.replace(/[\r\n]+/g, " ").replace(/\u2014/g, ", ").replace(/\u2013/g, ", ").slice(0, OWN_WORDS_MAX);
-    setNote(next);
-    try {
-      window.localStorage.setItem(OWN_WORDS_KEY, next);
-    } catch {
-      // The note still shows in this tab.
-    }
   }
 
   async function copyLine(id: string, text: string) {
@@ -153,20 +143,13 @@ export function YourStory() {
       </section>
 
       <section className="mt-6 border-t border-line pt-4">
-        <h2 className="type-display text-[18px] leading-6">In your own words</h2>
+        <h2 className="type-display text-[18px] leading-6">Talk it through</h2>
         <p className="measure mt-1 text-body leading-5 text-mute">
-          A sentence you would actually say. Leave it blank if the lines above are enough. The coach can use it, and it stays in this browser.
+          The agent already has this profile, including the gaps.
         </p>
-        <label className="mt-3 block text-meta text-mute">
-          Your sentence
-          <textarea
-            value={note}
-            maxLength={OWN_WORDS_MAX}
-            rows={4}
-            className="field mt-1 resize-y"
-            onChange={(event) => saveNote(event.target.value)}
-          />
-        </label>
+        <Link href={STORY_CHAT_HREF} className="btn btn-primary mt-3">
+          {STORY_CHAT_LABEL}
+        </Link>
       </section>
 
       <section className="mt-6 border-t border-line pt-4">

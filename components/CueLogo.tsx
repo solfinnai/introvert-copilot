@@ -1,0 +1,29 @@
+// CUE logo. Ink follows currentColor; the cue dot uses the app accent (var(--accent)).
+// Mark: viewBox 0 0 32 32. Lockup: viewBox 0 0 82.64 32.
+type Props = { height?: number; className?: string };
+
+const MARK = "M25.19 8.29A12 12 0 0 0 4.72 20.1L4.23 26.6L10.93 26.88A12 12 0 0 0 25.19 23.71L22.13 21.14A8 8 0 1 1 22.13 10.86Z";
+
+export function CueMark({ height = 20, className }: Props) {
+  return (
+    <svg viewBox="0 0 32 32" height={height} width={height} className={className} role="img" aria-label="CUE">
+      <path d={MARK} fill="currentColor" />
+      <circle cx="16" cy="16" r="3.1" fill="var(--accent)" />
+    </svg>
+  );
+}
+
+export function CueLogo({ height = 18, className }: Props) {
+  const width = Math.round((height * 82.64) / 32);
+  return (
+    <svg viewBox="0 0 82.64 32" height={height} width={width} className={className} role="img" aria-label="CUE">
+      <path d={MARK} fill="currentColor" />
+      <circle cx="16" cy="16" r="3.1" fill="var(--accent)" />
+      <g fill="currentColor">
+          <path transform="translate(33.68 7.5) scale(0.011409)" d="M774 1514Q569 1514 410 1419Q252 1324 162 1151Q72 978 72 746Q72 512 162 339Q251 166 410 71Q569 -24 774 -24Q900 -24 1009 14Q1118 51 1202 121Q1287 192 1342 290Q1397 388 1416 511H1147Q1132 440 1099 384Q1066 329 1018 291Q970 252 909 233Q848 213 776 213Q640 213 542 279Q444 346 391 465Q338 585 338 746Q338 906 391 1025Q443 1144 541 1211Q640 1277 776 1277Q848 1277 908 1257Q969 1238 1017 1200Q1065 1162 1099 1107Q1132 1052 1148 981H1416Q1397 1103 1342 1201Q1287 1299 1202 1369Q1117 1439 1009 1477Q900 1514 774 1514Z" />
+          <path transform="translate(49.79 7.5) scale(0.011409)" d="M721 1514Q539 1514 403 1445Q268 1376 193 1255Q118 1133 118 975V0H379V954Q379 1049 421 1122Q463 1196 540 1238Q616 1280 721 1280Q826 1280 902 1238Q979 1196 1021 1123Q1062 1049 1062 954V0H1323V975Q1323 1134 1248 1255Q1174 1377 1039 1445Q903 1514 721 1514Z" />
+          <path transform="translate(65.42 7.5) scale(0.011409)" d="M124 1490V0H1159V229H388V621H1101V846H388V1261H1159V1490Z" />
+      </g>
+    </svg>
+  );
+}

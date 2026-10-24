@@ -1,13 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { DraftCard } from "./DraftCard";
 import { PersonPhoto } from "./PersonPhoto";
-import type { AgentBundle, AgentReply } from "@/lib/coach-types";
+import {
+  AGENT_GREETING,
+  GENERAL_STARTERS,
+  STORY_STARTER,
+  speakerStarterChips,
+  type SpeakerOption,
+} from "@/lib/agent-starters";
+import type { AgentReply, PersonFacts } from "@/lib/coach-types";
 import type { FollowupDraft } from "@/lib/draft";
-import { localCoaching } from "@/lib/coach-copy";
-import { cleanOwnWords, leadWith, OWN_WORDS_KEY, readStoredTopics, TALK_TOPICS_KEY } from "@/lib/talk-topics";
+import { readStoredTopics, TALK_TOPICS_KEY } from "@/lib/talk-topics";
 
 interface Bubble {
   role: "user" | "assistant";
@@ -16,61 +21,82 @@ interface Bubble {
   source: string;
 }
 
-const REACH = "The coach could not be reached. The catalog plan above still works.";
+interface ActivePerson {
+  id: string;
+  name: string;
+  titleLine: string;
+  photoUrl: string;
+}
 
-export function AgentChat({ bundle }: { bundle: AgentBundle }) {
-  const starter = bundle.starter;
-  const [messages, setMessages] = useState<Bubble[]>([
-    { role: "assistant", content: starter.message, draft: starter.draft, source: "catalog" },
-  ]);
+const REACH = "The coach could not be reached. Try the question again.";
+
+export function AgentChat({
+  person: initial,
+  autostart = null,
+  speakers,
+}: {
+  person: PersonFacts | null;
+  autostart?: string | null;
+  speakers: SpeakerOption[];
+}) {
+  const initialPerson = initial
+    ? {
+        id: initial.id,
+        name: initial.name,
+        titleLine: initial.titleLine,
+        photoUrl: initial.photoUrl,
+      }
+    : null;
+  const [person, setPerson] = useState<ActivePerson | null>(initialPerson);
+  const [messages, setMessages] = useState<Bubble[]>(() =>
+    autostart ? [{ role: "user", content: autostart, draft: null, source: "" }] : [],
+  );
   const [text, setText] = useState("");
-  const [pending, setPending] = useState(false);
-  const [lead, setLead] = useState<string | null>(null);
+  const [pending, setPending] = useState(Boolean(autostart));
+  const [query, setQuery] = useState("");
   const scroller = useRef<HTMLDivElement>(null);
-  const person = bundle.person;
-  const personKey = person?.id ?? "";
-  const seenPerson = useRef<string | null>(null);
-  const first = person?.name.split(" ")[0];
+  const personRef = useRef<ActivePerson | null>(initialPerson);
+  const first = person?.name.split(" ")[0] ?? "";
+  const chips = person ? speakerStarterChips(first) : [...GENERAL_STARTERS];
+  const showPicker = !person && messages.some((item) => item.role === "user" && item.content === "Talk about a speaker");
+  const matches = filterSpeakers(speakers, query);
 
   useEffect(() => {
-    const stored = storedCoachContext();
-    const switched = seenPerson.current !== null && seenPerson.current !== personKey;
-    seenPerson.current = personKey;
-    const line = person
-      ? leadWith({
-          chips: stored.topics,
-          bio: person.bio,
-          sessions: person.sessions.map((session) => ({ title: session.title, topics: session.topics })),
-        })
-      : null;
-    setLead(line);
-    const plan = localCoaching("fallback", person, "", stored);
-    const content = line && !plan.message.includes(line) ? `${plan.message}\n\n${line}` : plan.message;
-    setMessages((current) => {
-      const stillStarter = current.length === 1 && current[0]?.role === "assistant";
-      if (!switched && !stillStarter) return current;
-      if (
-        !switched &&
-        current.length === 1 &&
-        current[0].content === content &&
-        current[0].draft?.body === plan.draft?.body
-      ) {
-        return current;
-      }
-      return [{ role: "assistant", content, draft: plan.draft, source: "catalog" }];
-    });
-  }, [person, personKey]);
+    personRef.current = person;
+  }, [person]);
 
-  async function ask(raw: string) {
+  useEffect(() => {
+    if (autostart !== STORY_STARTER) return;
+    const timer = window.setTimeout(() => {
+      void requestReply([{ role: "user", content: autostart, draft: null, source: "" }], personRef.current?.id ?? null);
+    }, 0);
+    return () => window.clearTimeout(timer);
+    // The story button preloads one user message. Reply once on open.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    scroller.current?.scrollTo({ top: scroller.current.scrollHeight });
+  }, [messages, pending]);
+
+  async function ask(raw: string, personId = personRef.current?.id ?? null) {
     const content = raw.trim();
     if (!content || pending) return;
-    const history: Bubble[] = [
-      ...messages,
-      { role: "user", content, draft: null, source: "" },
-      { role: "assistant", content: "Thinking...", draft: null, source: "" },
-    ];
-    const pendingIndex = history.length - 1;
-    setMessages(history);
+    const named = personId ? null : speakers.find((item) => item.name.toLowerCase() === content.toLowerCase());
+    const nextPerson = named
+      ? { id: named.id, name: named.name, titleLine: named.titleLine, photoUrl: named.photoUrl }
+      : personRef.current;
+    if (named) {
+      personRef.current = nextPerson;
+      setPerson(nextPerson);
+    }
+    const history: Bubble[] = [...messages, { role: "user", content, draft: null, source: "" }];
+    await requestReply(history, nextPerson?.id ?? null);
+  }
+
+  async function requestReply(history: Bubble[], personId: string | null) {
+    const pendingIndex = history.length;
+    setMessages([...history, { role: "assistant", content: "", draft: null, source: "" }]);
     setText("");
     setPending(true);
     try {
@@ -78,9 +104,9 @@ export function AgentChat({ bundle }: { bundle: AgentBundle }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          personId: person?.id ?? null,
-          messages: history.slice(0, -1).map((item) => ({ role: item.role, content: historyContent(item) })),
-          ...storedCoachContext(),
+          personId,
+          messages: history.map((item) => ({ role: item.role, content: historyContent(item) })),
+          topics: storedTopics(),
         }),
       });
       const reply = await readReply(res, (partial) => {
@@ -89,100 +115,102 @@ export function AgentChat({ bundle }: { bundle: AgentBundle }) {
       setMessages((current) => replaceAt(current, pendingIndex, { role: "assistant", ...reply }));
     } catch {
       setMessages((current) =>
-        replaceAt(current, pendingIndex, { role: "assistant", content: REACH, draft: starter.draft, source: "fallback" }),
+        replaceAt(current, pendingIndex, { role: "assistant", content: REACH, draft: null, source: "fallback" }),
       );
     } finally {
       setPending(false);
-      requestAnimationFrame(() => {
-        scroller.current?.scrollTo({ top: scroller.current.scrollHeight });
-      });
     }
   }
 
-  return (
-    <div className="mx-auto grid max-w-5xl gap-4 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-start">
-      <aside className="order-1 min-w-0 space-y-3 lg:order-2">
-        <section className="panel p-3">
-          <p className="text-meta text-faint">Scoped to</p>
-          {person ? (
-            <div className="mt-2 flex items-start gap-3">
-              <PersonPhoto src={person.photoUrl} name={person.name} size={32} />
-              <div className="min-w-0">
-                <p className="break-words text-body font-medium">{person.name}</p>
-                <p className="break-words text-meta text-mute">{person.titleLine}</p>
-              </div>
-            </div>
-          ) : (
-            <p className="measure mt-2 text-body leading-5">Open Ask agent from a person row, or pick someone below.</p>
-          )}
-          {person?.catchLine && <p className="mt-2 break-words text-meta text-faint">Catch them: {person.catchLine}</p>}
-          {person && person.topics.length > 0 && (
-            <p className="mt-2 break-words text-meta text-faint">{person.topics.join(", ")}</p>
-          )}
-          {person?.sessions[0] && (
-            <p className="mt-2 break-words text-meta leading-4 text-mute">
-              {person.sessions[0].title}
-              {person.sessions[0].when ? `, ${person.sessions[0].when}` : ""}
-              {person.sessions[0].room ? `, ${person.sessions[0].room}` : ""}
-            </p>
-          )}
-          {lead && <p className="measure mt-2 break-words text-body leading-5">{lead}</p>}
-          {person?.pathLine && <p className="mt-2 break-words font-mono text-meta leading-4 text-faint">{person.pathLine}</p>}
-          <Link href="/meet" className="btn mt-3">
-            Back to who to meet
-          </Link>
-        </section>
-        {!person && bundle.nearby.length > 0 && (
-          <section className="panel p-3">
-            <p className="text-meta text-faint">From the graph</p>
-            <ul className="mt-2 divide-y divide-line border-t border-line">
-              {bundle.nearby.map((item) => (
-                <li key={item.id} className="py-2">
-                  <Link href={`/agent?person=${item.id}`} className="block break-words text-body font-medium text-accent hover:underline">
-                    {item.name}
-                  </Link>
-                  <p className="break-words text-meta text-faint">{item.titleLine}</p>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-      </aside>
+  function chooseSpeaker(option: SpeakerOption) {
+    const next = { id: option.id, name: option.name, titleLine: option.titleLine, photoUrl: option.photoUrl };
+    personRef.current = next;
+    setPerson(next);
+    void ask(`Tell me about ${option.name}`, option.id);
+  }
 
-      <section className="order-2 min-w-0 lg:order-1">
-        <h1 className="type-display break-words text-[22px] leading-7">{first ? `Talking about ${first}` : "Ask the agent"}</h1>
-        <p className="measure mt-1 text-body leading-5 text-mute">
-          Coaching for how you introduce yourself. The draft stays on this page until you open it in your own email, copy it, or share it.
-        </p>
-        <div ref={scroller} className="panel mt-4 max-h-[min(62vh,560px)] divide-y divide-line overflow-y-auto" aria-live="polite">
-          {messages.map((item, index) => (
-            <div key={`${item.role}-${index}`} className="px-3 py-3">
-              <p className="text-meta text-faint">{item.role === "user" ? "You" : sourceLabel(item.source) || "Agent"}</p>
-              <p className="measure mt-1 whitespace-pre-wrap break-words text-body leading-5">{item.content}</p>
-              {item.draft && <DraftCard draft={item.draft} />}
+  return (
+    <div className="mx-auto flex h-[calc(100dvh-12rem)] w-full max-w-3xl flex-col md:h-[calc(100dvh-8.5rem)]">
+      {messages.length > 0 && <h1 className="sr-only">{AGENT_GREETING}</h1>}
+      {person && (
+        <div className="mb-3 flex items-center gap-2">
+          <PersonPhoto src={person.photoUrl} name={person.name} size={28} />
+          <div className="min-w-0">
+            <p className="text-meta text-faint">About this speaker</p>
+            <p className="truncate text-body font-medium">{person.name}</p>
+            <p className="truncate text-meta text-mute">{person.titleLine}</p>
+          </div>
+        </div>
+      )}
+
+      <div ref={scroller} className="flex-1 overflow-y-auto" aria-live="polite">
+        {messages.length === 0 ? (
+          <div className="flex h-full flex-col items-center justify-center px-3 text-center">
+            <h1 className="type-display max-w-md text-[22px] leading-7">{AGENT_GREETING}</h1>
+            <div className="mt-5 flex max-w-xl flex-wrap justify-center gap-1.5">
+              {chips.map((prompt) => (
+                <Chip key={prompt} label={prompt} disabled={pending} onClick={() => void ask(prompt)} />
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        ) : (
+          <div className="space-y-3 pb-2">
+            {messages.map((item, index) => (
+              <div key={`${item.role}-${index}`} className={item.role === "user" ? "flex justify-end" : "flex justify-start"}>
+                <div className={`min-w-0 rounded-panel px-3 py-2 ${item.draft ? "w-full bg-surface" : "max-w-[92%] bg-surface"} ${item.role === "user" ? "bg-fill" : ""}`}>
+                  <p className="text-meta text-faint">{item.role === "user" ? "You" : "Agent"}</p>
+                  <p className="mt-1 whitespace-pre-wrap break-words text-body leading-5">
+                    {item.content || (pending && index === messages.length - 1 ? "Thinking..." : "")}
+                  </p>
+                  {item.draft && <DraftCard draft={item.draft} />}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {messages.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-1.5">
-          {bundle.suggestions.map((prompt) => (
-            <button
-              key={prompt}
-              type="button"
-              disabled={pending}
-              className="btn h-auto max-w-full py-1 text-left"
-              onClick={() => void ask(prompt)}
-            >
-              {prompt}
-            </button>
+          {chips.map((prompt) => (
+            <Chip key={prompt} label={prompt} disabled={pending} onClick={() => void ask(prompt)} />
           ))}
         </div>
-        <form
-          className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-end"
-          onSubmit={(event) => {
-            event.preventDefault();
-            void ask(text);
-          }}
-        >
+      )}
+
+      {showPicker && (
+        <div className="panel mt-3 p-3">
+          <label className="block text-meta text-mute">
+            Find a speaker
+            <input
+              value={query}
+              className="field mt-1"
+              placeholder="Type a name"
+              onChange={(event) => setQuery(event.target.value)}
+            />
+          </label>
+          <ul className="mt-2 divide-y divide-line">
+            {matches.map((option) => (
+              <li key={option.id}>
+                <button type="button" className="flex w-full flex-col items-start py-2 text-left" onClick={() => chooseSpeaker(option)}>
+                  <span className="text-body font-medium">{option.name}</span>
+                  <span className="text-meta text-faint">{option.titleLine}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+          {matches.length === 0 && <p className="mt-2 text-meta text-faint">No speaker with that name in the saved catalog.</p>}
+        </div>
+      )}
+
+      <form
+        className="sticky bottom-0 z-10 mt-3 border-t border-line bg-bg py-3"
+        onSubmit={(event) => {
+          event.preventDefault();
+          void ask(text);
+        }}
+      >
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
           <label className="min-w-0 flex-1 text-meta text-mute">
             Message
             <textarea
@@ -191,6 +219,7 @@ export function AgentChat({ bundle }: { bundle: AgentBundle }) {
               rows={2}
               disabled={pending}
               aria-label={first ? `Ask anything about talking to ${first}` : "Ask how to introduce yourself"}
+              placeholder="Ask about your story, a speaker, or a draft"
               className="field mt-1 resize-y"
               onChange={(event) => setText(event.target.value)}
             />
@@ -198,35 +227,37 @@ export function AgentChat({ bundle }: { bundle: AgentBundle }) {
           <button type="submit" disabled={pending || text.trim().length === 0} className="btn btn-primary shrink-0">
             Ask
           </button>
-        </form>
-      </section>
+        </div>
+      </form>
     </div>
   );
 }
 
-function storedCoachContext(): { topics: string[]; ownWords: string } {
+function Chip({ label, disabled, onClick }: { label: string; disabled: boolean; onClick: () => void }) {
+  return (
+    <button type="button" disabled={disabled} className="btn h-auto max-w-full py-1 text-left" onClick={onClick}>
+      {label}
+    </button>
+  );
+}
+
+function filterSpeakers(speakers: SpeakerOption[], query: string): SpeakerOption[] {
+  const needle = query.trim().toLowerCase();
+  const pool = needle ? speakers.filter((item) => `${item.name} ${item.titleLine}`.toLowerCase().includes(needle)) : speakers;
+  return pool.slice(0, 8);
+}
+
+function storedTopics(): string[] {
   try {
-    return {
-      topics: readStoredTopics(window.localStorage.getItem(TALK_TOPICS_KEY)),
-      ownWords: cleanOwnWords(window.localStorage.getItem(OWN_WORDS_KEY) ?? ""),
-    };
+    return readStoredTopics(window.localStorage.getItem(TALK_TOPICS_KEY));
   } catch {
-    return { topics: readStoredTopics(null), ownWords: "" };
+    return readStoredTopics(null);
   }
 }
 
 function historyContent(item: Bubble): string {
   if (item.role !== "assistant" || !item.draft) return item.content;
   return `Previous draft\nSubject: ${item.draft.subject}\n${item.draft.body}`;
-}
-
-function sourceLabel(source: string): string {
-  if (source === "openai") return "Live coach";
-  if (source === "budget") return "Today's budget";
-  if (source === "limit") return "Slow down";
-  if (source === "invalid") return "Try again";
-  if (source === "fallback" || source === "catalog") return "Catalog plan";
-  return "";
 }
 
 function replaceAt(messages: Bubble[], index: number, next: Bubble): Bubble[] {

@@ -94,6 +94,8 @@ test("guards reject a long message before spending a model call", () => {
 test("system prompt carries graph facts and the payload stays small", () => {
   const person = personFacts("mario-rodriguez");
   const prompt = systemPrompt(person);
+  assert.match(prompt, /inside CUE/);
+  assert.equal(prompt.includes("Introvert Co-pilot"), false);
   assert.match(prompt, /Henry Finn/);
   assert.match(prompt, /GitHub/);
   assert.match(prompt, /Humans set direction/);
@@ -101,6 +103,9 @@ test("system prompt carries graph facts and the payload stays small", () => {
   assert.match(prompt, /CEO since 2023, with the team since 2022/);
   assert.match(prompt, /Degree: GAP/);
   assert.match(prompt, /Anime and comics IP/);
+  assert.match(prompt, /VERIFIED STORY/);
+  assert.match(prompt, /Fort Mason/);
+  assert.match(prompt, /Experience history: gap/);
   assert.equal(prompt.includes("Samsung"), false);
   assert.equal(prompt.includes("\u2014"), false);
   const picked = systemPrompt(person, { topics: ["Gaming"], ownWords: "I would rather show the work." });
@@ -188,4 +193,78 @@ test("follow-up block becomes a draft and stream deltas stay plain text", () => 
   assert.equal(visibleCoachText("Keep it short.\nFOLL"), "Keep it short.");
   assert.equal(visibleCoachText("Keep it short.\nFOLLOWUP\nSubject: Hi"), "Keep it short.");
   assert.equal(visibleCoachText("FOLLOWUP\nSubject: Hi"), "");
+});
+
+test("starter prompts use the saved story offline and keep speaker drafts", () => {
+  const offline = { rateOk: true, hasKey: false, budgetOk: true };
+  const story = classifyAgent({
+    body: { messages: [{ role: "user", content: "Talk about my story" }] },
+    ...offline,
+  });
+  assert.equal(story.action, "json");
+  if (story.action === "json") {
+    assert.match(story.reply.message, /Unicorn Studios|comic book artist|Henry Finn/);
+    assert.match(story.reply.message, /gap/i);
+    assert.equal(story.reply.draft, null);
+    assert.equal(/[\u2013\u2014]/.test(story.reply.message), false);
+  }
+
+  const which = classifyAgent({
+    body: { messages: [{ role: "user", content: "Talk about a speaker" }] },
+    ...offline,
+  });
+  assert.equal(which.action, "json");
+  if (which.action === "json") assert.match(which.reply.message, /Which speaker/);
+
+  const conference = classifyAgent({
+    body: { messages: [{ role: "user", content: "Help me understand the conference" }] },
+    ...offline,
+  });
+  assert.equal(conference.action, "json");
+  if (conference.action === "json") {
+    assert.match(conference.reply.message, /Fort Mason/);
+    assert.match(conference.reply.message, /183/);
+  }
+
+  const meet = classifyAgent({
+    body: { messages: [{ role: "user", content: "Who should I meet first?" }] },
+    ...offline,
+  });
+  assert.equal(meet.action, "json");
+  if (meet.action === "json") {
+    assert.match(meet.reply.message, /John Maeda|top of the saved ranking/);
+    assert.equal(meet.reply.draft, null);
+  }
+
+  const generalDraft = classifyAgent({
+    body: { messages: [{ role: "user", content: "Draft a follow-up I can copy" }] },
+    ...offline,
+  });
+  assert.equal(generalDraft.action, "json");
+  if (generalDraft.action === "json") {
+    assert.ok(generalDraft.reply.draft);
+    assert.equal(generalDraft.reply.draft?.email, null);
+    assert.match(generalDraft.reply.message, /You review and send it yourself/);
+  }
+
+  const scoped = classifyAgent({
+    body: {
+      personId: "mario-rodriguez",
+      messages: [{ role: "user", content: "Draft a follow-up I can copy" }],
+    },
+    ...offline,
+  });
+  assert.equal(scoped.action, "json");
+  if (scoped.action === "json") {
+    assert.match(scoped.reply.message, /Mario/);
+    assert.equal(scoped.reply.draft?.linkedinUrl, "https://www.linkedin.com/in/mariorodriguez3/");
+    assert.match(scoped.reply.draft?.body ?? "", /GitHub Universe/);
+  }
+
+  const named = classifyAgent({
+    body: { messages: [{ role: "user", content: "Tell me about Mario Rodriguez" }] },
+    ...offline,
+  });
+  assert.equal(named.action, "json");
+  if (named.action === "json") assert.match(named.reply.message, /Mario/);
 });

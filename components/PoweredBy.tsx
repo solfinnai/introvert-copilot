@@ -68,7 +68,8 @@ export function PoweredBy() {
   return (
     <footer className="px-4 pb-5 md:px-6">
       <div className="border-t border-line pt-3">
-        <p className="text-meta text-faint">Powered by</p>
+        <p className="text-meta text-faint">CUE. Your conference co-pilot.</p>
+        <p className="mt-2 text-meta text-faint">Powered by</p>
         <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
           {SPONSORS.map((sponsor) => {
             const detail = sponsor.name === "FalkorDB" ? falkorDetail : sponsor.role;

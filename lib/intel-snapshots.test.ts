@@ -117,7 +117,8 @@ test("the person page paints a snapshot and leaves live intel for people without
   assert.match(live, /data-seed=\{settled \? "snapshot" : "live"\}/);
   assert.match(meet, /recommendFromMemory/);
   assert.equal(meet.includes("await recommend("), false);
-  assert.match(home, /recommendFromMemory/);
+  assert.match(home, /rankPeople/);
+  assert.equal(home.includes("await "), false);
   assert.match(speakers, /directoryFromCatalog/);
   assert.equal(fs.existsSync(path.join(root, "data/intel-snapshots/john-maeda.json")), true);
   setIntelSnapshotDirForTests(null);
