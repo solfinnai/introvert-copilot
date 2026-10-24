@@ -11,7 +11,7 @@ const NAV = [
   { href: "/story", label: "Your story", n: "02" },
   { href: "/meet", label: "Who to meet", n: "03" },
   { href: "/saved", label: "Saved", n: "04" },
-  { href: "/chat", label: "Agent chat", n: "05" },
+  { href: "/agent", label: "Agent chat", n: "05" },
 ];
 
 export function AppShell({
