@@ -3,27 +3,26 @@ import { getDb, graphName, noteQueryFailure } from "./falkor";
 import type { HopInfo } from "./rank";
 import { personCard, rankPeople } from "./rank";
 import { logBackend, safeError } from "./redact";
-import { ensureCatalog, ensureCypher } from "./seed-graph";
 import type { GraphBackend, MeetResponse, RankedPerson, RecommendQuery } from "./types";
 
 export async function recommend(query: RecommendQuery): Promise<MeetResponse> {
   const catalog = getCatalog();
-  const status = await ensureCatalog();
-  if (status.backend === "falkordb") scheduleCypher();
   const started = performance.now();
 
   let hops: Map<string, HopInfo> | null = null;
   let backend: GraphBackend = "memory";
-  if (status.backend === "falkordb") {
+  if (process.env.FALKORDB_URL) {
     try {
-      const queried = await queryHops(query);
-      const linked = [...queried.values()].some((hop) => hop.sharedSessionIds.length > 0);
-      if (linked) {
-        hops = queried;
-        backend = "falkordb";
-        logBackend("falkordb", "ranking from multi-hop query");
-      } else {
-        logBackend("memory", "graph query returned no topic paths");
+      const queried = await readHops(query);
+      if (queried) {
+        const linked = [...queried.values()].some((hop) => hop.sharedSessionIds.length > 0);
+        if (linked) {
+          hops = queried;
+          backend = "falkordb";
+          logBackend("falkordb", "ranking from multi-hop query");
+        } else {
+          logBackend("memory", "graph query returned no topic paths");
+        }
       }
     } catch (err) {
       noteQueryFailure(err);
@@ -47,13 +46,12 @@ export async function describePerson(
   id: string,
 ): Promise<{ card: RankedPerson; backend: GraphBackend; ms: number } | null> {
   const catalog = getCatalog();
-  const status = await ensureCatalog();
   const started = performance.now();
   let hops: Map<string, HopInfo> | null = null;
-  if (status.backend === "falkordb") {
+  if (process.env.FALKORDB_URL) {
     try {
-      const queried = await queryHops({ day: "both", metIds: [], limit: 1 });
-      if (queried.has(id)) hops = queried;
+      const queried = await readHops({ day: "both", metIds: [], limit: 1 });
+      if (queried?.has(id)) hops = queried;
     } catch (err) {
       noteQueryFailure(err);
       logBackend("memory", `query failed: ${safeError(err)}`);
@@ -68,9 +66,9 @@ export async function describePerson(
   };
 }
 
-async function queryHops(query: RecommendQuery): Promise<Map<string, HopInfo>> {
+async function readHops(query: RecommendQuery): Promise<Map<string, HopInfo> | null> {
   const db = await getDb();
-  if (!db) return new Map();
+  if (!db) return null;
   const graph = db.selectGraph(graphName());
   const interests = query.interests?.length ? query.interests : [...DEFAULT_INTERESTS];
   const met = query.metIds.length ? query.metIds : ["__none__"];
@@ -101,25 +99,4 @@ function normalize(query: RecommendQuery): RecommendQuery {
     interests: query.interests?.length ? query.interests : [...DEFAULT_INTERESTS],
     limit: query.limit ?? 10,
   };
-}
-
-function scheduleCypher(): void {
-  const run = () => {
-    void ensureCypher().catch(() => undefined);
-  };
-  try {
-    // Loaded only when a request is in flight. The import is dynamic so
-    // `npm run seed` does not need a request scope.
-    void import("next/server")
-      .then(({ after }) => {
-        try {
-          after(run);
-        } catch {
-          run();
-        }
-      })
-      .catch(run);
-  } catch {
-    run();
-  }
 }

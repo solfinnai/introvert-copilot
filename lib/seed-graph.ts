@@ -307,17 +307,16 @@ export async function falkorCounts(graph: CypherGraph): Promise<{ nodes: number;
 }
 
 export async function liveCounts(): Promise<{ backend: GraphBackend; nodes: number; edges: number }> {
-  const status = await ensureCypher();
-  if (status.backend === "falkordb") {
-    const db = await getDb();
-    if (db) {
-      try {
+  if (process.env.FALKORDB_URL) {
+    try {
+      const db = await getDb();
+      if (db) {
         const counts = await falkorCounts(db.selectGraph(graphName()) as unknown as CypherGraph);
         return { backend: "falkordb", ...counts };
-      } catch (err) {
-        noteQueryFailure(err);
-        logBackend("memory", `count failed: ${safeError(err)}`);
       }
+    } catch (err) {
+      noteQueryFailure(err);
+      logBackend("memory", `count failed: ${safeError(err)}`);
     }
   }
   const counts = memoryGraphCounts(getCatalog());
