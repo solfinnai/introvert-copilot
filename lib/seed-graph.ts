@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { DEFAULT_INTERESTS, getCatalog, memoryGraphCounts } from "./catalog";
-import { getDb, graphName, noteQueryFailure } from "./falkor";
+import { getDb, graphName, noteQueryFailure, withTimeout } from "./falkor";
 import { logBackend, safeError } from "./redact";
 import type { GraphBackend } from "./types";
 
@@ -300,9 +300,19 @@ async function countLabel(graph: CypherGraph, label: "Session" | "Person"): Prom
   return num(asRows(reply)[0]?.c);
 }
 
+const COUNT_TIMEOUT_MS = 4_000;
+
 export async function falkorCounts(graph: CypherGraph): Promise<{ nodes: number; edges: number }> {
-  const nodes = await graph.roQuery("MATCH (n) RETURN count(n) AS c");
-  const edges = await graph.roQuery("MATCH ()-[r]->() RETURN count(r) AS c");
+  const nodes = await withTimeout(
+    graph.roQuery("MATCH (n) RETURN count(n) AS c"),
+    COUNT_TIMEOUT_MS,
+    "node count timed out",
+  );
+  const edges = await withTimeout(
+    graph.roQuery("MATCH ()-[r]->() RETURN count(r) AS c"),
+    COUNT_TIMEOUT_MS,
+    "edge count timed out",
+  );
   return { nodes: num(asRows(nodes)[0]?.c), edges: num(asRows(edges)[0]?.c) };
 }
 

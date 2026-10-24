@@ -5,6 +5,7 @@ export const SEED_FILE_GLOBS = [
   "./seed/github-universe-demo/event.json",
   "./seed/github-universe-demo/people.json",
   "./data/demo/henry.json",
+  "./src/data/demo-user.json",
   "./seed/github-universe-demo/seed.cypher",
 ];
 
@@ -28,8 +29,12 @@ export const SEEDED_ROUTES = [
   "/api/agent",
 ];
 
+/** Home checks this file with fs, so the server trace has to carry it. */
+export const HOME_PHOTO_GLOB = "./public/henry.jpg";
+
 export function seedTracingIncludes(): Record<string, string[]> {
   const includes: Record<string, string[]> = {};
   for (const route of SEEDED_ROUTES) includes[route] = SEED_FILE_GLOBS;
+  includes["/"] = [...SEED_FILE_GLOBS, HOME_PHOTO_GLOB];
   return includes;
 }

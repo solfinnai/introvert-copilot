@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { PersonPhoto } from "./PersonPhoto";
+import { PoweredBy } from "./PoweredBy";
 import { SessionProvider, useSession } from "./session";
 
 const NAV = [
@@ -29,10 +30,11 @@ export function AppShell({
     <SessionProvider>
       <div className="min-h-screen md:grid md:grid-cols-[220px_1fr]">
         <Sidebar />
-        <div className="min-w-0">
+        <div className="flex min-h-screen min-w-0 flex-col">
           <TopBar fetchedLabel={fetchedLabel} henryAvatar={henryAvatar} henryName={henryName} />
           <MobileNav />
-          <main className="px-5 py-6 md:px-10 md:py-8">{children}</main>
+          <main className="flex-1 px-5 py-6 md:px-10 md:py-8">{children}</main>
+          <PoweredBy />
         </div>
       </div>
     </SessionProvider>
@@ -41,12 +43,9 @@ export function AppShell({
 
 function Sidebar() {
   return (
-    <aside className="hidden border-r border-[#e3d9cb] bg-side md:flex md:min-h-screen md:flex-col md:justify-between md:px-3 md:py-4">
-      <div>
-        <Brand />
-        <NavList />
-      </div>
-      <Footer />
+    <aside className="hidden border-r border-[#e3d9cb] bg-side md:flex md:min-h-screen md:flex-col md:px-3 md:py-4">
+      <Brand />
+      <NavList />
     </aside>
   );
 }
@@ -108,15 +107,6 @@ function MobileNav() {
         );
       })}
     </div>
-  );
-}
-
-function Footer() {
-  return (
-    <p className="px-3 pb-2 text-[11px] leading-4 text-mute">
-      Powered by Bright Data (public web intel), FalkorDB (graph memory), OpenAI + TrueForge
-      (agent). PRs reviewed by Qodo.
-    </p>
   );
 }
 
