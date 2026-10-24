@@ -18,12 +18,14 @@ export const SEEDED_ROUTES = [
   "/saved",
   "/story",
   "/chat",
+  "/agent",
   "/people/[id]",
   "/api/health",
   "/api/meet",
   "/api/reset",
   "/api/seed",
   "/api/session",
+  "/api/agent",
 ];
 
 export function seedTracingIncludes(): Record<string, string[]> {
