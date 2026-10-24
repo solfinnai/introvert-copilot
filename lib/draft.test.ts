@@ -33,6 +33,8 @@ test("mailto leaves the recipient empty unless the graph has an email", () => {
 test("linkedin profile urls are https linkedin.com/in links only", () => {
   assert.equal(isLinkedInUrl("https://www.linkedin.com/in/mariorodriguez3/"), true);
   assert.equal(isLinkedInUrl("https://linkedin.com/in/henryfinnco"), true);
+  assert.equal(isLinkedInUrl("https://uk.linkedin.com/in/kevinbackhouse"), true);
+  assert.equal(isLinkedInUrl("https://linkedin.com.evil.example/in/kevinbackhouse"), false);
   assert.equal(isLinkedInUrl("http://www.linkedin.com/in/mariorodriguez3"), false);
   assert.equal(isLinkedInUrl("https://evil.example/in/mariorodriguez3"), false);
   assert.equal(isLinkedInUrl(""), false);

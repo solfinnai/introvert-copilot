@@ -7,6 +7,7 @@ import {
   MAX_OUTPUT_TOKENS,
   buildOpenAiPayload,
   classifyAgent,
+  REVISION_NOTE,
   localCoaching,
   pageBundle,
   personFacts,
@@ -34,6 +35,8 @@ test("catalog fallback coaches Henry for a real speaker and never invents an ema
   assert.equal(reply.message.includes("\u2014"), false);
   assert.equal(reply.message.includes("\u2013"), false);
   assert.ok(reply.draft);
+  assert.equal(/I came to your session/i.test(reply.draft?.body ?? ""), false);
+  assert.match(reply.draft?.body ?? "", /on the GitHub Universe schedule/);
   assert.equal(reply.draft?.email, null);
   assert.equal(reply.draft?.linkedinUrl, "https://www.linkedin.com/in/mariorodriguez3/");
   assert.ok((reply.draft?.linkedinNote.length ?? 0) > 0);
@@ -57,6 +60,14 @@ test("a missing key or a spent budget stays on the catalog plan", () => {
   }
   const live = classifyAgent({ body, rateOk: true, hasKey: true, budgetOk: true });
   assert.equal(live.action, "openai");
+});
+
+test("catalog coaching refuses to pretend it rewrote a draft", () => {
+  const person = personFacts("mario-rodriguez");
+  const reply = localCoaching("fallback", person, "Make the draft shorter");
+  assert.match(reply.message, new RegExp(REVISION_NOTE.slice(0, 28)));
+  const kevin = personFacts("kevin-backhouse");
+  assert.equal(kevin?.linkedinUrl, "https://uk.linkedin.com/in/kevinbackhouse");
 });
 
 test("guards reject a long message before spending a model call", () => {

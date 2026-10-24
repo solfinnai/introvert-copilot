@@ -42,8 +42,10 @@ test("saved store clamps notes, drops unknown next steps, and caps the list", ()
     state = toggleSaved(state, { ...mario, id: `person-${i}`, name: `Person ${i}` });
   }
   assert.equal(state.saved.length, SAVED_CAP);
-  assert.equal(state.saved[0]?.id, "person-3");
-  assert.equal(state.saved.at(-1)?.id, `person-${SAVED_CAP + 2}`);
+  assert.equal(state.saved[0]?.id, "mario-rodriguez");
+  assert.equal(state.saved[0]?.note.length, NOTE_MAX);
+  assert.equal(state.saved.at(-1)?.id, `person-${SAVED_CAP - 2}`);
+  assert.equal(state.saved.some((person) => person.id === `person-${SAVED_CAP - 1}`), false);
   assert.deepEqual(state.met, ["keep-me"]);
 });
 
@@ -52,14 +54,17 @@ test("saved store ignores junk and keeps older notes", () => {
     saved: [
       { id: "bad id", name: "Nope" },
       { id: "angie-jones", name: "Angie Jones", note: "Sit near the back", nextStep: "Ask about their talk" },
+      { id: "kept-person", name: "Kept Person", note: 12, nextStep: { bad: true } },
       "nope",
     ],
     met: ["angie-jones", 4, ""],
   });
   const state = parseDemoState(raw);
-  assert.equal(state.saved.length, 1);
+  assert.equal(state.saved.length, 2);
   assert.equal(state.saved[0]?.name, "Angie Jones");
   assert.equal(state.saved[0]?.note, "Sit near the back");
+  assert.equal(state.saved[1]?.note, "");
+  assert.equal(state.saved[1]?.nextStep, DEFAULT_NEXT_STEP);
   assert.deepEqual(state.met, ["angie-jones"]);
   assert.deepEqual(parseDemoState("not json"), { saved: [], met: [] });
   assert.deepEqual(parseDemoState(null), { saved: [], met: [] });

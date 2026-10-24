@@ -1,24 +1,36 @@
 "use client";
 
-import type { SavedDraft } from "@/lib/saved";
+import { useState } from "react";
+import { SAVED_CAP, type SavedDraft } from "@/lib/saved";
 import { useSession } from "./session";
 
 export function SaveButton({ person }: { person: SavedDraft }) {
-  const { ready, isSaved, toggleSaved } = useSession();
+  const { state, ready, isSaved, toggleSaved } = useSession();
+  const [full, setFull] = useState(false);
   const on = ready && isSaved(person.id);
   return (
-    <button
-      type="button"
-      aria-pressed={on}
-      aria-label={on ? `Remove ${person.name} from who I want to talk to` : `Save ${person.name}`}
-      className={`inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border border-line bg-white px-2.5 text-sm ${
-        on ? "text-accent" : "text-mute"
-      }`}
-      onClick={() => toggleSaved(person)}
-    >
-      <Heart filled={on} />
-      <span className="hidden sm:inline">{on ? "Saved" : "Save"}</span>
-    </button>
+    <span className="inline-flex max-w-full flex-col items-end gap-1">
+      <button
+        type="button"
+        aria-pressed={on}
+        aria-label={on ? `Remove ${person.name} from who I want to talk to` : `Save ${person.name}`}
+        className={`inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border border-line bg-white px-2.5 text-sm ${
+          on ? "text-accent" : "text-mute"
+        }`}
+        onClick={() => {
+          if (!on && state.saved.length >= SAVED_CAP) {
+            setFull(true);
+            return;
+          }
+          setFull(false);
+          toggleSaved(person);
+        }}
+      >
+        <Heart filled={on} />
+        <span className="hidden sm:inline">{on ? "Saved" : "Save"}</span>
+      </button>
+      {full && <span className="max-w-[11rem] text-right text-[11px] leading-4 text-mute">List is full. Remove someone first.</span>}
+    </span>
   );
 }
 

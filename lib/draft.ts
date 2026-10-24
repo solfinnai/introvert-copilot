@@ -37,7 +37,7 @@ export function isLinkedInUrl(value: string | null | undefined): value is string
     const url = new URL(value.trim());
     if (url.protocol !== "https:") return false;
     const host = url.hostname.toLowerCase();
-    if (host !== "linkedin.com" && host !== "www.linkedin.com") return false;
+    if (host !== "linkedin.com" && !host.endsWith(".linkedin.com")) return false;
     return /^\/in\/[A-Za-z0-9_-]+\/?$/.test(url.pathname);
   } catch {
     return false;

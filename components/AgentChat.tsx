@@ -45,7 +45,7 @@ export function AgentChat({ bundle }: { bundle: AgentBundle }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           personId: person?.id ?? null,
-          messages: history.slice(0, -1).map((item) => ({ role: item.role, content: item.content })),
+          messages: history.slice(0, -1).map((item) => ({ role: item.role, content: historyContent(item) })),
         }),
       });
       const reply = await readReply(res, (partial) => {
@@ -191,12 +191,18 @@ export function AgentChat({ bundle }: { bundle: AgentBundle }) {
   );
 }
 
+function historyContent(item: Bubble): string {
+  if (item.role !== "assistant" || !item.draft) return item.content;
+  return `Previous draft\nSubject: ${item.draft.subject}\n${item.draft.body}`;
+}
+
 function sourceLabel(source: string): string {
   if (source === "openai") return "Live coach";
   if (source === "budget") return "Today's budget";
   if (source === "limit") return "Slow down";
-  if (source === "catalog") return "Catalog plan";
-  return "Catalog plan";
+  if (source === "invalid") return "Try again";
+  if (source === "fallback" || source === "catalog") return "Catalog plan";
+  return "";
 }
 
 function replaceAt(messages: Bubble[], index: number, next: Bubble): Bubble[] {
@@ -251,5 +257,6 @@ async function readReply(res: Response, onDelta: (text: string) => void): Promis
       }
     }
   }
-  return final ?? { content: acc || REACH, draft: null, source: acc ? "openai" : "fallback" };
+  if (final) return final;
+  return { content: REACH, draft: null, source: "fallback" };
 }

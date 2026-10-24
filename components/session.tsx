@@ -31,7 +31,11 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    setState(parseDemoState(window.localStorage.getItem(SAVED_STORAGE_KEY)));
+    try {
+      setState(parseDemoState(window.localStorage.getItem(SAVED_STORAGE_KEY)));
+    } catch {
+      setState(emptyDemoState);
+    }
     let cancelled = false;
     fetch("/api/session", { method: "POST" })
       .catch(() => undefined)
@@ -45,7 +49,11 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!ready) return;
-    window.localStorage.setItem(SAVED_STORAGE_KEY, JSON.stringify(state));
+    try {
+      window.localStorage.setItem(SAVED_STORAGE_KEY, JSON.stringify(state));
+    } catch {
+      // Private browsing can block storage. The list still works in this tab.
+    }
   }, [state, ready]);
 
   const api: SessionApi = {
@@ -62,7 +70,11 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     },
     resetLocal: () => {
       setState(emptyDemoState);
-      window.localStorage.removeItem(SAVED_STORAGE_KEY);
+      try {
+        window.localStorage.removeItem(SAVED_STORAGE_KEY);
+      } catch {
+        // The in-memory list is already empty.
+      }
     },
   };
 

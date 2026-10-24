@@ -49,8 +49,12 @@ export function parseDemoState(raw: string | null): DemoState {
     const parsed = JSON.parse(raw) as { saved?: unknown; met?: unknown };
     const saved = Array.isArray(parsed.saved)
       ? parsed.saved.flatMap((item) => {
-          const person = normalizeSaved(item);
-          return person ? [person] : [];
+          try {
+            const person = normalizeSaved(item);
+            return person ? [person] : [];
+          } catch {
+            return [];
+          }
         })
       : [];
     const met = Array.isArray(parsed.met)
@@ -67,7 +71,8 @@ export function toggleSaved(state: DemoState, person: SavedDraft): DemoState {
   if (!next) return state;
   const exists = state.saved.some((item) => item.id === next.id);
   if (exists) return { ...state, saved: state.saved.filter((item) => item.id !== next.id) };
-  return { ...state, saved: [...state.saved, next].slice(-SAVED_CAP) };
+  if (state.saved.length >= SAVED_CAP) return state;
+  return { ...state, saved: [...state.saved, next] };
 }
 
 export function updateSaved(
@@ -120,11 +125,13 @@ function cleanLine(value: unknown, max: number): string {
   return value.replace(/\s+/g, " ").trim().slice(0, max);
 }
 
-export function clampNote(value: string): string {
+export function clampNote(value: unknown): string {
+  if (typeof value !== "string") return "";
   return value.replace(/\r\n/g, "\n").slice(0, NOTE_MAX);
 }
 
-export function cleanNextStep(value: string): string {
+export function cleanNextStep(value: unknown): string {
+  if (typeof value !== "string") return DEFAULT_NEXT_STEP;
   const clean = value.replace(/\s+/g, " ").trim();
   return isNextStep(clean) ? clean : DEFAULT_NEXT_STEP;
 }
