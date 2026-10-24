@@ -259,6 +259,26 @@ export function splitFollowup(text: string, person: PersonFacts | null): { messa
   };
 }
 
+const FOLLOWUP_MARK = "\nFOLLOWUP";
+
+/** Text safe to show while a reply is still streaming. Holds back the draft marker. */
+export function visibleCoachText(full: string): string {
+  const clean = stripDashes(full);
+  if (clean.startsWith("FOLLOWUP")) return "";
+  const at = clean.lastIndexOf(FOLLOWUP_MARK);
+  if (at >= 0) return clean.slice(0, at);
+  const held = trailingMarkerPrefix(clean);
+  return held ? clean.slice(0, -held) : clean;
+}
+
+function trailingMarkerPrefix(value: string): number {
+  const max = Math.min(FOLLOWUP_MARK.length - 1, value.length);
+  for (let size = max; size > 0; size -= 1) {
+    if (value.endsWith(FOLLOWUP_MARK.slice(0, size))) return size;
+  }
+  return 0;
+}
+
 export function readStreamDelta(line: string): string | null {
   const trimmed = line.trim();
   if (!trimmed.startsWith("data:")) return null;

@@ -5,10 +5,10 @@ import {
   localCoaching,
   readStreamDelta,
   splitFollowup,
+  visibleCoachText,
   type AgentDecision,
 } from "@/lib/agent";
 import { consumeDailyBudget } from "@/lib/budget";
-import { stripDashes } from "@/lib/draft";
 import { clientIp, rateLimit } from "@/lib/limits";
 import { safeError } from "@/lib/redact";
 
@@ -77,8 +77,15 @@ async function streamReply(decision: Extract<AgentDecision, { action: "openai" }
       const reader = upstream.body!.getReader();
       let buffer = "";
       let full = "";
+      let shown = "";
       const send = (value: unknown) => {
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(value)}\n\n`));
+      };
+      const reveal = () => {
+        const next = visibleCoachText(full);
+        if (next.length <= shown.length) return;
+        send({ delta: next.slice(shown.length) });
+        shown = next;
       };
       try {
         while (true) {
@@ -90,9 +97,8 @@ async function streamReply(decision: Extract<AgentDecision, { action: "openai" }
           for (const line of lines) {
             const delta = readStreamDelta(line);
             if (!delta) continue;
-            const clean = stripDashes(delta);
-            full += clean;
-            send({ delta: clean });
+            full += delta;
+            reveal();
           }
         }
         const split = splitFollowup(full, decision.person);

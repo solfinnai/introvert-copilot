@@ -13,6 +13,7 @@ import {
   readStreamDelta,
   splitFollowup,
   systemPrompt,
+  visibleCoachText,
 } from "./agent";
 
 test("catalog fallback coaches Henry for a real speaker and never invents an email", () => {
@@ -112,4 +113,7 @@ test("follow-up block becomes a draft and stream deltas stay plain text", () => 
   assert.equal(split.draft?.linkedinUrl, person?.linkedinUrl);
   assert.equal(readStreamDelta('data: {"choices":[{"delta":{"content":"Hi"}}]}'), "Hi");
   assert.equal(readStreamDelta("data: [DONE]"), null);
+  assert.equal(visibleCoachText("Keep it short.\nFOLL"), "Keep it short.");
+  assert.equal(visibleCoachText("Keep it short.\nFOLLOWUP\nSubject: Hi"), "Keep it short.");
+  assert.equal(visibleCoachText("FOLLOWUP\nSubject: Hi"), "");
 });
