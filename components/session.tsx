@@ -37,7 +37,15 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     setState(readState());
-    setReady(true);
+    let cancelled = false;
+    fetch("/api/session", { method: "POST" })
+      .catch(() => undefined)
+      .finally(() => {
+        if (!cancelled) setReady(true);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
