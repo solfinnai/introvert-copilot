@@ -16,7 +16,6 @@ function cachedLabel(): string | null {
 
 export function PoweredBy() {
   const [size, setSize] = useState<string | null>(null);
-  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -31,10 +30,7 @@ export function PoweredBy() {
     async function load() {
       const warm = cachedLabel();
       if (warm) {
-        if (!cancelled) {
-          setSize(warm);
-          setFailed(false);
-        }
+        if (!cancelled) setSize(warm);
         const age = memory ? Date.now() - memory.at : CACHE_MS;
         schedule(Math.max(1_000, CACHE_MS - age));
         return;
@@ -48,12 +44,9 @@ export function PoweredBy() {
         const label = graphSizeFromHealth(await res.json());
         if (!label) throw new Error("health");
         memory = { at: Date.now(), label };
-        if (!cancelled) {
-          setSize(label);
-          setFailed(false);
-        }
+        if (!cancelled) setSize(label);
       } catch {
-        if (!cancelled) setFailed(true);
+        /* Keep the static role until a live count arrives. */
       } finally {
         clearTimeout(deadline);
       }
@@ -61,10 +54,7 @@ export function PoweredBy() {
     }
 
     const warm = cachedLabel();
-    if (warm) {
-      setSize(warm);
-      setFailed(false);
-    }
+    if (warm) setSize(warm);
     void load();
     return () => {
       cancelled = true;
@@ -73,7 +63,7 @@ export function PoweredBy() {
     };
   }, []);
 
-  const falkorDetail = size ?? (failed ? "size unavailable" : "checking the graph");
+  const falkorDetail = size ?? "graph";
 
   return (
     <footer className="px-4 pb-5 md:px-6">

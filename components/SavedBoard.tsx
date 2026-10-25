@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { PersonPhoto } from "@/components/PersonPhoto";
+import { PersonNameLink, PersonPhotoLink, rememberPersonReturn } from "@/components/person-return";
 import { SaveButton } from "@/components/SaveButton";
 import { useSession } from "@/components/session";
 import { NEXT_STEPS } from "@/lib/saved";
@@ -82,9 +82,11 @@ export function SavedBoard({ speakers }: { speakers: DirectorySpeaker[] }) {
               return (
                 <article key={person.id} className="min-w-0 px-3 py-3">
                   <div className="flex items-start gap-3">
-                    <PersonPhoto src={person.photoUrl} name={person.name} size={32} />
+                    <PersonPhotoLink id={person.id} name={person.name} src={person.photoUrl} size={32} />
                     <div className="min-w-0 flex-1">
-                      <h2 className="break-words text-body font-medium">{person.name}</h2>
+                      <h2 className="break-words text-body font-medium">
+                        <PersonNameLink id={person.id} name={person.name} />
+                      </h2>
                       <p className="break-words text-meta text-mute">{person.titleLine}</p>
                     </div>
                     <div className="flex shrink-0 items-center gap-2">
@@ -125,10 +127,10 @@ export function SavedBoard({ speakers }: { speakers: DirectorySpeaker[] }) {
                     <Link href={agentHref(person.id)} className="btn">
                       Ask agent
                     </Link>
-                    <Link href={personHref(person.id)} className="btn">
+                    <Link href={personHref(person.id)} className="btn" onClick={rememberPersonReturn}>
                       Person page
                     </Link>
-                    <Link href={reportHref(person.id)} className="btn btn-primary">
+                    <Link href={reportHref(person.id)} className="btn btn-primary" onClick={rememberPersonReturn}>
                       Get full report
                     </Link>
                   </div>
@@ -171,9 +173,11 @@ function Schedule({
               {day.stops.map((stop, index) => (
                 <li key={`${stop.personId}-${stop.dayKey}-${index}`} className={`min-w-0 py-2 ${stop.conflict ? "bg-raised" : ""}`}>
                   <div className="flex min-w-0 flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-3">
-                    <Link href={personHref(stop.personId)} className="min-w-0 break-words text-body font-medium text-accent hover:underline">
-                      {stop.name}
-                    </Link>
+                    <PersonNameLink
+                      id={stop.personId}
+                      name={stop.name}
+                      className="min-w-0 break-words text-body font-medium text-accent hover:underline"
+                    />
                     <p className="min-w-0 break-words text-meta text-faint sm:text-right">{formatTimePlace(stop)}</p>
                   </div>
                   <p className="mt-0.5 break-words text-meta text-mute">{stop.sessionTitle}</p>

@@ -1,7 +1,8 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import {
+  MET_CONFIRMATION,
   SAVED_STORAGE_KEY,
   emptyDemoState,
   parseDemoState,
@@ -16,6 +17,11 @@ import { OWN_WORDS_KEY, TALK_TOPICS_KEY } from "@/lib/talk-topics";
 
 export type { SavedPerson, SavedDraft };
 
+export interface MetToast {
+  id: string;
+  message: string;
+}
+
 interface SessionApi {
   state: DemoState;
   ready: boolean;
@@ -23,6 +29,8 @@ interface SessionApi {
   toggleSaved: (person: SavedDraft) => void;
   updateSaved: (id: string, patch: { note?: string; nextStep?: string }) => void;
   markMet: (id: string) => void;
+  toast: MetToast | null;
+  undoToast: () => void;
   resetLocal: () => void;
 }
 
@@ -30,7 +38,11 @@ const SessionContext = createContext<SessionApi | null>(null);
 
 export function SessionProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<DemoState>(emptyDemoState);
-  const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState(true);
+  const [hydrated, setHydrated] = useState(false);
+  const [toast, setToast] = useState<MetToast | null>(null);
+  const toastId = useRef<string | null>(null);
+  toastId.current = toast?.id ?? null;
 
   useEffect(() => {
     try {
@@ -38,29 +50,30 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     } catch {
       setState(emptyDemoState);
     }
-    let cancelled = false;
-    fetch("/api/session", { method: "POST" })
-      .catch(() => undefined)
-      .finally(() => {
-        if (!cancelled) setReady(true);
-      });
-    return () => {
-      cancelled = true;
-    };
+    setHydrated(true);
+    setReady(true);
+    fetch("/api/session", { method: "POST" }).catch(() => undefined);
   }, []);
 
   useEffect(() => {
-    if (!ready) return;
+    if (!hydrated) return;
     try {
       window.localStorage.setItem(SAVED_STORAGE_KEY, JSON.stringify(state));
     } catch {
       // Private browsing can block storage. The list still works in this tab.
     }
-  }, [state, ready]);
+  }, [state, hydrated]);
+
+  useEffect(() => {
+    if (!toast) return;
+    const timer = window.setTimeout(() => setToast(null), 8000);
+    return () => window.clearTimeout(timer);
+  }, [toast]);
 
   const api: SessionApi = {
     state,
     ready,
+    toast,
     isSaved: (id) => state.saved.some((person) => person.id === id),
     toggleSaved: (person) => setState((current) => toggleSavedState(current, person)),
     updateSaved: (id, patch) => setState((current) => updateSavedState(current, id, patch)),
@@ -69,8 +82,19 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         ...current,
         met: current.met.includes(id) ? current.met : [...current.met, id].slice(0, 40),
       }));
+      setToast({ id, message: MET_CONFIRMATION });
+    },
+    undoToast: () => {
+      const id = toastId.current;
+      setToast(null);
+      if (!id) return;
+      setState((current) => ({
+        ...current,
+        met: current.met.filter((item) => item !== id),
+      }));
     },
     resetLocal: () => {
+      setToast(null);
       setState(emptyDemoState);
       try {
         window.localStorage.removeItem(SAVED_STORAGE_KEY);

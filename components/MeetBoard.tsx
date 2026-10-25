@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { GraphPath, backendLabel } from "./GraphPath";
-import { PersonPhoto } from "./PersonPhoto";
+import { PersonNameLink, PersonPhotoLink, rememberPersonReturn } from "./person-return";
 import { SaveButton } from "./SaveButton";
 import { useSession, type SavedPerson } from "./session";
-import { accumulateMet, isLatestRequest, nextRequestId } from "@/lib/latest-request";
+import { isLatestRequest, nextRequestId } from "@/lib/latest-request";
 import { leadWith, readStoredTopics, TALK_TOPICS_KEY } from "@/lib/talk-topics";
 import type { DayFilter, MeetResponse, RankedPerson } from "@/lib/types";
 
@@ -16,9 +16,9 @@ const DAYS: { id: DayFilter; label: string }[] = [
   { id: "thu", label: "Thu" },
 ];
 
-export function MeetBoard({ initial }: { initial: MeetResponse }) {
+export function MeetBoard({ initial, initialDay = "both" }: { initial: MeetResponse; initialDay?: DayFilter }) {
   const { state, ready, markMet } = useSession();
-  const [day, setDay] = useState<DayFilter>("both");
+  const [day, setDay] = useState<DayFilter>(initialDay);
   const [data, setData] = useState(initial);
   const [showAll, setShowAll] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
@@ -29,10 +29,11 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
   const latestRequest = useRef(0);
   const metRef = useRef<string[]>([]);
   const topicsRef = useRef<string[]>([]);
-
-  useEffect(() => {
-    metRef.current = state.met;
-  }, [state.met]);
+  const dayRef = useRef<DayFilter>("both");
+  const bootedMet = useRef(false);
+  const urlReady = useRef(false);
+  dayRef.current = day;
+  metRef.current = state.met;
 
   useEffect(() => {
     if (!ready) return;
@@ -44,12 +45,38 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
     }
     topicsRef.current = nextTopics;
     setTopics(nextTopics);
-    setMetNote(state.met.length);
-    if (state.met.length === 0) return;
-    void reload(day, metRef.current, nextTopics);
-    // The cards already draw a lead from saved topics. Reload only to drop people already met.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready]);
+
+  useEffect(() => {
+    if (window.location.pathname !== "/meet") return;
+    if (!urlReady.current) {
+      const raw = new URLSearchParams(window.location.search).get("day");
+      const fromUrl: DayFilter = raw === "wed" || raw === "thu" ? raw : "both";
+      if (fromUrl !== dayRef.current) {
+        setDay(fromUrl);
+        void reload(fromUrl, metRef.current);
+        return;
+      }
+      urlReady.current = true;
+    }
+    const next = day === "both" ? "/meet" : `/meet?day=${day}`;
+    const current = `${window.location.pathname}${window.location.search}`;
+    if (current === next) return;
+    window.history.replaceState(window.history.state, "", next);
+  }, [day]);
+
+  const metKey = state.met.join(",");
+  useEffect(() => {
+    if (!ready) return;
+    setMetNote(state.met.length);
+    if (!bootedMet.current) {
+      bootedMet.current = true;
+      if (state.met.length === 0) return;
+    }
+    void reload(dayRef.current, state.met, topicsRef.current);
+    // Cards already draw a lead from saved topics. Reload when the met list changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, metKey]);
 
   async function reload(nextDay: DayFilter, met: string[], talkTopics = topicsRef.current) {
     const requestId = nextRequestId(latestRequest.current);
@@ -76,15 +103,16 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
 
   function meetPerson(id: string) {
     if (!ready) return;
-    const met = accumulateMet(metRef.current, id);
-    metRef.current = met;
+    setData((current) => ({
+      ...current,
+      people: current.people.filter((person) => person.id !== id),
+    }));
     markMet(id);
-    setMetNote(met.length);
-    void reload(day, met);
   }
 
-  const visible = showAll ? data.people : data.people.slice(0, 3);
-  const extra = Math.max(0, data.people.length - 3);
+  const ranked = data.people.filter((person) => !state.met.includes(person.id));
+  const visible = showAll ? ranked : ranked.slice(0, 3);
+  const extra = Math.max(0, ranked.length - 3);
   const [hero, ...rest] = visible;
 
   return (
@@ -130,7 +158,6 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
       )}
 
       <div className={loading ? "mt-3 opacity-60 transition-opacity duration-ui" : "mt-3"} aria-busy={loading}>
-        {loading && <p className="mb-2 text-meta text-faint">Refreshing the list.</p>}
         {hero ? (
           <div className="panel divide-y divide-line">
             <MatchRow
@@ -155,6 +182,8 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
               />
             ))}
           </div>
+        ) : loading ? (
+          <p className="panel px-3 py-4 text-body text-mute">Refreshing the list.</p>
         ) : (
           <p className="panel px-3 py-4 text-body text-mute">Nobody on this day cleared the bar. Try both days.</p>
         )}
@@ -175,9 +204,11 @@ function MatchRow({ person, response, topics, open, locked, onTogglePath, onMet 
   return (
     <article className="min-w-0 px-3 py-3">
       <header className="flex items-start gap-3">
-        <PersonPhoto src={person.photoUrl} name={person.name} size={32} />
+        <PersonPhotoLink id={person.id} name={person.name} src={person.photoUrl} size={32} />
         <div className="min-w-0 flex-1">
-          <h2 className="break-words text-body font-medium">{person.name}</h2>
+          <h2 className="break-words text-body font-medium">
+            <PersonNameLink id={person.id} name={person.name} />
+          </h2>
           <p className="break-words text-meta text-mute">{person.titleLine}</p>
           {when && <p className="mt-0.5 break-words text-meta text-faint">{when}</p>}
           {topicsLine.length > 0 && <p className="mt-0.5 break-words text-meta text-faint">{topicsLine.join(", ")}</p>}
@@ -190,7 +221,7 @@ function MatchRow({ person, response, topics, open, locked, onTogglePath, onMet 
         <Link href={`/agent?person=${person.id}`} className="btn">
           Ask agent
         </Link>
-        <Link href={`/people/${person.id}`} className="btn btn-primary">
+        <Link href={`/people/${person.id}`} className="btn btn-primary" onClick={rememberPersonReturn}>
           Conversation plan
         </Link>
         <button type="button" className="btn btn-quiet" disabled={locked} onClick={onMet}>

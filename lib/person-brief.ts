@@ -185,15 +185,19 @@ function liveConfigured(): boolean {
   return Boolean((process.env.BRIGHTDATA_API_KEY || "").trim() || (process.env.OPENAI_API_KEY || "").trim());
 }
 
-function briefFromCache(cached: CachedBrief): PersonBrief {
+export function briefFromStored(cached: CachedBrief): PersonBrief {
   return {
-    intel: cached.intel,
+    intel: markCached(cached.intel),
     plan: cached.plan,
     report: cached.report,
     profiles: cached.profiles,
     links: cached.links,
     fromCache: true,
   };
+}
+
+function briefFromCache(cached: CachedBrief): PersonBrief {
+  return briefFromStored(cached);
 }
 
 function markRuntimeHit(brief: PersonBrief): PersonBrief {

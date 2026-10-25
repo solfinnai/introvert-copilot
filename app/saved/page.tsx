@@ -5,7 +5,8 @@ import { directoryFromCatalog } from "@/lib/speakers";
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
+const speakers = directoryFromCatalog(getCatalog()).speakers;
+
 export default function SavedPage() {
-  const directory = directoryFromCatalog(getCatalog());
-  return <SavedBoard speakers={directory.speakers} />;
+  return <SavedBoard speakers={speakers} />;
 }

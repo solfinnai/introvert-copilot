@@ -13,6 +13,10 @@ export interface SpeakerQuery {
   sort: SpeakerSort;
 }
 
+export interface SpeakerListState extends SpeakerQuery {
+  page: number;
+}
+
 export interface DirectorySession {
   title: string;
   type: string;
@@ -151,6 +155,23 @@ export function formatSessionLine(session: Pick<DirectorySession, "dayLabel" | "
   return `${day}, ${time}, ${room}`;
 }
 
+/** Day, time, room, and session type. Skip a type the room name already states. */
+export function formatSessionDetail(
+  session: Pick<DirectorySession, "dayLabel" | "timeLabel" | "roomLabel" | "type">,
+): string {
+  const line = formatSessionLine(session);
+  const type = session.type.trim();
+  if (!type || typeRepeatsRoom(type, session.roomLabel)) return line;
+  return `${line}, ${type}`;
+}
+
+function typeRepeatsRoom(type: string, roomLabel: string): boolean {
+  const room = roomLabel.split(" @ ")[0].trim().toLowerCase();
+  const kind = type.trim().toLowerCase();
+  if (!room || !kind) return false;
+  return room === kind || room === `${kind}s` || kind === `${room}s`;
+}
+
 export function formatTimePlace(session: Pick<DirectorySession, "timeLabel" | "roomLabel">): string {
   const time = session.timeLabel.trim() || "time not listed";
   const room = session.roomLabel.trim() || "room not listed";
@@ -171,6 +192,42 @@ export function directoryCatchLine(speaker: DirectorySpeaker): string {
   const day = session.dayKey === "wed" ? "Wed" : session.dayKey === "thu" ? "Thu" : session.dayLabel || "Day not listed";
   const time = session.timeLabel.trim() || "time to be confirmed";
   return `${room}, ${day} ${time}`.replace(/\s+/g, " ").trim();
+}
+
+export function parseSpeakerListState(input: {
+  q?: string | string[];
+  day?: string | string[];
+  topic?: string | string[];
+  sort?: string | string[];
+  page?: string | string[];
+}): SpeakerListState {
+  const q = firstParam(input.q).slice(0, 80);
+  const dayRaw = firstParam(input.day);
+  const day: SpeakerDay = dayRaw === "wed" || dayRaw === "thu" ? dayRaw : "all";
+  const topic = firstParam(input.topic).slice(0, 120);
+  const sortRaw = firstParam(input.sort);
+  const sort: SpeakerSort = sortRaw === "company" || sortRaw === "time" ? sortRaw : "name";
+  const parsedPage = Number.parseInt(firstParam(input.page), 10);
+  const page = Number.isFinite(parsedPage) && parsedPage >= 1 ? Math.min(parsedPage, 999) : 1;
+  return { q, day, topic, sort, page };
+}
+
+export function speakerListSearch(state: SpeakerListState): string {
+  const params = new URLSearchParams();
+  const q = state.q.trim();
+  if (q) params.set("q", q);
+  if (state.day !== "all") params.set("day", state.day);
+  const topic = state.topic.trim();
+  if (topic) params.set("topic", topic);
+  if (state.sort !== "name") params.set("sort", state.sort);
+  if (state.page > 1) params.set("page", String(state.page));
+  const search = params.toString();
+  return search ? `?${search}` : "";
+}
+
+function firstParam(value: string | string[] | undefined): string {
+  const raw = Array.isArray(value) ? value[0] : value;
+  return (raw ?? "").trim();
 }
 
 export function personHref(id: string): string {

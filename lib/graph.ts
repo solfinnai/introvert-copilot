@@ -6,15 +6,20 @@ import { personCard, rankPeople } from "./rank";
 import { logBackend, safeError } from "./redact";
 import type { GraphBackend, MeetResponse, RankedPerson, RecommendQuery } from "./types";
 
-export async function recommend(query: RecommendQuery): Promise<MeetResponse> {
-  const catalog = getCatalog();
-  const started = performance.now();
+/** Give a warm graph a moment. A cold connection must not hold the page. */
+const GRAPH_BUDGET_MS = 250;
 
+export function recommendFromMemory(query: RecommendQuery): MeetResponse {
+  return finishRecommend(query, null, "memory", performance.now());
+}
+
+export async function recommend(query: RecommendQuery): Promise<MeetResponse> {
+  const started = performance.now();
   let hops: Map<string, HopInfo> | null = null;
   let backend: GraphBackend = "memory";
   if (process.env.FALKORDB_URL) {
     try {
-      const queried = await readHops(query);
+      const queried = await withBudget(readHops(query), GRAPH_BUDGET_MS);
       if (queried) {
         const linked = [...queried.values()].some((hop) => hop.sharedSessionIds.length > 0);
         if (linked) {
@@ -31,6 +36,16 @@ export async function recommend(query: RecommendQuery): Promise<MeetResponse> {
     }
   }
 
+  return finishRecommend(query, hops, backend, started);
+}
+
+function finishRecommend(
+  query: RecommendQuery,
+  hops: Map<string, HopInfo> | null,
+  backend: GraphBackend,
+  started: number,
+): MeetResponse {
+  const catalog = getCatalog();
   const people = rankPeople(catalog, hops, normalize(query));
   return {
     backend,
@@ -43,6 +58,23 @@ export async function recommend(query: RecommendQuery): Promise<MeetResponse> {
   };
 }
 
+function withBudget<T>(promise: Promise<T>, ms: number): Promise<T | null> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => resolve(null), ms);
+    timer.unref?.();
+    promise.then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      (err: unknown) => {
+        clearTimeout(timer);
+        reject(err);
+      },
+    );
+  });
+}
+
 export async function describePerson(
   id: string,
 ): Promise<{ card: RankedPerson; backend: GraphBackend; ms: number } | null> {
@@ -51,7 +83,7 @@ export async function describePerson(
   let hops: Map<string, HopInfo> | null = null;
   if (process.env.FALKORDB_URL) {
     try {
-      const queried = await readHops({ day: "both", metIds: [], limit: 1 });
+      const queried = await withBudget(readHops({ day: "both", metIds: [], limit: 1 }), GRAPH_BUDGET_MS);
       if (queried?.has(id)) hops = queried;
     } catch (err) {
       noteQueryFailure(err);

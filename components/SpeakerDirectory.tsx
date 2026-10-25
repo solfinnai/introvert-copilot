@@ -1,22 +1,25 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useRef, useState } from "react";
-import { PersonPhoto } from "./PersonPhoto";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { PersonNameLink, PersonPhotoLink, rememberPersonReturn } from "./person-return";
 import { SaveButton } from "./SaveButton";
 import {
   SPEAKER_PAGE_SIZE,
   agentHref,
   directoryCatchLine,
   directoryOpener,
-  formatSessionLine,
+  formatSessionDetail,
   paginate,
+  parseSpeakerListState,
   personHref,
   querySpeakers,
   reportHref,
   sessionsOnDay,
+  speakerListSearch,
   type DirectorySpeaker,
   type SpeakerDay,
+  type SpeakerListState,
   type SpeakerSort,
 } from "@/lib/speakers";
 
@@ -32,16 +35,46 @@ const SORTS: { id: SpeakerSort; label: string }[] = [
   { id: "time", label: "Day and time" },
 ];
 
-export function SpeakerDirectory({ speakers, topics }: { speakers: DirectorySpeaker[]; topics: string[] }) {
-  const [q, setQ] = useState("");
-  const [day, setDay] = useState<SpeakerDay>("all");
-  const [topic, setTopic] = useState("");
-  const [sort, setSort] = useState<SpeakerSort>("name");
-  const [page, setPage] = useState(1);
+export function SpeakerDirectory({
+  speakers,
+  topics,
+  initial,
+}: {
+  speakers: DirectorySpeaker[];
+  topics: string[];
+  initial: SpeakerListState;
+}) {
+  const [q, setQ] = useState(initial.q);
+  const [day, setDay] = useState<SpeakerDay>(initial.day);
+  const [topic, setTopic] = useState(initial.topic);
+  const [sort, setSort] = useState<SpeakerSort>(initial.sort);
+  const [page, setPage] = useState(initial.page);
   const listRef = useRef<HTMLDivElement>(null);
+  const urlReady = useRef(false);
   const filtered = useMemo(() => querySpeakers(speakers, { q, day, topic, sort }), [speakers, q, day, topic, sort]);
   const view = paginate(filtered, page, SPEAKER_PAGE_SIZE);
   const filteredView = q.trim() || day !== "all" || topic || sort !== "name";
+
+  useEffect(() => {
+    if (window.location.pathname !== "/speakers") return;
+    const state = { q, day, topic, sort, page };
+    if (!urlReady.current) {
+      const fromUrl = parseSpeakerListState(Object.fromEntries(new URLSearchParams(window.location.search)));
+      if (fromUrl.q !== q || fromUrl.day !== day || fromUrl.topic !== topic || fromUrl.sort !== sort || fromUrl.page !== page) {
+        setQ(fromUrl.q);
+        setDay(fromUrl.day);
+        setTopic(fromUrl.topic);
+        setSort(fromUrl.sort);
+        setPage(fromUrl.page);
+        return;
+      }
+      urlReady.current = true;
+    }
+    const next = `/speakers${speakerListSearch(state)}`;
+    const current = `${window.location.pathname}${window.location.search}`;
+    if (current === next) return;
+    window.history.replaceState(window.history.state, "", next);
+  }, [q, day, topic, sort, page]);
 
   function resetPage() {
     setPage(1);
@@ -188,14 +221,12 @@ function SpeakerCard({ speaker, day }: { speaker: DirectorySpeaker; day: Speaker
   return (
     <article className="min-w-0 px-3 py-3" data-speaker-id={speaker.id}>
       <div className="flex items-start gap-3">
-        <PersonPhoto src={speaker.photoUrl} name={speaker.name} size={32} />
+        <PersonPhotoLink id={speaker.id} name={speaker.name} src={speaker.photoUrl} size={32} />
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
               <h2 className="break-words text-body font-medium">
-                <Link href={personHref(speaker.id)} className="hover:text-accent hover:underline">
-                  {speaker.name}
-                </Link>
+                <PersonNameLink id={speaker.id} name={speaker.name} />
               </h2>
               <p className="break-words text-meta text-mute">{speaker.titleLine || "Title and company not listed"}</p>
             </div>
@@ -217,10 +248,7 @@ function SpeakerCard({ speaker, day }: { speaker: DirectorySpeaker; day: Speaker
               sessions.map((session, index) => (
                 <li key={`${speaker.id}-${session.dayKey}-${index}`} className="min-w-0">
                   <p className="break-words text-meta text-ink">{session.title || "Session title not listed"}</p>
-                  <p className="break-words text-meta text-faint">
-                    {formatSessionLine(session)}
-                    {session.type ? `, ${session.type}` : ""}
-                  </p>
+                  <p className="break-words text-meta text-faint">{formatSessionDetail(session)}</p>
                 </li>
               ))
             )}
@@ -230,10 +258,10 @@ function SpeakerCard({ speaker, day }: { speaker: DirectorySpeaker; day: Speaker
             <Link href={agentHref(speaker.id)} className="btn">
               Ask agent
             </Link>
-            <Link href={personHref(speaker.id)} className="btn">
+            <Link href={personHref(speaker.id)} className="btn" onClick={rememberPersonReturn}>
               Person page
             </Link>
-            <Link href={reportHref(speaker.id)} className="btn btn-primary">
+            <Link href={reportHref(speaker.id)} className="btn btn-primary" onClick={rememberPersonReturn}>
               Get full report
             </Link>
           </div>

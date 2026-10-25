@@ -1,0 +1,163 @@
+{
+  "version": 5,
+  "savedAt": "2020-01-15T18:00:00.000Z",
+  "intel": {
+    "mode": "live",
+    "label": "Live public web",
+    "fetchedAt": "2026-10-01T00:00:00.000Z",
+    "work": [
+      {
+        "text": "Speaker catalog: Engineer, Example.",
+        "sourceUrl": "https://githubuniverse.com/speakers",
+        "sourceLabel": "GitHub Universe speaker catalog",
+        "fetchedAt": "2026-10-01T00:00:00.000Z",
+        "confidence": "high",
+        "inference": false,
+        "origin": "snapshot"
+      }
+    ],
+    "education": [],
+    "workGap": null,
+    "educationGap": "No public education history in the cached snapshot.",
+    "workGapOrigin": null,
+    "educationGapOrigin": "snapshot",
+    "personality": {
+      "summary": "Ada is on the schedule for A public session. The public bio is short, so keep the read thin.",
+      "communication": "Ask one specific question about A public session. A short, concrete opener fits this public record better than a broad pitch.",
+      "confidence": "low",
+      "sourceUrl": "https://githubuniverse.com/speakers",
+      "sourceLabel": "GitHub Universe speaker catalog",
+      "fetchedAt": "2026-10-01T00:00:00.000Z",
+      "origin": "snapshot",
+      "label": "Inference from public sources. Not a diagnosis."
+    },
+    "psychographics": [
+      {
+        "text": "They chose to talk about Open source at this event.",
+        "sourceUrl": "https://githubuniverse.com/speakers",
+        "sourceLabel": "GitHub Universe speaker catalog",
+        "fetchedAt": "2026-10-01T00:00:00.000Z",
+        "confidence": "high",
+        "inference": false,
+        "origin": "snapshot"
+      },
+      {
+        "text": "Their public materials emphasize design and open source.",
+        "sourceUrl": "https://githubuniverse.com/speakers",
+        "sourceLabel": "GitHub Universe speaker catalog",
+        "fetchedAt": "2026-10-01T00:00:00.000Z",
+        "confidence": "low",
+        "inference": true,
+        "origin": "snapshot"
+      }
+    ],
+    "news": [
+      {
+        "text": "Story (2024).",
+        "sourceUrl": "https://example.com/story",
+        "sourceLabel": "Story",
+        "fetchedAt": "2026-10-01T00:00:00.000Z",
+        "confidence": "medium",
+        "inference": false,
+        "origin": "snapshot"
+      }
+    ],
+    "newsNote": null,
+    "standout": [
+      {
+        "text": "Ada Fixture writes about design and open source.",
+        "sourceUrl": "https://githubuniverse.com/speakers",
+        "sourceLabel": "GitHub Universe speaker catalog",
+        "fetchedAt": "2026-10-01T00:00:00.000Z",
+        "confidence": "medium",
+        "inference": false,
+        "origin": "snapshot"
+      }
+    ],
+    "talkingPoints": [
+      {
+        "text": "They are scheduled for A public session.",
+        "sourceUrl": "https://githubuniverse.com/speakers",
+        "sourceLabel": "GitHub Universe speaker catalog",
+        "fetchedAt": "2026-10-01T00:00:00.000Z",
+        "confidence": "high",
+        "inference": false,
+        "origin": "snapshot"
+      },
+      {
+        "text": "Public topic on the schedule: Open source.",
+        "sourceUrl": "https://githubuniverse.com/speakers",
+        "sourceLabel": "GitHub Universe speaker catalog",
+        "fetchedAt": "2026-10-01T00:00:00.000Z",
+        "confidence": "high",
+        "inference": false,
+        "origin": "snapshot"
+      },
+      {
+        "text": "A short abstract.",
+        "sourceUrl": "https://githubuniverse.com/speakers",
+        "sourceLabel": "Session abstract",
+        "fetchedAt": "2026-10-01T00:00:00.000Z",
+        "confidence": "high",
+        "inference": false,
+        "origin": "snapshot"
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://githubuniverse.com/speakers",
+        "label": "GitHub Universe speaker catalog",
+        "fetchedAt": "2026-10-01T00:00:00.000Z",
+        "origin": "snapshot"
+      },
+      {
+        "url": "https://example.com/story",
+        "label": "Story",
+        "fetchedAt": "2026-10-01T00:00:00.000Z",
+        "origin": "snapshot"
+      }
+    ]
+  },
+  "plan": {
+    "mode": "template",
+    "why": "Ada fixture why.",
+    "angles": [
+      "You build entertainment companies and intellectual property at Unicorn Studios in San Francisco. With Ada, connect that to their session, A public session in one sentence, then hand them the question.",
+      "You came to meet people working on Open source. Name the one you actually touch, and ask what they want someone outside the team to understand."
+    ],
+    "openers": [
+      "I build entertainment companies and intellectual property at Unicorn Studios. Your session, A public session, is why I came over. How are you thinking about Open source for people who are not engineers?",
+      "I am Henry, from Unicorn Studios in San Francisco. I want to ask one specific thing about A public session, then listen."
+    ],
+    "followUp": "After you talk, write one note you do not send yet: Unicorn Studios, one idea from A public session, and a single question. Offer a 15 minute walk."
+  },
+  "report": {
+    "serp": "live",
+    "unlock": "failed",
+    "linkedin": "failed",
+    "plan": "template",
+    "serpReason": "",
+    "unlockReason": "timed out",
+    "linkedinReason": "timed out"
+  },
+  "profiles": [
+    {
+      "platform": "linkedin",
+      "url": "https://www.linkedin.com/in/example",
+      "handle": "example",
+      "label": "Follow on LinkedIn",
+      "origin": "live",
+      "fetchedAt": "2020-01-15T18:00:00.000Z"
+    }
+  ],
+  "links": [
+    {
+      "title": "Ada Fixture story",
+      "url": "https://example.com/story",
+      "domain": "example.com",
+      "group": "articles",
+      "origin": "live",
+      "fetchedAt": "2020-01-15T18:00:00.000Z"
+    }
+  ]
+}

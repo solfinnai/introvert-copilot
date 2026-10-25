@@ -7,6 +7,7 @@ import { DEMO_PHOTO_SRC, demoPhotoFallbacks } from "@/lib/demo-user";
 import { CueLogo, CueMark } from "./CueLogo";
 import { Icon } from "./Icons";
 import { PersonPhoto } from "./PersonPhoto";
+import { RestoreListScroll } from "./person-return";
 import { PoweredBy } from "./PoweredBy";
 import { SessionProvider, useSession } from "./session";
 
@@ -44,6 +45,8 @@ export function AppShell({
           </div>
           <PoweredBy />
         </div>
+        <MetToast />
+        <RestoreListScroll />
       </div>
     </SessionProvider>
   );
@@ -164,6 +167,25 @@ function titleFor(pathname: string) {
   if (matches(pathname, "/agent") || matches(pathname, "/chat")) return "Agent chat";
   if (matches(pathname, "/people")) return "Person";
   return "CUE";
+}
+
+function MetToast() {
+  const { toast, undoToast } = useSession();
+  if (!toast) return null;
+  return (
+    <div className="no-print pointer-events-none fixed inset-x-0 bottom-4 z-50 flex justify-center px-4">
+      <div
+        role="status"
+        aria-live="polite"
+        className="pointer-events-auto flex w-full max-w-md items-center gap-3 rounded-panel border border-line bg-raised px-3 py-2"
+      >
+        <p className="min-w-0 flex-1 text-body leading-5">{toast.message}</p>
+        <button type="button" className="btn btn-primary shrink-0" onClick={undoToast}>
+          Undo
+        </button>
+      </div>
+    </div>
+  );
 }
 
 function ResetDemo() {

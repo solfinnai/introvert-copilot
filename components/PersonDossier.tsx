@@ -26,6 +26,7 @@ export function PersonDossier({
   cypher,
   fetchedLabel,
   pending,
+  savedLabel,
 }: {
   card: RankedPerson;
   intel: PersonIntel;
@@ -37,6 +38,7 @@ export function PersonDossier({
   cypher: string;
   fetchedLabel: string;
   pending?: LivePending | null;
+  savedLabel?: string | null;
 }) {
   return (
     <div
@@ -99,6 +101,11 @@ export function PersonDossier({
           <h2 className="type-display text-[18px] leading-6">Intel</h2>
           <p className="text-meta text-faint">{intel.label}</p>
         </div>
+        {savedLabel ? (
+          <p className="mt-1 text-meta text-faint" data-saved-intel="">
+            {savedLabel}
+          </p>
+        ) : null}
         <p className="measure mt-2 text-body leading-5 text-mute">{pending?.note ?? describeFetches(report, intel.mode)}</p>
         <p className="mt-2 text-meta text-faint">Public sources only. Nothing on this page sends a message.</p>
       </section>

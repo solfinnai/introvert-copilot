@@ -11,10 +11,13 @@ import {
   directoryCatchLine,
   directoryFromCatalog,
   directoryOpener,
+  formatSessionDetail,
   formatSessionLine,
   paginate,
+  parseSpeakerListState,
   personHref,
   querySpeakers,
+  speakerListSearch,
   reportDownloadHref,
   reportHref,
   sessionsOnDay,
@@ -99,6 +102,33 @@ test("unknown day, time, and room stay honest", () => {
     "Day not listed, time not listed, room not listed",
   );
   assert.equal(DASH.test(formatSessionLine({ dayLabel: "Wednesday, Oct 28", timeLabel: "1:30 PM", roomLabel: "Main Stage" })), false);
+  assert.equal(
+    formatSessionDetail({
+      dayLabel: "Wednesday, Oct 28",
+      timeLabel: "4:10 PM",
+      roomLabel: "Main Stage @ Festival Pavilion",
+      type: "Main Stage",
+    }),
+    "Wednesday, Oct 28, 4:10 PM, Main Stage @ Festival Pavilion",
+  );
+  assert.equal(
+    formatSessionDetail({
+      dayLabel: "Wednesday, Oct 28",
+      timeLabel: "4:10 PM",
+      roomLabel: "Workshops @ Gateway Pavilion, Level 1",
+      type: "Workshop",
+    }),
+    "Wednesday, Oct 28, 4:10 PM, Workshops @ Gateway Pavilion, Level 1",
+  );
+  assert.equal(
+    formatSessionDetail({
+      dayLabel: "Thursday, Oct 29",
+      timeLabel: "1:05 PM",
+      roomLabel: "Main Stage @ Festival Pavilion",
+      type: "Keynote",
+    }),
+    "Thursday, Oct 29, 1:05 PM, Main Stage @ Festival Pavilion, Keynote",
+  );
 });
 
 test("saved schedule groups days and flags same-time clashes only", () => {
@@ -141,6 +171,21 @@ test("three people in one slot are named without a dash", () => {
   const schedule = buildSchedule(rows, rows.map((row) => ({ id: row.id, name: row.name })));
   assert.equal(schedule.days[0].conflicts.length, 1);
   assert.match(schedule.days[0].conflicts[0].note, /Ada, Grace and Lin are all on at 11:00 AM/);
+});
+
+test("speaker list query strings round trip", () => {
+  assert.equal(speakerListSearch({ q: "a", day: "all", topic: "", sort: "name", page: 2 }), "?q=a&page=2");
+  assert.equal(speakerListSearch({ q: "", day: "all", topic: "", sort: "name", page: 1 }), "");
+  const state = { q: " maeda ", day: "thu" as const, topic: "AI: Agents", sort: "company" as const, page: 3 };
+  const params = Object.fromEntries(new URLSearchParams(speakerListSearch(state)));
+  assert.deepEqual(parseSpeakerListState(params), { q: "maeda", day: "thu", topic: "AI: Agents", sort: "company", page: 3 });
+  assert.deepEqual(parseSpeakerListState({ day: "nope", sort: "nope", page: "0" }), {
+    q: "",
+    day: "all",
+    topic: "",
+    sort: "name",
+    page: 1,
+  });
 });
 
 test("directory links and pages do not fetch intel for the list", () => {
