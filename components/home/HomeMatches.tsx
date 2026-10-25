@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { PersonPhoto } from "@/components/PersonPhoto";
+import { PersonNameLink, PersonPhotoLink, rememberPersonReturn } from "@/components/person-return";
 import { SaveButton } from "@/components/SaveButton";
 import { useSession } from "@/components/session";
 import {
@@ -133,9 +133,11 @@ function MatchCard({
   return (
     <article className={compact ? "px-3 py-2" : "px-3 py-3"}>
       <header className="flex items-start gap-3">
-        <PersonPhoto src={person.photoUrl} name={person.name} size={compact ? 28 : 32} />
+        <PersonPhotoLink id={person.id} name={person.name} src={person.photoUrl} size={compact ? 28 : 32} />
         <div className="min-w-0 flex-1">
-          <h3 className="break-words text-body font-medium">{person.name}</h3>
+          <h3 className="break-words text-body font-medium">
+            <PersonNameLink id={person.id} name={person.name} />
+          </h3>
           <p className="break-words text-meta text-mute">{person.titleLine}</p>
         </div>
         <SaveButton
@@ -157,7 +159,7 @@ function MatchCard({
         <Link href={`/agent?person=${person.id}`} className="btn">
           Ask agent
         </Link>
-        <Link href={`/people/${person.id}`} className="btn btn-primary">
+        <Link href={`/people/${person.id}`} className="btn btn-primary" onClick={rememberPersonReturn}>
           Conversation plan
         </Link>
         <button type="button" className="btn btn-quiet" disabled={locked} onClick={onMet}>

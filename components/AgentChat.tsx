@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { DraftCard } from "./DraftCard";
-import { PersonPhoto } from "./PersonPhoto";
+import { PersonNameLink, PersonPhotoLink } from "./person-return";
 import {
   AGENT_GREETING,
   GENERAL_STARTERS,
@@ -134,10 +134,12 @@ export function AgentChat({
       {messages.length > 0 && <h1 className="sr-only">{AGENT_GREETING}</h1>}
       {person && (
         <div className="mb-3 flex items-center gap-2">
-          <PersonPhoto src={person.photoUrl} name={person.name} size={28} />
+          <PersonPhotoLink id={person.id} name={person.name} src={person.photoUrl} size={28} />
           <div className="min-w-0">
             <p className="text-meta text-faint">About this speaker</p>
-            <p className="truncate text-body font-medium">{person.name}</p>
+            <p className="truncate text-body font-medium">
+              <PersonNameLink id={person.id} name={person.name} />
+            </p>
             <p className="truncate text-meta text-mute">{person.titleLine}</p>
           </div>
         </div>
@@ -191,10 +193,16 @@ export function AgentChat({
           </label>
           <ul className="mt-2 divide-y divide-line">
             {matches.map((option) => (
-              <li key={option.id}>
-                <button type="button" className="flex w-full flex-col items-start py-2 text-left" onClick={() => chooseSpeaker(option)}>
-                  <span className="text-body font-medium">{option.name}</span>
-                  <span className="text-meta text-faint">{option.titleLine}</span>
+              <li key={option.id} className="flex items-start gap-2 py-2">
+                <PersonPhotoLink id={option.id} name={option.name} src={option.photoUrl} size={28} />
+                <div className="min-w-0 flex-1">
+                  <p className="break-words text-body font-medium">
+                    <PersonNameLink id={option.id} name={option.name} />
+                  </p>
+                  <p className="break-words text-meta text-faint">{option.titleLine}</p>
+                </div>
+                <button type="button" className="btn h-auto max-w-[11rem] shrink-0 whitespace-normal text-left" onClick={() => chooseSpeaker(option)}>
+                  Talk about {option.name}
                 </button>
               </li>
             ))}

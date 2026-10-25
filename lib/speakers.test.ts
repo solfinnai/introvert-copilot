@@ -14,8 +14,10 @@ import {
   formatSessionDetail,
   formatSessionLine,
   paginate,
+  parseSpeakerListState,
   personHref,
   querySpeakers,
+  speakerListSearch,
   reportDownloadHref,
   reportHref,
   sessionsOnDay,
@@ -169,6 +171,21 @@ test("three people in one slot are named without a dash", () => {
   const schedule = buildSchedule(rows, rows.map((row) => ({ id: row.id, name: row.name })));
   assert.equal(schedule.days[0].conflicts.length, 1);
   assert.match(schedule.days[0].conflicts[0].note, /Ada, Grace and Lin are all on at 11:00 AM/);
+});
+
+test("speaker list query strings round trip", () => {
+  assert.equal(speakerListSearch({ q: "a", day: "all", topic: "", sort: "name", page: 2 }), "?q=a&page=2");
+  assert.equal(speakerListSearch({ q: "", day: "all", topic: "", sort: "name", page: 1 }), "");
+  const state = { q: " maeda ", day: "thu" as const, topic: "AI: Agents", sort: "company" as const, page: 3 };
+  const params = Object.fromEntries(new URLSearchParams(speakerListSearch(state)));
+  assert.deepEqual(parseSpeakerListState(params), { q: "maeda", day: "thu", topic: "AI: Agents", sort: "company", page: 3 });
+  assert.deepEqual(parseSpeakerListState({ day: "nope", sort: "nope", page: "0" }), {
+    q: "",
+    day: "all",
+    topic: "",
+    sort: "name",
+    page: 1,
+  });
 });
 
 test("directory links and pages do not fetch intel for the list", () => {

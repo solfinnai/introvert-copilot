@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PersonLive } from "@/components/PersonLive";
+import { PersonBack } from "@/components/person-return";
 import { HERO_CYPHER, getCatalog } from "@/lib/catalog";
 import { readIntelSnapshot } from "@/lib/intel-cache";
 import { savedIntelLine } from "@/lib/intel-snapshots";
@@ -36,9 +37,7 @@ export default async function PersonPage({
   return (
     <div className="mx-auto max-w-3xl">
       <div className="no-print flex flex-wrap gap-x-4 gap-y-1">
-        <Link href="/meet" className="text-meta text-accent hover:underline">
-          Back to who to meet
-        </Link>
+        <PersonBack />
         <Link href="/speakers" className="text-meta text-accent hover:underline">
           All speakers
         </Link>

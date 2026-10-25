@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { GraphPath, backendLabel } from "./GraphPath";
-import { PersonPhoto } from "./PersonPhoto";
+import { PersonNameLink, PersonPhotoLink, rememberPersonReturn } from "./person-return";
 import { SaveButton } from "./SaveButton";
 import { useSession, type SavedPerson } from "./session";
 import { isLatestRequest, nextRequestId } from "@/lib/latest-request";
@@ -16,9 +16,9 @@ const DAYS: { id: DayFilter; label: string }[] = [
   { id: "thu", label: "Thu" },
 ];
 
-export function MeetBoard({ initial }: { initial: MeetResponse }) {
+export function MeetBoard({ initial, initialDay = "both" }: { initial: MeetResponse; initialDay?: DayFilter }) {
   const { state, ready, markMet } = useSession();
-  const [day, setDay] = useState<DayFilter>("both");
+  const [day, setDay] = useState<DayFilter>(initialDay);
   const [data, setData] = useState(initial);
   const [showAll, setShowAll] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
@@ -31,6 +31,7 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
   const topicsRef = useRef<string[]>([]);
   const dayRef = useRef<DayFilter>("both");
   const bootedMet = useRef(false);
+  const urlReady = useRef(false);
   dayRef.current = day;
   metRef.current = state.met;
 
@@ -45,6 +46,24 @@ export function MeetBoard({ initial }: { initial: MeetResponse }) {
     topicsRef.current = nextTopics;
     setTopics(nextTopics);
   }, [ready]);
+
+  useEffect(() => {
+    if (window.location.pathname !== "/meet") return;
+    if (!urlReady.current) {
+      const raw = new URLSearchParams(window.location.search).get("day");
+      const fromUrl: DayFilter = raw === "wed" || raw === "thu" ? raw : "both";
+      if (fromUrl !== dayRef.current) {
+        setDay(fromUrl);
+        void reload(fromUrl, metRef.current);
+        return;
+      }
+      urlReady.current = true;
+    }
+    const next = day === "both" ? "/meet" : `/meet?day=${day}`;
+    const current = `${window.location.pathname}${window.location.search}`;
+    if (current === next) return;
+    window.history.replaceState(window.history.state, "", next);
+  }, [day]);
 
   const metKey = state.met.join(",");
   useEffect(() => {
@@ -185,9 +204,11 @@ function MatchRow({ person, response, topics, open, locked, onTogglePath, onMet 
   return (
     <article className="min-w-0 px-3 py-3">
       <header className="flex items-start gap-3">
-        <PersonPhoto src={person.photoUrl} name={person.name} size={32} />
+        <PersonPhotoLink id={person.id} name={person.name} src={person.photoUrl} size={32} />
         <div className="min-w-0 flex-1">
-          <h2 className="break-words text-body font-medium">{person.name}</h2>
+          <h2 className="break-words text-body font-medium">
+            <PersonNameLink id={person.id} name={person.name} />
+          </h2>
           <p className="break-words text-meta text-mute">{person.titleLine}</p>
           {when && <p className="mt-0.5 break-words text-meta text-faint">{when}</p>}
           {topicsLine.length > 0 && <p className="mt-0.5 break-words text-meta text-faint">{topicsLine.join(", ")}</p>}
@@ -200,7 +221,7 @@ function MatchRow({ person, response, topics, open, locked, onTogglePath, onMet 
         <Link href={`/agent?person=${person.id}`} className="btn">
           Ask agent
         </Link>
-        <Link href={`/people/${person.id}`} className="btn btn-primary">
+        <Link href={`/people/${person.id}`} className="btn btn-primary" onClick={rememberPersonReturn}>
           Conversation plan
         </Link>
         <button type="button" className="btn btn-quiet" disabled={locked} onClick={onMet}>

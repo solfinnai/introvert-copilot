@@ -7,6 +7,7 @@ import { DEMO_PHOTO_SRC, demoPhotoFallbacks } from "@/lib/demo-user";
 import { CueLogo, CueMark } from "./CueLogo";
 import { Icon } from "./Icons";
 import { PersonPhoto } from "./PersonPhoto";
+import { RestoreListScroll } from "./person-return";
 import { PoweredBy } from "./PoweredBy";
 import { SessionProvider, useSession } from "./session";
 
@@ -45,6 +46,7 @@ export function AppShell({
           <PoweredBy />
         </div>
         <MetToast />
+        <RestoreListScroll />
       </div>
     </SessionProvider>
   );
